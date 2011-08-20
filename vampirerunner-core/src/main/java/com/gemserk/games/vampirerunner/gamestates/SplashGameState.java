@@ -98,11 +98,7 @@ public class SplashGameState extends GameStateImpl {
 		if (!timeTransition.isFinished())
 			return;
 
-		// game.transition(game.getMainMenuScreen()) //
-		// .leaveTime(0.5f) //
-		// .enterTime(0.5f) //
-		// .disposeCurrent() //
-		// .start();
+		game.setScreen(game.getPlayGameScreen(), true);
 	}
 
 	@Override

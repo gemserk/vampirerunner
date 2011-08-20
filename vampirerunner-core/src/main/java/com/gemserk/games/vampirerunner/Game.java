@@ -8,7 +8,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
@@ -18,12 +17,12 @@ import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegi
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
-import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
@@ -32,21 +31,7 @@ import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
-	private static boolean debugMode;
-	private static boolean showFps = false;
-	private static boolean showBox2dDebug = false;
-
-	public static boolean isDebugMode() {
-		return debugMode;
-	}
-
-	public static void setDebugMode(boolean debugMode) {
-		Game.debugMode = debugMode;
-	}
-
-	public static boolean isShowBox2dDebug() {
-		return showBox2dDebug;
-	}
+	private static boolean showFps = true;
 
 	public static void setShowFps(boolean showFps) {
 		Game.showFps = showFps;
@@ -70,10 +55,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	 */
 	private Parameters gameData;
 
-	private Rectangle adsMaxArea;
+	private Screen playGameScreen;
 
 	public Screen getSplashScreen() {
 		return splashScreen;
+	}
+	
+	public Screen getPlayGameScreen() {
+		return playGameScreen;
 	}
 
 	public Parameters getGameData() {
@@ -112,7 +101,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		fpsFont = new BitmapFont();
 		spriteBatch = new SpriteBatch();
 
+		PlayGameState playGameState = new PlayGameState(this);
+		
 		splashScreen = new ScreenImpl(new SplashGameState(this));
+		playGameScreen = new ScreenImpl(playGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
@@ -150,10 +142,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			} catch (IOException e) {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
-		}
-
-		if (Game.isDebugMode()) {
-			ImmediateModeRendererUtils.drawRectangle(adsMaxArea, Color.GREEN);
 		}
 
 		eventManager.process();
