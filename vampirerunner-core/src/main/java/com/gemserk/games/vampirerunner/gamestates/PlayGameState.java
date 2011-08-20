@@ -20,6 +20,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
+import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
@@ -30,8 +31,10 @@ public class PlayGameState extends GameStateImpl {
 	private World world;
 
 	private EntityTemplate staticSpriteTemplate;
+	private EntityTemplate vampireTemplate;
+
 	private EntityFactory entityFactory;
-	
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -55,6 +58,7 @@ public class PlayGameState extends GameStateImpl {
 
 		Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
+		worldCamera.zoom(48f);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
@@ -69,6 +73,7 @@ public class PlayGameState extends GameStateImpl {
 		{
 			// initialize templates
 			staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
+			vampireTemplate = new VampireTemplate(resourceManager);
 		}
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
@@ -77,6 +82,9 @@ public class PlayGameState extends GameStateImpl {
 				.put("spatial", new SpatialImpl(0, 0, width, height, 0f)) //
 				);
 
+		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
+				.put("spatial", new SpatialImpl(1f, 1f, 1f, 1f, 0f)) //
+				);
 	}
 
 	@Override

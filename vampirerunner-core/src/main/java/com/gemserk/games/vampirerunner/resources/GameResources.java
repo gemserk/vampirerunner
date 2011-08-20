@@ -27,6 +27,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 		textureAtlas("TextureAtlas", "data/images/packs/pack");
 		spriteAtlas("BackgroundSprite", "TextureAtlas", "background");
+		spriteAtlas("VampireSprite", "TextureAtlas", "vampire");
 	}
 
 }

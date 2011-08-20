@@ -12,22 +12,22 @@ background
   index: -1
 helicopter
   rotate: false
-  xy: 404, 0
-  size: 104, 37
+  xy: 0, 324
+  size: 128, 64
   orig: 128, 64
-  offset: 13, 17
+  offset: 0, 0
   index: -1
 sunlight
   rotate: false
-  xy: 404, 41
-  size: 64, 36
+  xy: 404, 0
+  size: 64, 64
   orig: 64, 64
-  offset: 0, 12
+  offset: 0, 0
   index: -1
 vampire
   rotate: false
-  xy: 472, 41
-  size: 10, 24
+  xy: 472, 0
+  size: 32, 32
   orig: 32, 32
-  offset: 11, 1
+  offset: 0, 0
   index: -1
