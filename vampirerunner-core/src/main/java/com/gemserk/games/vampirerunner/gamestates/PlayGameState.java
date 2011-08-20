@@ -3,16 +3,21 @@ package com.gemserk.games.vampirerunner.gamestates;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.render.RenderLayers;
+import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
+import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
+import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -51,17 +56,25 @@ public class PlayGameState extends GameStateImpl {
 		int centerX = width / 2;
 		int centerY = height / 2;
 
+		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, -1f), false);
+		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
+
 		world = new World();
 		worldWrapper = new WorldWrapper(world);
 
 		RenderLayers renderLayers = new RenderLayers();
 
 		Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
-		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
+		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.zoom(48f);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
+
+		worldWrapper.addUpdateSystem(new ScriptSystem());
+		worldWrapper.addUpdateSystem(new TagSystem());
+		// worldWrapper.addUpdateSystem(new MovementSystem());
+		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -73,7 +86,7 @@ public class PlayGameState extends GameStateImpl {
 		{
 			// initialize templates
 			staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
-			vampireTemplate = new VampireTemplate(resourceManager);
+			vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder);
 		}
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
@@ -83,7 +96,7 @@ public class PlayGameState extends GameStateImpl {
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(1f, 1f, 1f, 1f, 0f)) //
+				.put("spatial", new SpatialImpl(1f, 5f, 1f, 1f, 0f)) //
 				);
 	}
 
