@@ -13,9 +13,8 @@ public class CameraTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Libgdx2dCamera libgdx2dCamera = parameters.get("libgdxCamera");
-		
 		entity.addComponent(new TagComponent(Tags.MainCamera));
-		entity.addComponent(new ScriptComponent(new CameraScript(libgdx2dCamera)));
+		entity.addComponent(new ScriptComponent(new CameraScript(Tags.Vampire, libgdx2dCamera)));
 	}
 
 }
