@@ -25,6 +25,7 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.render.Layers;
+import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
@@ -39,6 +40,7 @@ public class PlayGameState extends GameStateImpl {
 
 	private EntityTemplate staticSpriteTemplate;
 	private EntityTemplate vampireTemplate;
+	private EntityTemplate cameraTemplate;
 	private EntityTemplate floorTileTemplate;
 
 	private EntityFactory entityFactory;
@@ -69,7 +71,7 @@ public class PlayGameState extends GameStateImpl {
 		RenderLayers renderLayers = new RenderLayers();
 
 		Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
-		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl();
+		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 10);
 		worldCamera.zoom(48f);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
@@ -91,6 +93,7 @@ public class PlayGameState extends GameStateImpl {
 			staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
 			vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder);
 			floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
+			cameraTemplate = new CameraTemplate();
 		}
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
@@ -112,6 +115,10 @@ public class PlayGameState extends GameStateImpl {
 					);
 			x += 2f;
 		}
+
+		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
+				.put("libgdxCamera", worldCamera) //
+				);
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
 	}

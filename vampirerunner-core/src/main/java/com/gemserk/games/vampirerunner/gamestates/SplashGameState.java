@@ -32,6 +32,8 @@ public class SplashGameState extends GameStateImpl {
 	private Color blurColor = new Color();
 
 	private TimeTransition timeTransition;
+	
+	private float internalSpeed = 1f;
 
 	public SplashGameState(Game game) {
 		this.game = game;
@@ -90,10 +92,10 @@ public class SplashGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 
-		if (Gdx.input.justTouched())
-			timeTransition.update(10000f);
+		if (Gdx.input.justTouched()) 
+			internalSpeed = 2f;
 
-		timeTransition.update(getDelta());
+		timeTransition.update(getDelta() * internalSpeed);
 
 		if (!timeTransition.isFinished())
 			return;

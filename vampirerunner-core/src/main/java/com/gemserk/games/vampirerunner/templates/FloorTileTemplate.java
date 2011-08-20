@@ -11,13 +11,11 @@ import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
-import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
-import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.scripts.VampireScript;
 import com.gemserk.resources.ResourceManager;
 
@@ -37,7 +35,6 @@ public class FloorTileTemplate extends EntityTemplateImpl {
 		
 		Sprite sprite = resourceManager.getResourceValue("FloorTile01Sprite");
 
-		entity.addComponent(new TagComponent(Tags.Vampire));
 		entity.addComponent(new SpriteComponent(sprite, new Vector2(0.5f, 0.5f), Color.WHITE));
 		entity.addComponent(new RenderableComponent(2));
 		entity.addComponent(new ScriptComponent(new VampireScript()));
