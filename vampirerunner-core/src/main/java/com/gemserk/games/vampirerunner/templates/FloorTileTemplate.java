@@ -21,12 +21,12 @@ import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.scripts.VampireScript;
 import com.gemserk.resources.ResourceManager;
 
-public class VampireTemplate extends EntityTemplateImpl {
+public class FloorTileTemplate extends EntityTemplateImpl {
 
 	private final ResourceManager<String> resourceManager;
 	private final BodyBuilder bodyBuilder;
 
-	public VampireTemplate(ResourceManager<String> resourceManager, BodyBuilder bodyBuilder) {
+	public FloorTileTemplate(ResourceManager<String> resourceManager, BodyBuilder bodyBuilder) {
 		this.resourceManager = resourceManager;
 		this.bodyBuilder = bodyBuilder;
 	}
@@ -34,29 +34,26 @@ public class VampireTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
-
-		Sprite sprite = resourceManager.getResourceValue("VampireSprite");
+		
+		Sprite sprite = resourceManager.getResourceValue("FloorTile01Sprite");
 
 		entity.addComponent(new TagComponent(Tags.Vampire));
-		// entity.addComponent(new SpatialComponent(spatial));
 		entity.addComponent(new SpriteComponent(sprite, new Vector2(0.5f, 0.5f), Color.WHITE));
-		entity.addComponent(new RenderableComponent(1));
+		entity.addComponent(new RenderableComponent(2));
 		entity.addComponent(new ScriptComponent(new VampireScript()));
 
 		Body body = bodyBuilder //
-				.fixedRotation() //
 				.userData(entity) //
 				.position(spatial.getX(), spatial.getY()) //
-				.type(BodyType.DynamicBody) //
+				.type(BodyType.StaticBody) //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
-//						.boxShape(0.1f, 0.4f) //
-						.circleShape(0.4f) //
+						.boxShape(1f * spatial.getWidth() * 0.5f, 0.15f * spatial.getHeight() * 0.5f) //
 						.density(1f) //
 						.build()) //
 				.build();
 
 		entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
+		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, spatial)));
 	}
 
 }

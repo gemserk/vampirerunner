@@ -24,6 +24,13 @@ sunlight
   orig: 64, 64
   offset: 0, 0
   index: -1
+floor-tile-01
+  rotate: false
+  xy: 404, 68
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 vampire
   rotate: false
   xy: 472, 0

@@ -18,12 +18,14 @@ import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
+import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.render.Layers;
+import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.resources.ResourceManager;
@@ -37,8 +39,10 @@ public class PlayGameState extends GameStateImpl {
 
 	private EntityTemplate staticSpriteTemplate;
 	private EntityTemplate vampireTemplate;
+	private EntityTemplate floorTileTemplate;
 
 	private EntityFactory entityFactory;
+	private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -73,7 +77,6 @@ public class PlayGameState extends GameStateImpl {
 
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
-		// worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
@@ -87,6 +90,7 @@ public class PlayGameState extends GameStateImpl {
 			// initialize templates
 			staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
 			vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder);
+			floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		}
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
@@ -96,20 +100,36 @@ public class PlayGameState extends GameStateImpl {
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(1f, 5f, 1f, 1f, 0f)) //
+				.put("spatial", new SpatialImpl(1f, 2f, 1f, 1f, 0f)) //
 				);
+
+		float x = 0f;
+		float y = 1f;
+
+		for (int i = 0; i < 50; i++) {
+			entityFactory.instantiate(floorTileTemplate, new ParametersWrapper() //
+					.put("spatial", new SpatialImpl(x, y, 2f, 2f, 0f)) //
+					);
+			x += 2f;
+		}
+
+		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
 	}
 
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		worldWrapper.render();
+
+		if (Game.isShowBox2dDebug())
+			box2dCustomDebugRenderer.render();
 	}
 
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
+
 	}
 
 	@Override

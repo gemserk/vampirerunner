@@ -32,6 +32,7 @@ import com.gemserk.util.ScreenshotSaver;
 public class Game extends com.gemserk.commons.gdx.Game {
 
 	private static boolean showFps = true;
+	private static boolean showBox2dDebug = true;
 
 	public static void setShowFps(boolean showFps) {
 		Game.showFps = showFps;
@@ -39,6 +40,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public static boolean isShowFps() {
 		return showFps;
+	}
+	
+	public static boolean isShowBox2dDebug() {
+		return showBox2dDebug;
+	}
+	
+	public static void setShowBox2dDebug(boolean showBox2dDebug) {
+		Game.showBox2dDebug = showBox2dDebug;
 	}
 
 	private Screen splashScreen;
@@ -117,6 +126,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
 				monitorKey("grabScreenshot", Keys.NUM_9);
+				monitorKey("toggleBox2dDebug", Keys.NUM_8);
 			}
 		};
 
@@ -143,6 +153,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			} catch (IOException e) {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
+		}
+		
+		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased()) {
+			setShowBox2dDebug(!isShowBox2dDebug());
 		}
 
 		eventManager.process();
