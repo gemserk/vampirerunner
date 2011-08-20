@@ -102,6 +102,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		spriteBatch = new SpriteBatch();
 
 		PlayGameState playGameState = new PlayGameState(this);
+		playGameState.setResourceManager(resourceManager);
 		
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		playGameScreen = new ScreenImpl(playGameState);

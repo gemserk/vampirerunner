@@ -25,6 +25,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("LwjglLogo", "LwjglLogoTexture", 0, 0, 512, 185);
 		sprite("LibgdxLogo", "LibgdxLogoTexture", 0, 25, 512, 256 - 50);
 		
+		textureAtlas("TextureAtlas", "data/images/packs/pack");
+		spriteAtlas("BackgroundSprite", "TextureAtlas", "background");
 	}
 
 }

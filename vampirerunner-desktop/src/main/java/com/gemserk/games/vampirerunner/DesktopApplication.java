@@ -18,8 +18,8 @@ public class DesktopApplication {
 		System.out.println(System.getProperty("java.version"));
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 480;
+		config.width = 400;
+		config.height = 320;
 		// config.width = 320;
 		// config.height = 240;
 		// config.width = 1024;

@@ -1,8 +1,8 @@
 alias=false
 alphaThreshold=0
 debug=false
-defaultFilterMag=Linear
-defaultFilterMin=Linear
+defaultFilterMag=Nearest
+defaultFilterMin=Nearest
 defaultFormat=RGBA8888
 duplicatePadding=true
 incremental=false

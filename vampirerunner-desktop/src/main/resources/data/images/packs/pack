@@ -1,0 +1,33 @@
+
+generated1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+background
+  rotate: false
+  xy: 0, 0
+  size: 400, 320
+  orig: 400, 320
+  offset: 0, 0
+  index: -1
+helicopter
+  rotate: false
+  xy: 404, 0
+  size: 104, 37
+  orig: 128, 64
+  offset: 13, 17
+  index: -1
+sunlight
+  rotate: false
+  xy: 404, 41
+  size: 64, 36
+  orig: 64, 64
+  offset: 0, 12
+  index: -1
+vampire
+  rotate: false
+  xy: 472, 41
+  size: 10, 24
+  orig: 32, 32
+  offset: 11, 1
+  index: -1
