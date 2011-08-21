@@ -93,7 +93,7 @@ public class SplashGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 
 		if (Gdx.input.justTouched()) 
-			internalSpeed = 2f;
+			internalSpeed = 20f;
 
 		timeTransition.update(getDelta() * internalSpeed);
 

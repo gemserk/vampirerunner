@@ -17,9 +17,7 @@ import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
-import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
-import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
@@ -36,12 +34,15 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Game;
+import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.render.Layers;
+import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
+import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.resources.ResourceManager;
@@ -113,21 +114,20 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 
-		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
-		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
+		// worldWrapper.addRenderSystem(new SpriteUpdateSystem());
+		// worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 
 		worldWrapper.init();
 
 		entityFactory = new EntityFactoryImpl(world);
 		EntityBuilder entityBuilder = new EntityBuilder(world);
 
-		{
-			// initialize templates
-			staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
-			vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder);
-			floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
-			cameraTemplate = new CameraTemplate();
-		}
+		// initialize templates
+		staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
+		vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder);
+		floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
+		cameraTemplate = new CameraTemplate();
+		EntityTemplate obstacleTemplate = new ObstacleTemplate(bodyBuilder);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundSprite") //
@@ -146,7 +146,11 @@ public class PlayGameState extends GameStateImpl {
 		// an entity which removes old tiles
 
 		entityBuilder //
-				.component(new ScriptComponent(new PreviousTilesRemoverScript(), new TerrainGeneratorScript(entityFactory, floorTileTemplate))) //
+				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Tiles), new TerrainGeneratorScript(entityFactory, floorTileTemplate, -5f))) //
+				.build();
+
+		entityBuilder //
+				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Obstacles), new ObstacleGeneratorScript(entityFactory, obstacleTemplate, 5f))) //
 				.build();
 
 		entityBuilder //
@@ -173,7 +177,7 @@ public class PlayGameState extends GameStateImpl {
 						distance += playerSpatial.getX() - lastPlayerPosition;
 
 						lastPlayerPosition = playerSpatial.getX();
-						
+
 						score = (int) distance;
 
 						distanceLabel.setText("Score: " + score);

@@ -2,6 +2,7 @@ package com.gemserk.games.vampirerunner.scripts;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -11,22 +12,21 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Tags;
 
-public class TerrainGeneratorScript extends ScriptJavaImpl {
+public class ObstacleGeneratorScript extends ScriptJavaImpl {
 
 	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
 
 	private final EntityFactory entityFactory;
 	private final EntityTemplate tileTemplate;
 
-	private float lastGeneratedPositionX;
-	private float distanceToGenerate = 24f;
+	private float distanceTrigger;
 
 	private Parameters parameters = new ParametersWrapper();
 
-	public TerrainGeneratorScript(EntityFactory entityFactory, EntityTemplate tileTemplate, float lastGeneratedPositionX) {
+	public ObstacleGeneratorScript(EntityFactory entityFactory, EntityTemplate tileTemplate, float distanceTrigger) {
 		this.entityFactory = entityFactory;
 		this.tileTemplate = tileTemplate;
-		this.lastGeneratedPositionX = lastGeneratedPositionX;
+		this.distanceTrigger = distanceTrigger;
 	}
 
 	@Override
@@ -37,20 +37,22 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
 
-		while (lastGeneratedPositionX - playerSpatial.getX() < distanceToGenerate) {
-
+		if (playerSpatial.getX() > distanceTrigger) {
+			// trigger, generate multiple obstacles ahead, move distance trigger
+			Gdx.app.log("VampireRunner", "Generate obstacles triggered");
+			
 			parameters.clear();
 			Entity obstacle = entityFactory.instantiate(tileTemplate, parameters //
-					.put("x", lastGeneratedPositionX) //
+					.put("x", distanceTrigger + 10f) //
 					.put("y", 1f) //
 					);
 
 			SpatialComponent obstacleSpatialComponent = obstacle.getComponent(spatialComponentClass);
 			float width = obstacleSpatialComponent.getSpatial().getWidth();
-
-			lastGeneratedPositionX += width;
-			// generate new tile
-
+			
+			// width = sumatoria de todos los obstaculos mas espacios en blanco
+			
+			distanceTrigger += 20f + width;
 		}
 
 	}
