@@ -2,11 +2,14 @@ package com.gemserk.games.vampirerunner.scripts;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.components.AnimationComponent;
+import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
+import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 
 public class VladimirAnimationScript extends ScriptJavaImpl {
@@ -14,6 +17,7 @@ public class VladimirAnimationScript extends ScriptJavaImpl {
 	private static final Class<AnimationComponent> animationComponentClass = AnimationComponent.class;
 	private static final Class<SpriteComponent> spriteComponentClass = SpriteComponent.class;
 	private static final Class<SuperSkillComponent> superSkillComponentClass = SuperSkillComponent.class;
+	private static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
 	
 	// handle events like player death, etc, to play animations?
 	private static final int RunningAnimation = 0;
@@ -22,6 +26,10 @@ public class VladimirAnimationScript extends ScriptJavaImpl {
 	@Override
 	public void update(World world, Entity e) {
 		// should change animations based on vladimir status...
+		
+		PhysicsComponent physicsComponent = e.getComponent(physicsComponentClass);
+		Physics physics = physicsComponent.getPhysics();
+		Body body = physics.getBody();
 		
 		SuperSkillComponent superSkillComponent = e.getComponent(superSkillComponentClass);
 		
@@ -34,7 +42,7 @@ public class VladimirAnimationScript extends ScriptJavaImpl {
 		}
 		
 		Animation currentAnimation = animationComponent.getCurrentAnimation();
-		currentAnimation.update(GlobalTime.getDelta());
+		currentAnimation.update(GlobalTime.getDelta() * body.getLinearVelocity().len());
 		SpriteComponent spriteComponent = e.getComponent(spriteComponentClass);
 		spriteComponent.setSprite(currentAnimation.getCurrentFrame());
 		
