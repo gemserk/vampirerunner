@@ -23,6 +23,7 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
+import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
 import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.resources.GameResources;
@@ -32,8 +33,8 @@ import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
-	private static boolean showFps = true;
-	private static boolean showBox2dDebug = true;
+	private static boolean showFps = false;
+	private static boolean showBox2dDebug = false;
 
 	public static void setShowFps(boolean showFps) {
 		Game.showFps = showFps;
@@ -67,6 +68,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private Screen playGameScreen;
 	private Screen gameOverScreen;
+	private Screen instructionsScreen;
 
 	public Screen getSplashScreen() {
 		return splashScreen;
@@ -78,6 +80,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	
 	public Screen getGameOverScreen() {
 		return gameOverScreen;
+	}
+	
+	public Screen getInstructionsScreen() {
+		return instructionsScreen;
 	}
 
 	public Parameters getGameData() {
@@ -122,9 +128,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		GameOverGameState gameOverGameState = new GameOverGameState(this);
 		gameOverGameState.setResourceManager(resourceManager);
 		
+		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
+		instructionsGameState.setResourceManager(resourceManager);
+		
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
+		instructionsScreen = new ScreenImpl(instructionsGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 

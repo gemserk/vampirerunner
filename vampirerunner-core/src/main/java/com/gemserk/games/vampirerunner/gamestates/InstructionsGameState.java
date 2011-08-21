@@ -9,14 +9,12 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
-import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.vampirerunner.Game;
-import com.gemserk.games.vampirerunner.GameInformation;
 import com.gemserk.resources.ResourceManager;
 
-public class GameOverGameState extends GameStateImpl {
+public class InstructionsGameState extends GameStateImpl {
 
 	private final Game game;
 	private ResourceManager<String> resourceManager;
@@ -30,7 +28,7 @@ public class GameOverGameState extends GameStateImpl {
 		this.resourceManager = resourceManager;
 	}
 
-	public GameOverGameState(Game game) {
+	public InstructionsGameState(Game game) {
 		this.game = game;
 	}
 
@@ -45,26 +43,30 @@ public class GameOverGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
 
-		GameInformation gameInformation = game.getGameData().get("gameInformation");
-
 		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
 
-		final Text distanceLabel = GuiControls.label("Score: " + gameInformation.score).id("DistanceLabel") //
+		guiContainer.add(GuiControls.label("Press left click to move through walls").id("Instructions") //
 				.position(width * 0.5f, height * 0.5f) //
 				.center(0.5f, 0.5f) //
 				.font(distanceFont) //
 				.color(Color.RED) //
-				.build();
-
-		guiContainer.add(distanceLabel);
+				.build());
+		
+		guiContainer.add(GuiControls.label("click to start").id("ClickToStart") //
+				.position(width * 0.5f, height * 0.3f) //
+				.center(0.5f, 0.5f) //
+				.font(distanceFont) //
+				.color(Color.RED) //
+				.build());
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				monitorMouseLeftButton("tryAgain");
+				monitorMouseLeftButton("play");
 			}
 		};
+
 	}
 
 	@Override
@@ -79,8 +81,8 @@ public class GameOverGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
-		if (inputDevicesMonitor.getButton("tryAgain").isReleased())
-			game.setScreen(game.getInstructionsScreen(), true);
+		if (inputDevicesMonitor.getButton("play").isReleased())
+			game.setScreen(game.getPlayGameScreen(), true);
 	}
 
 	@Override

@@ -115,7 +115,7 @@ public class SplashGameState extends GameStateImpl {
 		if (!timeTransition.isFinished())
 			return;
 
-		game.setScreen(game.getPlayGameScreen(), true);
+		game.setScreen(game.getInstructionsScreen(), true);
 	}
 
 	@Override
