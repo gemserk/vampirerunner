@@ -34,6 +34,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		// animation speed should depend on the vampire speed.
 		animation("VampireRunningAnimation", "VampireSpriteSheet", 0, 32, 32, 32, 6, true, 150);
 		
+		font("DistanceFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
+		
 	}
 
 }

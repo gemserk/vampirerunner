@@ -1,14 +1,20 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.render.RenderLayers;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
@@ -23,9 +29,14 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Game;
+import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
@@ -50,6 +61,9 @@ public class PlayGameState extends GameStateImpl {
 	private EntityFactory entityFactory;
 	private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 
+	private Container guiContainer;
+	private SpriteBatch spriteBatch;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -65,6 +79,20 @@ public class PlayGameState extends GameStateImpl {
 
 		int centerX = width / 2;
 		int centerY = height / 2;
+
+		spriteBatch = new SpriteBatch();
+		guiContainer = new Container();
+
+		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
+
+		final Text distanceLabel = GuiControls.label("Score: ").id("DistanceLabel") //
+				.position(width * 0.05f, height * 0.95f) //
+				.center(0f, 0.5f) //
+				.font(distanceFont) //
+				.color(Color.RED) //
+				.build();
+
+		guiContainer.add(distanceLabel);
 
 		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, -1f), false);
 		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
@@ -116,12 +144,41 @@ public class PlayGameState extends GameStateImpl {
 				);
 
 		// an entity which removes old tiles
-		// entityBuilder //
-		// .component(new ScriptComponent(new PreviousTilesRemoverScript())) //
-		// .build();
 
 		entityBuilder //
 				.component(new ScriptComponent(new PreviousTilesRemoverScript(), new TerrainGeneratorScript(entityFactory, floorTileTemplate))) //
+				.build();
+
+		entityBuilder //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					float distance = 0f;
+					float lastPlayerPosition = 0f;
+					int score = 0;
+
+					@Override
+					public void init(World world, Entity e) {
+						Entity player = world.getTagManager().getEntity(Tags.Vampire);
+						SpatialComponent playerSpatialComponent = player.getComponent(SpatialComponent.class);
+						Spatial playerSpatial = playerSpatialComponent.getSpatial();
+						lastPlayerPosition = playerSpatial.getX();
+					}
+
+					@Override
+					public void update(World world, Entity e) {
+						Entity player = world.getTagManager().getEntity(Tags.Vampire);
+						SpatialComponent playerSpatialComponent = player.getComponent(SpatialComponent.class);
+						Spatial playerSpatial = playerSpatialComponent.getSpatial();
+
+						distance += playerSpatial.getX() - lastPlayerPosition;
+
+						lastPlayerPosition = playerSpatial.getX();
+						
+						score = (int) distance;
+
+						distanceLabel.setText("Score: " + score);
+					}
+				})) //
 				.build();
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
@@ -134,6 +191,10 @@ public class PlayGameState extends GameStateImpl {
 
 		if (Game.isShowBox2dDebug())
 			box2dCustomDebugRenderer.render();
+
+		spriteBatch.begin();
+		guiContainer.draw(spriteBatch);
+		spriteBatch.end();
 	}
 
 	@Override

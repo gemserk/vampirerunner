@@ -12,17 +12,12 @@ public class DesktopApplication {
 
 	public static void main(String[] argv) {
 
-		System.out.println(System.getProperty("java.version"));
-
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		
+		config.title = "Ludum Dare 21 - Vampire Runner - arielsan - Gemserk";
 		config.width = 640;
 		config.height = 480;
-		// config.width = 320;
-		// config.height = 240;
-		// config.width = 1024;
-		// config.height = 768;
 		config.fullscreen = false;
-		config.title = "Ludum Dare 21 - Vampire Runner - arielsan - Gemserk";
 		config.useGL20 = false;
 		config.useCPUSynch = true;
 		config.forceExit = true;
