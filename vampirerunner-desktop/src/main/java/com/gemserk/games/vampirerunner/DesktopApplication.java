@@ -21,7 +21,7 @@ public class DesktopApplication {
 		config.useGL20 = false;
 		config.useCPUSynch = true;
 		config.forceExit = true;
-		config.vSyncEnabled = true;
+		config.vSyncEnabled = false;
 
 		new LwjglApplication(new Game(), config);
 	}
