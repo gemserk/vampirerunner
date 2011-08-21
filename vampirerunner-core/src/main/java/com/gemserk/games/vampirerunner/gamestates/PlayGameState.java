@@ -5,7 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
@@ -25,6 +27,8 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.render.Layers;
+import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
+import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
@@ -87,6 +91,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.init();
 
 		entityFactory = new EntityFactoryImpl(world);
+		EntityBuilder entityBuilder = new EntityBuilder(world);
 
 		{
 			// initialize templates
@@ -106,19 +111,18 @@ public class PlayGameState extends GameStateImpl {
 				.put("spatial", new SpatialImpl(1f, 2f, 1f, 1f, 0f)) //
 				);
 
-		float x = 0f;
-		float y = 1f;
-
-		for (int i = 0; i < 50; i++) {
-			entityFactory.instantiate(floorTileTemplate, new ParametersWrapper() //
-					.put("spatial", new SpatialImpl(x, y, 2f, 2f, 0f)) //
-					);
-			x += 2f;
-		}
-
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("libgdxCamera", worldCamera) //
 				);
+
+		// an entity which removes old tiles
+		// entityBuilder //
+		// .component(new ScriptComponent(new PreviousTilesRemoverScript())) //
+		// .build();
+
+		entityBuilder //
+				.component(new ScriptComponent(new PreviousTilesRemoverScript(), new TerrainGeneratorScript(entityFactory, floorTileTemplate))) //
+				.build();
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
 	}

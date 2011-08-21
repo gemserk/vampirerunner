@@ -15,6 +15,7 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class FloorTileTemplate extends EntityTemplateImpl {
@@ -33,6 +34,8 @@ public class FloorTileTemplate extends EntityTemplateImpl {
 		
 		Sprite sprite = resourceManager.getResourceValue("FloorTile01Sprite");
 
+		entity.setGroup(Groups.Tiles);
+		
 		entity.addComponent(new SpriteComponent(sprite, new Vector2(0.5f, 0.5f), Color.WHITE));
 		entity.addComponent(new RenderableComponent(2));
 
