@@ -38,3 +38,10 @@ vampire
   orig: 32, 32
   offset: 0, 0
   index: -1
+white-rectangle
+  rotate: false
+  xy: 456, 68
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

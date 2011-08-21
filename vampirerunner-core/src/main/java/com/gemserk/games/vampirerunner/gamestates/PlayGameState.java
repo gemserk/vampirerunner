@@ -22,7 +22,9 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
+import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
+import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
@@ -46,6 +48,7 @@ import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
+import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
@@ -104,7 +107,7 @@ public class PlayGameState extends GameStateImpl {
 		guiContainer.add(distanceLabel);
 
 		final EventManager eventManager = new EventListenerManagerImpl();
-		
+
 		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, 0f), false);
 		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
 
@@ -114,8 +117,8 @@ public class PlayGameState extends GameStateImpl {
 		RenderLayers renderLayers = new RenderLayers();
 
 		Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
-		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 2);
-		worldCamera.zoom(32f);
+		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 5, height / 4);
+		worldCamera.zoom(64f);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
@@ -125,8 +128,8 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
-		// worldWrapper.addRenderSystem(new SpriteUpdateSystem());
-		// worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
+		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
+		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 
 		worldWrapper.init();
 
@@ -138,7 +141,7 @@ public class PlayGameState extends GameStateImpl {
 		vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder, eventManager);
 		floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		cameraTemplate = new CameraTemplate();
-		EntityTemplate obstacleTemplate = new ObstacleTemplate(bodyBuilder);
+		EntityTemplate obstacleTemplate = new ObstacleTemplate(resourceManager, bodyBuilder);
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 
 		VampireController vampireController = new VampireController();
@@ -150,7 +153,7 @@ public class PlayGameState extends GameStateImpl {
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(1f, 2f, 1f, 1f, 0f)) //
+				.put("spatial", new SpatialImpl(1f, 1.8f, 1f, 1f, 0f)) //
 				.put("vampireController", vampireController) //
 				);
 
@@ -165,10 +168,15 @@ public class PlayGameState extends GameStateImpl {
 		// an entity which removes old tiles
 
 		entityBuilder //
+				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Tiles), //
+						new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
+				.build();
+
+		entityBuilder //
 				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Obstacles), //
 						new ObstacleGeneratorScript(entityFactory, obstacleTemplate, 5f))) //
 				.build();
-		
+
 		final GameInformation gameInformation = new GameInformation();
 
 		entityBuilder //
@@ -203,40 +211,40 @@ public class PlayGameState extends GameStateImpl {
 					}
 				})) //
 				.build();
-		
+
 		entityBuilder //
-		.component(new ScriptComponent(new ScriptJavaImpl() {
+				.component(new ScriptComponent(new ScriptJavaImpl() {
 
-			private World world;
+					private World world;
 
-			@Override
-			public void init(World world, Entity e) {
-				this.world = world;
-				eventManager.registerEvent(Events.gameStarted, e);
-			}
-			
-			@Handles
-			public void gameStarted(Event e) {
-				Gdx.app.log("VampireRunner", "Game started");
-			}
+					@Override
+					public void init(World world, Entity e) {
+						this.world = world;
+						eventManager.registerEvent(Events.gameStarted, e);
+					}
 
-			@Handles
-			public void playerDeath(Event e) {
-				Gdx.app.log("VampireRunner", "Player death");
-				Entity entity = (Entity) e.getSource();
-				entity.delete();
-				
-				// play death animation by creating a new entity
-				game.getGameData().put("gameInformation", gameInformation);
-				game.setScreen(game.getGameOverScreen(), true);
-			}
+					@Handles
+					public void gameStarted(Event e) {
+						Gdx.app.log("VampireRunner", "Game started");
+					}
 
-			@Override
-			public void update(World world, Entity e) {
-				eventManager.process();
-			}
-		})) //
-		.build();
+					@Handles
+					public void playerDeath(Event e) {
+						Gdx.app.log("VampireRunner", "Player death");
+						Entity entity = (Entity) e.getSource();
+						entity.delete();
+
+						// play death animation by creating a new entity
+						game.getGameData().put("gameInformation", gameInformation);
+						game.setScreen(game.getGameOverScreen(), true);
+					}
+
+					@Override
+					public void update(World world, Entity e) {
+						eventManager.process();
+					}
+				})) //
+				.build();
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
 	}

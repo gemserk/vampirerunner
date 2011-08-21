@@ -51,11 +51,12 @@ public class VampireTemplate extends EntityTemplateImpl {
 		VampireController vampireController = parameters.get("vampireController");
 
 		Animation runningAnimation = resourceManager.getResourceValue("VampireRunningAnimation");
+		Animation flyingAnimation = resourceManager.getResourceValue("VampireFlyingAnimation");
 
 		entity.addComponent(new TagComponent(Tags.Vampire));
 		entity.addComponent(new SpriteComponent(runningAnimation.getCurrentFrame(), new Vector2(0.5f, 0.5f), Color.WHITE));
-		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation }));
-		entity.addComponent(new RenderableComponent(1));
+		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation, flyingAnimation }));
+		entity.addComponent(new RenderableComponent(3));
 
 		entity.addComponent(new SuperSkillComponent(new Container(100f, 100f), 50f, 25f));
 
