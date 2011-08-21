@@ -31,8 +31,9 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(World world, Entity e) {
-
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
+		if (player == null)
+			return;
 
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();

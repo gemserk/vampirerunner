@@ -56,6 +56,7 @@ import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
+import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
@@ -143,6 +144,7 @@ public class PlayGameState extends GameStateImpl {
 		cameraTemplate = new CameraTemplate();
 		EntityTemplate obstacleTemplate = new ObstacleTemplate(resourceManager, bodyBuilder);
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
+		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
 
 		VampireController vampireController = new VampireController();
 
@@ -233,10 +235,14 @@ public class PlayGameState extends GameStateImpl {
 						Gdx.app.log("VampireRunner", "Player death");
 						Entity entity = (Entity) e.getSource();
 						entity.delete();
+						
+						SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
 
 						// play death animation by creating a new entity
-						game.getGameData().put("gameInformation", gameInformation);
-						game.setScreen(game.getGameOverScreen(), true);
+						// game.getGameData().put("gameInformation", gameInformation);
+						// game.setScreen(game.getGameOverScreen(), true);
+
+						entityFactory.instantiate(vladimirBloodExplosion, new ParametersWrapper().put("spatial", spatialComponent.getSpatial()));
 					}
 
 					@Override
