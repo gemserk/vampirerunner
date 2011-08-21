@@ -20,6 +20,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.scripts.VampireScript;
+import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.resources.ResourceManager;
 
 public class VampireTemplate extends EntityTemplateImpl {
@@ -35,6 +36,7 @@ public class VampireTemplate extends EntityTemplateImpl {
 	@Override
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
+		VampireController vampireController = parameters.get("vampireController");
 
 		// Sprite sprite = resourceManager.getResourceValue("VampireSprite");
 		Animation runningAnimation = resourceManager.getResourceValue("VampireRunningAnimation");
@@ -44,7 +46,7 @@ public class VampireTemplate extends EntityTemplateImpl {
 		entity.addComponent(new SpriteComponent(runningAnimation.getCurrentFrame(), new Vector2(0.5f, 0.5f), Color.WHITE));
 		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation }));
 		entity.addComponent(new RenderableComponent(1));
-		entity.addComponent(new ScriptComponent(new VampireScript()));
+		entity.addComponent(new ScriptComponent(new VampireScript(vampireController)));
 
 		Body body = bodyBuilder //
 				.fixedRotation() //

@@ -39,11 +39,12 @@ import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
-import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
+import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
+import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.resources.ResourceManager;
 
@@ -95,7 +96,7 @@ public class PlayGameState extends GameStateImpl {
 
 		guiContainer.add(distanceLabel);
 
-		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, -1f), false);
+		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, 0f), false);
 		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
 
 		world = new World();
@@ -104,7 +105,7 @@ public class PlayGameState extends GameStateImpl {
 		RenderLayers renderLayers = new RenderLayers();
 
 		Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
-		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 10);
+		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 2);
 		worldCamera.zoom(32f);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
@@ -128,6 +129,9 @@ public class PlayGameState extends GameStateImpl {
 		floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		cameraTemplate = new CameraTemplate();
 		EntityTemplate obstacleTemplate = new ObstacleTemplate(bodyBuilder);
+		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
+
+		VampireController vampireController = new VampireController();
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundSprite") //
@@ -137,17 +141,22 @@ public class PlayGameState extends GameStateImpl {
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
 				.put("spatial", new SpatialImpl(1f, 2f, 1f, 1f, 0f)) //
+				.put("vampireController", vampireController) //
 				);
 
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("libgdxCamera", worldCamera) //
 				);
 
+		entityFactory.instantiate(vampireControllerTemplate, new ParametersWrapper() //
+				.put("vampireController", vampireController) //
+				);
+
 		// an entity which removes old tiles
 
-		entityBuilder //
-				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Tiles), new TerrainGeneratorScript(entityFactory, floorTileTemplate, -5f))) //
-				.build();
+		// entityBuilder //
+		// .component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Tiles), new TerrainGeneratorScript(entityFactory, floorTileTemplate, -5f))) //
+		// .build();
 
 		entityBuilder //
 				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Obstacles), new ObstacleGeneratorScript(entityFactory, obstacleTemplate, 5f))) //

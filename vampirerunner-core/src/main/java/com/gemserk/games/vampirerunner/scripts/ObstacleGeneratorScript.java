@@ -43,7 +43,7 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 			
 			parameters.clear();
 			Entity obstacle = entityFactory.instantiate(tileTemplate, parameters //
-					.put("x", distanceTrigger + 10f) //
+					.put("x", distanceTrigger + 20f) //
 					.put("y", 1f) //
 					);
 
@@ -52,7 +52,7 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 			
 			// width = sumatoria de todos los obstaculos mas espacios en blanco
 			
-			distanceTrigger += 20f + width;
+			distanceTrigger += 10f + width;
 		}
 
 	}
