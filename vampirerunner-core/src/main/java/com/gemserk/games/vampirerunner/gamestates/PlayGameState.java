@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -46,6 +47,7 @@ import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.GameInformation;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
+import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
@@ -79,6 +81,8 @@ public class PlayGameState extends GameStateImpl {
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
+	private Sprite whiteRectangle;
+	private Sprite whiteRectangle2;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -223,7 +227,7 @@ public class PlayGameState extends GameStateImpl {
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					private World world;
-					private String[] parts = new String[] {"VampireHead", "VampireLeftArm", "VampireRightArm", "VampireLeftLeg", "VampireRightLeg", "VampireTorso"};
+					private String[] parts = new String[] { "VampireHead", "VampireLeftArm", "VampireRightArm", "VampireLeftLeg", "VampireRightLeg", "VampireTorso" };
 
 					@Override
 					public void init(World world, Entity e) {
@@ -280,6 +284,9 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
+
+		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
+		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
 	}
 
 	@Override
@@ -290,9 +297,30 @@ public class PlayGameState extends GameStateImpl {
 		if (Game.isShowBox2dDebug())
 			box2dCustomDebugRenderer.render();
 
+		float totalWidth = Gdx.graphics.getWidth() * 0.8f;
+
+		whiteRectangle.setPosition(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.8f);
+		whiteRectangle.setColor(1f, 0f, 0f, 1f);
+		whiteRectangle.setSize(totalWidth, 10f);
+
+		whiteRectangle2.setPosition(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.8f);
+		whiteRectangle2.setColor(0f, 0f, 1f, 1f);
+		
+		Entity vladimir = world.getTagManager().getEntity(Tags.Vampire);
+		if (vladimir != null) {
+			SuperSkillComponent superSkillComponent = vladimir.getComponent(SuperSkillComponent.class);
+			whiteRectangle2.setSize(totalWidth * superSkillComponent.energy.getPercentage(), 10f);
+		}
+		
 		spriteBatch.begin();
+
+		
+		whiteRectangle.draw(spriteBatch);
+		whiteRectangle2.draw(spriteBatch);
+
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
+
 	}
 
 	@Override
