@@ -9,6 +9,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.games.vampirerunner.Collisions;
 import com.gemserk.games.vampirerunner.Groups;
 
 public class ObstacleTemplate extends EntityTemplateImpl {
@@ -43,6 +44,7 @@ public class ObstacleTemplate extends EntityTemplateImpl {
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.boxShape(width * 0.5f, height * 0.5f) //
 						.density(1f) //
+						.categoryBits(Collisions.Obstacle )//
 						.build()) //
 				.build();
 

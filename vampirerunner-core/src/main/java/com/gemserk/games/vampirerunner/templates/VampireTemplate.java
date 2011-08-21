@@ -18,8 +18,13 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.games.vampirerunner.Collisions;
 import com.gemserk.games.vampirerunner.Tags;
-import com.gemserk.games.vampirerunner.scripts.VampireScript;
+import com.gemserk.games.vampirerunner.components.Components;
+import com.gemserk.games.vampirerunner.scripts.ApplyLinearForceScript;
+import com.gemserk.games.vampirerunner.scripts.EnableDisableCollisionsScript;
+import com.gemserk.games.vampirerunner.scripts.LimitLinearSpeedScript;
+import com.gemserk.games.vampirerunner.scripts.VladimirAnimationScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.resources.ResourceManager;
 
@@ -46,7 +51,13 @@ public class VampireTemplate extends EntityTemplateImpl {
 		entity.addComponent(new SpriteComponent(runningAnimation.getCurrentFrame(), new Vector2(0.5f, 0.5f), Color.WHITE));
 		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation }));
 		entity.addComponent(new RenderableComponent(1));
-		entity.addComponent(new ScriptComponent(new VampireScript(vampireController)));
+
+		entity.addComponent(new Components.MaxSpeedComponent(5f));
+		entity.addComponent(new ScriptComponent(new LimitLinearSpeedScript(), //
+				new VladimirAnimationScript(), //
+				new EnableDisableCollisionsScript(vampireController), //
+				new ApplyLinearForceScript(new Vector2(500f, 0f)) //
+		));
 
 		Body body = bodyBuilder //
 				.fixedRotation() //
@@ -57,11 +68,11 @@ public class VampireTemplate extends EntityTemplateImpl {
 						// .boxShape(0.1f, 0.4f) //
 						.circleShape(0.4f) //
 						.density(1f) //
-						.build()) //
+						.categoryBits(Collisions.Vladimir) //
+						.maskBits(Collisions.All).build()) //
 				.build();
 
 		entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 	}
-
 }
