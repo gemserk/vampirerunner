@@ -2,6 +2,6 @@ package com.gemserk.games.vampirerunner.scripts.controllers;
 
 public class VampireController {
 	
-	public boolean moveThrough;
+	public boolean usingSuperSkill;
 
 }

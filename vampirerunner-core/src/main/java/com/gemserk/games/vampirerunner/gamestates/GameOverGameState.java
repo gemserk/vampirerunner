@@ -66,9 +66,8 @@ public class GameOverGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		if (Gdx.input.justTouched()) {
+		if (Gdx.input.justTouched()) 
 			game.setScreen(game.getPlayGameScreen(), true);
-		}
 	}
 
 	@Override

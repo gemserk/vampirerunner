@@ -19,13 +19,15 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.games.vampirerunner.Collisions;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components;
+import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.scripts.ApplyLinearForceScript;
-import com.gemserk.games.vampirerunner.scripts.EnableDisableCollisionsScript;
 import com.gemserk.games.vampirerunner.scripts.IncrementLinearSpeedOverTimeScript;
 import com.gemserk.games.vampirerunner.scripts.LimitLinearSpeedScript;
+import com.gemserk.games.vampirerunner.scripts.SuperSkillScript;
 import com.gemserk.games.vampirerunner.scripts.VladimirAnimationScript;
 import com.gemserk.games.vampirerunner.scripts.VladimirHealthScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
@@ -55,10 +57,12 @@ public class VampireTemplate extends EntityTemplateImpl {
 		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation }));
 		entity.addComponent(new RenderableComponent(1));
 
+		entity.addComponent(new SuperSkillComponent(new Container(100f, 100f), 50f, 25f));
+
 		entity.addComponent(new Components.MaxSpeedComponent(5f));
 		entity.addComponent(new ScriptComponent(new LimitLinearSpeedScript(), //
 				new VladimirAnimationScript(), //
-				new EnableDisableCollisionsScript(vampireController), //
+				new SuperSkillScript(vampireController), //
 				new ApplyLinearForceScript(new Vector2(500f, 0f)), //
 				new IncrementLinearSpeedOverTimeScript(),//
 				new VladimirHealthScript(eventManager) //
