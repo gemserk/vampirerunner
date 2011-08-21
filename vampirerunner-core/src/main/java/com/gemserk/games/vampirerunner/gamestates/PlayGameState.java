@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
@@ -56,6 +57,7 @@ import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.TimedEventTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
+import com.gemserk.games.vampirerunner.templates.VampirePartExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.resources.ResourceManager;
@@ -147,6 +149,7 @@ public class PlayGameState extends GameStateImpl {
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
 		final EntityTemplate timedEventTemplate = new TimedEventTemplate(eventManager);
+		final EntityTemplate vladimirPartExplosion = new VampirePartExplosionTemplate(resourceManager);
 
 		VampireController vampireController = new VampireController();
 
@@ -220,6 +223,7 @@ public class PlayGameState extends GameStateImpl {
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					private World world;
+					private String[] parts = new String[] {"VampireHead", "VampireLeftArm", "VampireRightArm", "VampireLeftLeg", "VampireRightLeg", "VampireTorso"};
 
 					@Override
 					public void init(World world, Entity e) {
@@ -235,7 +239,7 @@ public class PlayGameState extends GameStateImpl {
 					@Handles
 					public void gameFinished(Event e) {
 						Gdx.app.log("VampireRunner", "Game finished");
-						
+
 						game.getGameData().put("gameInformation", gameInformation);
 						game.setScreen(game.getGameOverScreen(), true);
 					}
@@ -245,7 +249,7 @@ public class PlayGameState extends GameStateImpl {
 						Gdx.app.log("VampireRunner", "Player death");
 						Entity entity = (Entity) e.getSource();
 						entity.delete();
-						
+
 						SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
 
 						// play death animation by creating a new entity
@@ -253,8 +257,19 @@ public class PlayGameState extends GameStateImpl {
 						// game.setScreen(game.getGameOverScreen(), true);
 
 						entityFactory.instantiate(vladimirBloodExplosion, new ParametersWrapper().put("spatial", spatialComponent.getSpatial()));
-						entityFactory.instantiate(timedEventTemplate, new ParametersWrapper().put("time", 1f).put("eventId", Events.gameFinished));
-						
+
+						entityFactory.instantiate(timedEventTemplate, new ParametersWrapper().put("time", 2f).put("eventId", Events.gameFinished));
+
+						for (int i = 0; i < parts.length; i++) {
+							Vector2 direction = new Vector2(1f, 0f);
+							direction.rotate(MathUtils.random(0, 360f));
+							entityFactory.instantiate(vladimirPartExplosion, new ParametersWrapper() //
+									.put("sprite", parts[i]) //
+									.put("spatial", new SpatialImpl(spatialComponent.getSpatial())) //
+									.put("direction", direction) //
+									);
+						}
+
 					}
 
 					@Override

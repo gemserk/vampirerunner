@@ -35,11 +35,16 @@ public class GameResources extends LibgdxResourceBuilder {
 		// animation speed should depend on the vampire speed.
 		animation("VampireRunningAnimation", "VampireSpriteSheet", 0, 32, 32, 32, 6, true, 1000);
 		animation("VampireFlyingAnimation", "VampireSpriteSheet", 32 * 2, 0, 32, 32, 2, true, 2000);
-		
 		animation("VampireBloodAnimation", "VampireSpriteSheet", 0, 32 * 3, 32, 32, 7, false, 100);
 
 		font("DistanceFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
 
-	}
+		sprite("VampireRightArm", "VampireSpriteSheet", 0, 32 * 2, 32, 32);
+		sprite("VampireLeftArm", "VampireSpriteSheet", 32 * 1, 32 * 2, 32, 32);
+		sprite("VampireHead", "VampireSpriteSheet", 32 * 2, 32 * 2, 32, 32);
+		sprite("VampireLeftLeg", "VampireSpriteSheet", 32 * 3, 32 * 2, 32, 32);
+		sprite("VampireRightLeg", "VampireSpriteSheet", 32 * 4, 32 * 2, 32, 32);
+		sprite("VampireTorso", "VampireSpriteSheet", 32 * 5, 32 * 2, 32, 32);
 
+	}
 }
