@@ -11,7 +11,7 @@ import com.gemserk.games.vampirerunner.Tags;
 public class PreviousTilesRemoverScript extends ScriptJavaImpl {
 
 	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
-	private float distanceToRemove = 4f;
+	private float distanceToRemove = 10f;
 	private String group;
 	
 	public PreviousTilesRemoverScript(String group) {

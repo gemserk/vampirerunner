@@ -3,6 +3,7 @@ package com.gemserk.games.vampirerunner.scripts;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -41,14 +42,17 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 			// trigger, generate multiple obstacles ahead, move distance trigger
 			Gdx.app.log("VampireRunner", "Generate obstacles triggered");
 			
+			float width = MathUtils.random(1f, 10f);
+			
 			parameters.clear();
 			Entity obstacle = entityFactory.instantiate(tileTemplate, parameters //
 					.put("x", distanceTrigger + 20f) //
 					.put("y", 1f) //
+					.put("width", width)
 					);
 
-			SpatialComponent obstacleSpatialComponent = obstacle.getComponent(spatialComponentClass);
-			float width = obstacleSpatialComponent.getSpatial().getWidth();
+			// SpatialComponent obstacleSpatialComponent = obstacle.getComponent(spatialComponentClass);
+			// float width = obstacleSpatialComponent.getSpatial().getWidth();
 			
 			// width = sumatoria de todos los obstaculos mas espacios en blanco
 			
