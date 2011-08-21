@@ -29,6 +29,11 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("BackgroundSprite", "TextureAtlas", "background");
 		spriteAtlas("VampireSprite", "TextureAtlas", "vampire");
 		spriteAtlas("FloorTile01Sprite", "TextureAtlas", "floor-tile-01");
+		
+		texture("VampireSpriteSheet", internal("data/images/spritesheets/vampire-spritesheet.png"), false);
+		// animation speed should depend on the vampire speed.
+		animation("VampireRunningAnimation", "VampireSpriteSheet", 0, 32, 32, 32, 6, true, 150);
+		
 	}
 
 }

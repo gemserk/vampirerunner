@@ -2,10 +2,11 @@ package com.gemserk.games.vampirerunner.templates;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.gemserk.animation4j.gdx.Animation;
+import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -35,11 +36,13 @@ public class VampireTemplate extends EntityTemplateImpl {
 	public void apply(Entity entity) {
 		Spatial spatial = parameters.get("spatial");
 
-		Sprite sprite = resourceManager.getResourceValue("VampireSprite");
+		// Sprite sprite = resourceManager.getResourceValue("VampireSprite");
+		Animation runningAnimation = resourceManager.getResourceValue("VampireRunningAnimation");
 
 		entity.addComponent(new TagComponent(Tags.Vampire));
 		// entity.addComponent(new SpatialComponent(spatial));
-		entity.addComponent(new SpriteComponent(sprite, new Vector2(0.5f, 0.5f), Color.WHITE));
+		entity.addComponent(new SpriteComponent(runningAnimation.getCurrentFrame(), new Vector2(0.5f, 0.5f), Color.WHITE));
+		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation }));
 		entity.addComponent(new RenderableComponent(1));
 		entity.addComponent(new ScriptComponent(new VampireScript()));
 
@@ -49,7 +52,7 @@ public class VampireTemplate extends EntityTemplateImpl {
 				.position(spatial.getX(), spatial.getY()) //
 				.type(BodyType.DynamicBody) //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
-//						.boxShape(0.1f, 0.4f) //
+						// .boxShape(0.1f, 0.4f) //
 						.circleShape(0.4f) //
 						.density(1f) //
 						.build()) //

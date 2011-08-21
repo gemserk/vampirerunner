@@ -4,8 +4,11 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.gemserk.animation4j.gdx.Animation;
+import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Physics;
@@ -37,6 +40,13 @@ public class VampireScript extends ScriptJavaImpl {
 			linearVelocity.mul(maxLinearSpeed / speed);
 			body.setLinearVelocity(linearVelocity);
 		}
+		
+		AnimationComponent animationComponent = e.getComponent(AnimationComponent.class);
+		Animation currentAnimation = animationComponent.getCurrentAnimation();
+		currentAnimation.update(GlobalTime.getDelta());
+		
+		SpriteComponent spriteComponent = e.getComponent(SpriteComponent.class);
+		spriteComponent.setSprite(currentAnimation.getCurrentFrame());
 
 	}
 
