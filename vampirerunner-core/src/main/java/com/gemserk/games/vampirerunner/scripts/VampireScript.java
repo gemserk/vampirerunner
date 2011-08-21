@@ -19,6 +19,7 @@ public class VampireScript extends ScriptJavaImpl {
 	private static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
 	
 	private float maxLinearSpeed = 5f;
+	private float aliveTime = 0f;
 
 	@Override
 	public void update(World world, Entity e) {
@@ -47,6 +48,11 @@ public class VampireScript extends ScriptJavaImpl {
 		
 		SpriteComponent spriteComponent = e.getComponent(SpriteComponent.class);
 		spriteComponent.setSprite(currentAnimation.getCurrentFrame());
+		
+		aliveTime += GlobalTime.getDelta();
+		maxLinearSpeed = 5f + aliveTime * 0.028f;
+		
+		System.out.println(maxLinearSpeed);
 
 	}
 
