@@ -54,6 +54,7 @@ import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
+import com.gemserk.games.vampirerunner.templates.TimedEventTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
@@ -145,6 +146,7 @@ public class PlayGameState extends GameStateImpl {
 		EntityTemplate obstacleTemplate = new ObstacleTemplate(resourceManager, bodyBuilder);
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
+		final EntityTemplate timedEventTemplate = new TimedEventTemplate(eventManager);
 
 		VampireController vampireController = new VampireController();
 
@@ -231,6 +233,14 @@ public class PlayGameState extends GameStateImpl {
 					}
 
 					@Handles
+					public void gameFinished(Event e) {
+						Gdx.app.log("VampireRunner", "Game finished");
+						
+						game.getGameData().put("gameInformation", gameInformation);
+						game.setScreen(game.getGameOverScreen(), true);
+					}
+
+					@Handles
 					public void playerDeath(Event e) {
 						Gdx.app.log("VampireRunner", "Player death");
 						Entity entity = (Entity) e.getSource();
@@ -243,6 +253,8 @@ public class PlayGameState extends GameStateImpl {
 						// game.setScreen(game.getGameOverScreen(), true);
 
 						entityFactory.instantiate(vladimirBloodExplosion, new ParametersWrapper().put("spatial", spatialComponent.getSpatial()));
+						entityFactory.instantiate(timedEventTemplate, new ParametersWrapper().put("time", 1f).put("eventId", Events.gameFinished));
+						
 					}
 
 					@Override
