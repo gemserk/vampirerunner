@@ -7,7 +7,6 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Tags;
@@ -21,9 +20,9 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 
 	private float lastGeneratedPositionX;
 	private float distanceToGenerate = 24f;
-	
+
 	private Parameters parameters = new ParametersWrapper();
-	
+
 	public TerrainGeneratorScript(EntityFactory entityFactory, EntityTemplate tileTemplate) {
 		this.entityFactory = entityFactory;
 		this.tileTemplate = tileTemplate;
@@ -44,21 +43,25 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
-		
+
 		while (lastGeneratedPositionX - playerSpatial.getX() < distanceToGenerate) {
-			
-			float w = 2f;
-			float h = 2f;
-			lastGeneratedPositionX += w;
-			
+
+			// float w = 2f;
+			// float h = 2f;
+			// lastGeneratedPositionX += w;
+
 			parameters.clear();
-			entityFactory.instantiate(tileTemplate, parameters //
-					.put("spatial", new SpatialImpl(lastGeneratedPositionX, 1f, w, h, 0f)) //
+			Entity obstacle = entityFactory.instantiate(tileTemplate, parameters //
+					.put("x", lastGeneratedPositionX) //
+					.put("y", 1f) //
 					);
-			
+
+			SpatialComponent obstacleSpatialComponent = obstacle.getComponent(spatialComponentClass);
+			float width = obstacleSpatialComponent.getSpatial().getWidth();
+
+			lastGeneratedPositionX += width;
 			// generate new tile
-			
-			
+
 		}
 
 	}
