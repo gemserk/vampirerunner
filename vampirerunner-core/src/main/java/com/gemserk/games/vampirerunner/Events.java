@@ -2,9 +2,9 @@ package com.gemserk.games.vampirerunner;
 
 public class Events {
 	
-	public static final String GameStarted = "GameStarted";
-	public static final String GameFinished = "GameFinished";
+	public static final String gameStarted = "gameStarted";
+	public static final String gameFinished = "gameFinished";
 	
-	public static final String PlayerDeath = "PlayerDeath";
+	public static final String playerDeath = "playerDeath";
 
 }

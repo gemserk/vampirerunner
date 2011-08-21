@@ -23,7 +23,7 @@ public class IncrementLinearSpeedOverTimeScript extends ScriptJavaImpl {
 	public void update(World world, Entity e) {
 		MaxSpeedComponent maxSpeedComponent = e.getComponent(maxSpeedComponentClass);
 		aliveTime += GlobalTime.getDelta();
-		maxSpeedComponent.maxSpeed = startValue + aliveTime * 0.028f;
+		maxSpeedComponent.maxSpeed = startValue + aliveTime * 0.1f;
 	}
 
 }

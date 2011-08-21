@@ -13,9 +13,14 @@ import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
+import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
@@ -33,7 +38,9 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.Game;
+import com.gemserk.games.vampirerunner.GameInformation;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.render.Layers;
@@ -96,6 +103,8 @@ public class PlayGameState extends GameStateImpl {
 
 		guiContainer.add(distanceLabel);
 
+		final EventManager eventManager = new EventListenerManagerImpl();
+		
 		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, 0f), false);
 		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
 
@@ -114,6 +123,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
+		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
 		// worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		// worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -125,7 +135,7 @@ public class PlayGameState extends GameStateImpl {
 
 		// initialize templates
 		staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
-		vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder);
+		vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder, eventManager);
 		floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		cameraTemplate = new CameraTemplate();
 		EntityTemplate obstacleTemplate = new ObstacleTemplate(bodyBuilder);
@@ -154,20 +164,18 @@ public class PlayGameState extends GameStateImpl {
 
 		// an entity which removes old tiles
 
-		// entityBuilder //
-		// .component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Tiles), new TerrainGeneratorScript(entityFactory, floorTileTemplate, -5f))) //
-		// .build();
-
 		entityBuilder //
-				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Obstacles), new ObstacleGeneratorScript(entityFactory, obstacleTemplate, 5f))) //
+				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Obstacles), //
+						new ObstacleGeneratorScript(entityFactory, obstacleTemplate, 5f))) //
 				.build();
+		
+		final GameInformation gameInformation = new GameInformation();
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					float distance = 0f;
 					float lastPlayerPosition = 0f;
-					int score = 0;
 
 					@Override
 					public void init(World world, Entity e) {
@@ -180,6 +188,8 @@ public class PlayGameState extends GameStateImpl {
 					@Override
 					public void update(World world, Entity e) {
 						Entity player = world.getTagManager().getEntity(Tags.Vampire);
+						if (player == null)
+							return;
 						SpatialComponent playerSpatialComponent = player.getComponent(SpatialComponent.class);
 						Spatial playerSpatial = playerSpatialComponent.getSpatial();
 
@@ -187,12 +197,46 @@ public class PlayGameState extends GameStateImpl {
 
 						lastPlayerPosition = playerSpatial.getX();
 
-						score = (int) distance;
+						gameInformation.score = (int) distance;
 
-						distanceLabel.setText("Score: " + score);
+						distanceLabel.setText("Score: " + gameInformation.score);
 					}
 				})) //
 				.build();
+		
+		entityBuilder //
+		.component(new ScriptComponent(new ScriptJavaImpl() {
+
+			private World world;
+
+			@Override
+			public void init(World world, Entity e) {
+				this.world = world;
+				eventManager.registerEvent(Events.gameStarted, e);
+			}
+			
+			@Handles
+			public void gameStarted(Event e) {
+				Gdx.app.log("VampireRunner", "Game started");
+			}
+
+			@Handles
+			public void playerDeath(Event e) {
+				Gdx.app.log("VampireRunner", "Player death");
+				Entity entity = (Entity) e.getSource();
+				entity.delete();
+				
+				// play death animation by creating a new entity
+				game.getGameData().put("gameInformation", gameInformation);
+				game.setScreen(game.getGameOverScreen(), true);
+			}
+
+			@Override
+			public void update(World world, Entity e) {
+				eventManager.process();
+			}
+		})) //
+		.build();
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
 	}

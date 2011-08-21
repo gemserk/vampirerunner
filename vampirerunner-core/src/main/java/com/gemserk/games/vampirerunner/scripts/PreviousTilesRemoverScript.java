@@ -20,21 +20,23 @@ public class PreviousTilesRemoverScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(World world, Entity e) {
-		
-		ImmutableBag<Entity> tiles = world.getGroupManager().getEntities(group);
+		ImmutableBag<Entity> entities = world.getGroupManager().getEntities(group);
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
+		
+		if (player == null)
+			return;
 		
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
 		
-		for (int i = 0; i < tiles.size(); i++) {
+		for (int i = 0; i < entities.size(); i++) {
 			
-			Entity tile = tiles.get(i);
-			SpatialComponent tileSpatialComponent = tile.getComponent(spatialComponentClass);
-			Spatial tileSpatial = tileSpatialComponent.getSpatial();
+			Entity e2 = entities.get(i);
+			SpatialComponent e2SpatialComponent = e2.getComponent(spatialComponentClass);
+			Spatial e2Spatial = e2SpatialComponent.getSpatial();
 			
-			if (tileSpatial.getX() < playerSpatial.getX() - distanceToRemove) {
-				tile.delete();
+			if (e2Spatial.getX() < playerSpatial.getX() - distanceToRemove) {
+				e2.delete();
 			}
 			
 		}

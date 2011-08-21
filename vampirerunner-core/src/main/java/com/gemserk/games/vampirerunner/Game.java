@@ -22,6 +22,7 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
 import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.resources.GameResources;
@@ -65,6 +66,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Parameters gameData;
 
 	private Screen playGameScreen;
+	private Screen gameOverScreen;
 
 	public Screen getSplashScreen() {
 		return splashScreen;
@@ -72,6 +74,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	
 	public Screen getPlayGameScreen() {
 		return playGameScreen;
+	}
+	
+	public Screen getGameOverScreen() {
+		return gameOverScreen;
 	}
 
 	public Parameters getGameData() {
@@ -113,8 +119,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		PlayGameState playGameState = new PlayGameState(this);
 		playGameState.setResourceManager(resourceManager);
 		
+		GameOverGameState gameOverGameState = new GameOverGameState(this);
+		gameOverGameState.setResourceManager(resourceManager);
+		
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		playGameScreen = new ScreenImpl(playGameState);
+		gameOverScreen = new ScreenImpl(gameOverGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 

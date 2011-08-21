@@ -13,6 +13,7 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
@@ -26,6 +27,7 @@ import com.gemserk.games.vampirerunner.scripts.EnableDisableCollisionsScript;
 import com.gemserk.games.vampirerunner.scripts.IncrementLinearSpeedOverTimeScript;
 import com.gemserk.games.vampirerunner.scripts.LimitLinearSpeedScript;
 import com.gemserk.games.vampirerunner.scripts.VladimirAnimationScript;
+import com.gemserk.games.vampirerunner.scripts.VladimirHealthScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.resources.ResourceManager;
 
@@ -33,10 +35,12 @@ public class VampireTemplate extends EntityTemplateImpl {
 
 	private final ResourceManager<String> resourceManager;
 	private final BodyBuilder bodyBuilder;
+	private final EventManager eventManager;
 
-	public VampireTemplate(ResourceManager<String> resourceManager, BodyBuilder bodyBuilder) {
+	public VampireTemplate(ResourceManager<String> resourceManager, BodyBuilder bodyBuilder, EventManager eventManager) {
 		this.resourceManager = resourceManager;
 		this.bodyBuilder = bodyBuilder;
+		this.eventManager = eventManager;
 	}
 
 	@Override
@@ -56,7 +60,8 @@ public class VampireTemplate extends EntityTemplateImpl {
 				new VladimirAnimationScript(), //
 				new EnableDisableCollisionsScript(vampireController), //
 				new ApplyLinearForceScript(new Vector2(500f, 0f)), //
-				new IncrementLinearSpeedOverTimeScript() //
+				new IncrementLinearSpeedOverTimeScript(),//
+				new VladimirHealthScript(eventManager) //
 		));
 
 		Body body = bodyBuilder //

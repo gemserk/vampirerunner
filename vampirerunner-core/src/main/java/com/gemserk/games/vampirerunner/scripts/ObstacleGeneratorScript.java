@@ -32,8 +32,10 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(World world, Entity e) {
-
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
+		
+		if (player == null)
+			return;
 
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
