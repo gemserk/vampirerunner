@@ -2,6 +2,7 @@ package com.gemserk.games.vampirerunner.gamestates;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -32,7 +33,7 @@ public class SplashGameState extends GameStateImpl {
 	private Color blurColor = new Color();
 
 	private TimeTransition timeTransition;
-	
+
 	private float internalSpeed = 1f;
 
 	public SplashGameState(Game game) {
@@ -71,6 +72,20 @@ public class SplashGameState extends GameStateImpl {
 
 		timeTransition = new TimeTransition();
 		timeTransition.start(2f);
+
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean keyUp(int keycode) {
+				internalSpeed = 2f;
+				return super.keyUp(keycode);
+			}
+
+			@Override
+			public boolean touchUp(int x, int y, int pointer, int button) {
+				internalSpeed = 2f;
+				return super.touchUp(x, y, pointer, button);
+			}
+		});
 	}
 
 	@Override
@@ -92,8 +107,8 @@ public class SplashGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 
-		if (Gdx.input.justTouched()) 
-			internalSpeed = 20f;
+		// if (Gdx.input.justTouched())
+		// internalSpeed = 20f;
 
 		timeTransition.update(getDelta() * internalSpeed);
 
@@ -111,6 +126,8 @@ public class SplashGameState extends GameStateImpl {
 	@Override
 	public void dispose() {
 		// resourceManager.unloadAll();
+		Gdx.input.setInputProcessor(null);
+
 		spriteBatch.dispose();
 		spriteBatch = null;
 	}

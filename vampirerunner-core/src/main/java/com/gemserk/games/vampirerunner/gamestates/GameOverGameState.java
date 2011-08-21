@@ -1,6 +1,7 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -22,6 +23,8 @@ public class GameOverGameState extends GameStateImpl {
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
 
+	// private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -40,7 +43,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
-		
+
 		GameInformation gameInformation = game.getGameData().get("gameInformation");
 
 		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
@@ -53,6 +56,28 @@ public class GameOverGameState extends GameStateImpl {
 				.build();
 
 		guiContainer.add(distanceLabel);
+
+		// inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		//
+		// new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+		// {
+		// monitorMouseLeftButton("tryAgain");
+		// }
+		// };
+
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean keyUp(int keycode) {
+				game.setScreen(game.getPlayGameScreen(), true);
+				return super.keyUp(keycode);
+			}
+
+			@Override
+			public boolean touchUp(int x, int y, int pointer, int button) {
+				game.setScreen(game.getPlayGameScreen(), true);
+				return super.touchUp(x, y, pointer, button);
+			}
+		});
 	}
 
 	@Override
@@ -66,17 +91,19 @@ public class GameOverGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		if (Gdx.input.justTouched()) 
-			game.setScreen(game.getPlayGameScreen(), true);
+		// inputDevicesMonitor.update();
+		// if (inputDevicesMonitor.getButton("tryAgain").isReleased())
+		// game.setScreen(game.getPlayGameScreen(), true);
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
 	}
-
+	
 	@Override
 	public void dispose() {
+		Gdx.input.setInputProcessor(null);
 		// world.dispose();
 	}
 
