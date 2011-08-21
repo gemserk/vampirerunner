@@ -23,6 +23,7 @@ import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components;
 import com.gemserk.games.vampirerunner.scripts.ApplyLinearForceScript;
 import com.gemserk.games.vampirerunner.scripts.EnableDisableCollisionsScript;
+import com.gemserk.games.vampirerunner.scripts.IncrementLinearSpeedOverTimeScript;
 import com.gemserk.games.vampirerunner.scripts.LimitLinearSpeedScript;
 import com.gemserk.games.vampirerunner.scripts.VladimirAnimationScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
@@ -43,11 +44,9 @@ public class VampireTemplate extends EntityTemplateImpl {
 		Spatial spatial = parameters.get("spatial");
 		VampireController vampireController = parameters.get("vampireController");
 
-		// Sprite sprite = resourceManager.getResourceValue("VampireSprite");
 		Animation runningAnimation = resourceManager.getResourceValue("VampireRunningAnimation");
 
 		entity.addComponent(new TagComponent(Tags.Vampire));
-		// entity.addComponent(new SpatialComponent(spatial));
 		entity.addComponent(new SpriteComponent(runningAnimation.getCurrentFrame(), new Vector2(0.5f, 0.5f), Color.WHITE));
 		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation }));
 		entity.addComponent(new RenderableComponent(1));
@@ -56,7 +55,8 @@ public class VampireTemplate extends EntityTemplateImpl {
 		entity.addComponent(new ScriptComponent(new LimitLinearSpeedScript(), //
 				new VladimirAnimationScript(), //
 				new EnableDisableCollisionsScript(vampireController), //
-				new ApplyLinearForceScript(new Vector2(500f, 0f)) //
+				new ApplyLinearForceScript(new Vector2(500f, 0f)), //
+				new IncrementLinearSpeedOverTimeScript() //
 		));
 
 		Body body = bodyBuilder //

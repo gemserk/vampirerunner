@@ -14,8 +14,6 @@ public class LimitLinearSpeedScript extends ScriptJavaImpl {
 	private static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
 	private static final Class<MaxSpeedComponent> maxSpeedComponentClass = MaxSpeedComponent.class;
 
-	// private float aliveTime = 0f;
-
 	@Override
 	public void update(World world, Entity e) {
 		PhysicsComponent physicsComponent = e.getComponent(physicsComponentClass);
@@ -33,9 +31,6 @@ public class LimitLinearSpeedScript extends ScriptJavaImpl {
 			linearVelocity.mul(maxSpeedComponent.maxSpeed / speed);
 			body.setLinearVelocity(linearVelocity);
 		}
-
-		// aliveTime += GlobalTime.getDelta();
-		// maxLinearSpeed = 5f + aliveTime * 0.028f;
 	}
 
 }
