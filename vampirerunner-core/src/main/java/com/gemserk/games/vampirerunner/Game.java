@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
-import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.gdx.GlobalTime;
@@ -113,7 +113,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			throw new RuntimeException(e);
 		}
 
-		eventManager = new EventListenerManagerImpl();
+		eventManager = new EventManagerImpl();
 		resourceManager = new ResourceManagerImpl<String>();
 
 		GameResources.load(resourceManager);

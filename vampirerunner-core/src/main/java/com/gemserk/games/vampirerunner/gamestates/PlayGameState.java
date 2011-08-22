@@ -16,7 +16,7 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
@@ -114,7 +114,7 @@ public class PlayGameState extends GameStateImpl {
 
 		guiContainer.add(distanceLabel);
 
-		final EventManager eventManager = new EventListenerManagerImpl();
+		final EventManager eventManager = new EventManagerImpl();
 
 		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, 0f), false);
 		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
