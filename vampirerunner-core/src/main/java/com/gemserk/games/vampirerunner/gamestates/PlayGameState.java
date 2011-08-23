@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
@@ -16,8 +17,8 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
@@ -34,6 +35,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
+import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -47,6 +49,7 @@ import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.GameInformation;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
+import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
@@ -83,6 +86,8 @@ public class PlayGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private Sprite whiteRectangle;
 	private Sprite whiteRectangle2;
+	private CameraRestrictedImpl backgroundRestrictedCamera;
+	private Libgdx2dCamera backgroundCamera;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -124,7 +129,7 @@ public class PlayGameState extends GameStateImpl {
 
 		RenderLayers renderLayers = new RenderLayers();
 
-		Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
+		backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 5, height / 4);
 		worldCamera.zoom(64f);
 
@@ -157,10 +162,45 @@ public class PlayGameState extends GameStateImpl {
 
 		VampireController vampireController = new VampireController();
 
+		backgroundRestrictedCamera = new CameraRestrictedImpl(-2000, 0, 1, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0, 0, 2048, 2048));
+
+		// entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
+		// .put("spriteId", "BackgroundSprite") //
+		// .put("layer", -999) //
+		// .put("spatial", new SpatialImpl(0, 0, width, height, 0f)) //
+		// );
+
+		entityBuilder //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+					@Override
+					public void update(World world, Entity e) {
+						Entity player = world.getTagManager().getEntity(Tags.Vampire);
+						if (player == null)
+							return;
+						SpatialComponent playerSpatialComponent = player.getComponent(SpatialComponent.class);
+						Spatial playerSpatial = playerSpatialComponent.getSpatial();
+
+						// float lastx = backgroundRestrictedCamera.getX();
+						// backgroundRestrictedCamera.setPosition(lastx + 1f * GlobalTime.getDelta(), 0f);
+
+						backgroundRestrictedCamera.setPosition(playerSpatial.getX(), 0f);
+
+						backgroundCamera.move(backgroundRestrictedCamera.getX(), backgroundRestrictedCamera.getY());
+						backgroundCamera.zoom(backgroundRestrictedCamera.getZoom());
+
+					}
+				})) //
+				.build();
+
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
-				.put("spriteId", "BackgroundSprite") //
+				.put("spriteId", "BackgroundTile01Sprite") //
 				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(0, 0, width, height, 0f)) //
+				.put("spatial", new SpatialImpl(0, 0, 1024, 1024, 0f)) //
+				);
+		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
+				.put("spriteId", "BackgroundTile02Sprite") //
+				.put("layer", -999) //
+				.put("spatial", new SpatialImpl(1024, 0, 1024, 1024, 0f)) //
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
@@ -193,31 +233,13 @@ public class PlayGameState extends GameStateImpl {
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
-					float distance = 0f;
-					float lastPlayerPosition = 0f;
-
-					@Override
-					public void init(World world, Entity e) {
-						Entity player = world.getTagManager().getEntity(Tags.Vampire);
-						SpatialComponent playerSpatialComponent = player.getComponent(SpatialComponent.class);
-						Spatial playerSpatial = playerSpatialComponent.getSpatial();
-						lastPlayerPosition = playerSpatial.getX();
-					}
-
 					@Override
 					public void update(World world, Entity e) {
 						Entity player = world.getTagManager().getEntity(Tags.Vampire);
 						if (player == null)
 							return;
-						SpatialComponent playerSpatialComponent = player.getComponent(SpatialComponent.class);
-						Spatial playerSpatial = playerSpatialComponent.getSpatial();
-
-						distance += playerSpatial.getX() - lastPlayerPosition;
-
-						lastPlayerPosition = playerSpatial.getX();
-
-						gameInformation.score = (int) distance;
-
+						DistanceComponent distanceComponent = player.getComponent(DistanceComponent.class);
+						gameInformation.score = (int) distanceComponent.distance;
 						distanceLabel.setText("Score: " + gameInformation.score);
 					}
 				})) //
@@ -305,16 +327,15 @@ public class PlayGameState extends GameStateImpl {
 
 		whiteRectangle2.setPosition(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.8f);
 		whiteRectangle2.setColor(0f, 0f, 1f, 1f);
-		
+
 		Entity vladimir = world.getTagManager().getEntity(Tags.Vampire);
 		if (vladimir != null) {
 			SuperSkillComponent superSkillComponent = vladimir.getComponent(SuperSkillComponent.class);
 			whiteRectangle2.setSize(totalWidth * superSkillComponent.energy.getPercentage(), 10f);
 		}
-		
+
 		spriteBatch.begin();
 
-		
 		whiteRectangle.draw(spriteBatch);
 		whiteRectangle2.draw(spriteBatch);
 

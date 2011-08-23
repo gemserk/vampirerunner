@@ -23,11 +23,13 @@ import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.games.vampirerunner.Collisions;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components;
+import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.scripts.ApplyLinearForceScript;
 import com.gemserk.games.vampirerunner.scripts.IncrementLinearSpeedOverTimeScript;
 import com.gemserk.games.vampirerunner.scripts.LimitLinearSpeedScript;
 import com.gemserk.games.vampirerunner.scripts.SuperSkillScript;
+import com.gemserk.games.vampirerunner.scripts.UpdateDistanceScript;
 import com.gemserk.games.vampirerunner.scripts.VladimirAnimationScript;
 import com.gemserk.games.vampirerunner.scripts.VladimirHealthScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
@@ -60,12 +62,14 @@ public class VampireTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new SuperSkillComponent(new Container(50f, 50f), 50f, 25f));
 
+		entity.addComponent(new DistanceComponent());
 		entity.addComponent(new Components.MaxSpeedComponent(5f));
 		entity.addComponent(new ScriptComponent(new LimitLinearSpeedScript(), //
 				new VladimirAnimationScript(), //
 				new SuperSkillScript(vampireController), //
 				new ApplyLinearForceScript(new Vector2(500f, 0f)), //
 				new IncrementLinearSpeedOverTimeScript(),//
+				new UpdateDistanceScript(), //
 				new VladimirHealthScript(eventManager) //
 		));
 

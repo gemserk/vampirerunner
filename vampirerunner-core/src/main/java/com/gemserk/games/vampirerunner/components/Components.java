@@ -14,6 +14,16 @@ public class Components {
 		}
 
 	}
+	
+	public static class DistanceComponent extends Component {
+
+		public float distance;
+
+		public DistanceComponent() {
+			this.distance = 0f;
+		}
+
+	}
 
 	public static class SuperSkillComponent extends Component {
 

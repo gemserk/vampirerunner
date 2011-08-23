@@ -45,6 +45,11 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("VampireLeftLeg", "VampireSpriteSheet", 32 * 3, 32 * 2, 32, 32);
 		sprite("VampireRightLeg", "VampireSpriteSheet", 32 * 4, 32 * 2, 32, 32);
 		sprite("VampireTorso", "VampireSpriteSheet", 32 * 5, 32 * 2, 32, 32);
+		
+		texture("BackgroundTile01", "data/images/background-tile-01.png", false);
+		texture("BackgroundTile02", "data/images/background-tile-02.png", false);
+		sprite("BackgroundTile01Sprite", "BackgroundTile01");
+		sprite("BackgroundTile02Sprite", "BackgroundTile02");
 
 	}
 }
