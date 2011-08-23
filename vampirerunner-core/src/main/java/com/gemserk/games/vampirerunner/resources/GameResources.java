@@ -48,8 +48,13 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 		texture("BackgroundTile01", "data/images/background-tile-01.png", false);
 		texture("BackgroundTile02", "data/images/background-tile-02.png", false);
+		texture("BackgroundTile03", "data/images/background-tile-03.png", false);
+		texture("BackgroundTile04", "data/images/background-tile-04.png", false);
+		
 		sprite("BackgroundTile01Sprite", "BackgroundTile01");
 		sprite("BackgroundTile02Sprite", "BackgroundTile02");
+		sprite("BackgroundTile03Sprite", "BackgroundTile03");
+		sprite("BackgroundTile04Sprite", "BackgroundTile04");
 
 	}
 }

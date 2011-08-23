@@ -60,7 +60,7 @@ public class VampireTemplate extends EntityTemplateImpl {
 		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation, flyingAnimation }));
 		entity.addComponent(new RenderableComponent(3));
 
-		entity.addComponent(new SuperSkillComponent(new Container(50f, 50f), 50f, 25f));
+		entity.addComponent(new SuperSkillComponent(new Container(50f, 50f), 75f, 25f));
 
 		entity.addComponent(new DistanceComponent());
 		entity.addComponent(new Components.MaxSpeedComponent(5f));

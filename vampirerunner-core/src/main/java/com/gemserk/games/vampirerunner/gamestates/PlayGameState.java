@@ -33,6 +33,7 @@ import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
@@ -162,12 +163,15 @@ public class PlayGameState extends GameStateImpl {
 
 		VampireController vampireController = new VampireController();
 
-		backgroundRestrictedCamera = new CameraRestrictedImpl(-1000, 0, 2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-256, -256, 1024, 1024));
+		backgroundRestrictedCamera = new CameraRestrictedImpl(0, 0, 2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					float startX;
+					float cameraDistance = 0f;
+					float playerDistance;
+					float daySpeed = 10f;
 
 					@Override
 					public void init(World world, Entity e) {
@@ -177,12 +181,20 @@ public class PlayGameState extends GameStateImpl {
 
 					@Override
 					public void update(World world, Entity e) {
-						Entity player = world.getTagManager().getEntity(Tags.Vampire);
-						if (player == null)
-							return;
-						DistanceComponent distanceComponent = player.getComponent(DistanceComponent.class);
+						// day speed
+						cameraDistance += daySpeed * GlobalTime.getDelta();
 
-						backgroundRestrictedCamera.setPosition(startX + distanceComponent.distance, 0f);
+						Entity player = world.getTagManager().getEntity(Tags.Vampire);
+						if (player != null) {
+							DistanceComponent distanceComponent = player.getComponent(DistanceComponent.class);
+							playerDistance = distanceComponent.distance;
+						} else {
+							daySpeed = 200f;
+						}
+
+						float newPosition = startX + playerDistance - cameraDistance;
+
+						backgroundRestrictedCamera.setPosition(newPosition, 0f);
 
 						backgroundCamera.move(backgroundRestrictedCamera.getX(), backgroundRestrictedCamera.getY());
 						backgroundCamera.zoom(backgroundRestrictedCamera.getZoom());
@@ -194,12 +206,22 @@ public class PlayGameState extends GameStateImpl {
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile01Sprite") //
 				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(0, 0, 512, 512, 0f)) //
+				.put("spatial", new SpatialImpl(-512, 0, 512, 512, 0f)) //
 				);
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile02Sprite") //
 				.put("layer", -999) //
+				.put("spatial", new SpatialImpl(0, 0, 512, 512, 0f)) //
+				);
+		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
+				.put("spriteId", "BackgroundTile03Sprite") //
+				.put("layer", -999) //
 				.put("spatial", new SpatialImpl(512, 0, 512, 512, 0f)) //
+				);
+		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
+				.put("spriteId", "BackgroundTile04Sprite") //
+				.put("layer", -999) //
+				.put("spatial", new SpatialImpl(1024, 0, 512, 512, 0f)) //
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
