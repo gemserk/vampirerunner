@@ -76,13 +76,13 @@ public class SplashGameState extends GameStateImpl {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyUp(int keycode) {
-				internalSpeed = 2f;
+				nextScreen();
 				return super.keyUp(keycode);
 			}
 
 			@Override
 			public boolean touchUp(int x, int y, int pointer, int button) {
-				internalSpeed = 2f;
+				nextScreen();
 				return super.touchUp(x, y, pointer, button);
 			}
 		});
@@ -106,16 +106,16 @@ public class SplashGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-
-		// if (Gdx.input.justTouched())
-		// internalSpeed = 20f;
-
 		timeTransition.update(getDelta() * internalSpeed);
-
 		if (!timeTransition.isFinished())
 			return;
+	}
 
-		game.setScreen(game.getInstructionsScreen(), true);
+	private void nextScreen() {
+		game.transition(game.getInstructionsScreen()).leaveTime(150) //
+				.enterTime(150) //
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	@Override
