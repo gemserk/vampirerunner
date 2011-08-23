@@ -1,5 +1,6 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -44,15 +45,26 @@ public class InstructionsGameState extends GameStateImpl {
 		guiContainer = new Container();
 
 		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
+		
+		String[] instructions = new String[] { "Hold left click to move through walls", "click to start" };
+		
+		if (Gdx.app.getType()== ApplicationType.Android) 
+			instructions = new String[] { "Touch and hold screen to move through walls", "touch to start" };
+		
+		guiContainer.add(GuiControls.label("How to play") //
+				.position(width * 0.5f, height * 0.9f) //
+				.center(0.5f, 0.5f) //
+				.font(distanceFont) //
+				.color(1f, 1f, 0f, 1f) //
+				.build());
 
-		guiContainer.add(GuiControls.label("Press left click to move through walls").id("Instructions") //
+		guiContainer.add(GuiControls.label(instructions[0]).id("Instructions") //
 				.position(width * 0.5f, height * 0.5f) //
 				.center(0.5f, 0.5f) //
 				.font(distanceFont) //
 				.color(Color.RED) //
 				.build());
-
-		guiContainer.add(GuiControls.label("click to start").id("ClickToStart") //
+		guiContainer.add(GuiControls.label(instructions[1]).id("ClickToStart") //
 				.position(width * 0.5f, height * 0.3f) //
 				.center(0.5f, 0.5f) //
 				.font(distanceFont) //
