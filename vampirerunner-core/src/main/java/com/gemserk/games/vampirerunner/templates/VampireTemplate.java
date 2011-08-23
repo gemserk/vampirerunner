@@ -82,6 +82,7 @@ public class VampireTemplate extends EntityTemplateImpl {
 						// .boxShape(0.1f, 0.4f) //
 						.circleShape(0.2f) //
 						.density(1f) //
+						.sensor() //
 						.categoryBits(Collisions.Vladimir) //
 						.maskBits(Collisions.All).build()) //
 				.build();
