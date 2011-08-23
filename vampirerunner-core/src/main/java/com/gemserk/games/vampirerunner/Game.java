@@ -11,8 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
-import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
@@ -43,11 +43,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static boolean isShowFps() {
 		return showFps;
 	}
-	
+
 	public static boolean isShowBox2dDebug() {
 		return showBox2dDebug;
 	}
-	
+
 	public static void setShowBox2dDebug(boolean showBox2dDebug) {
 		Game.showBox2dDebug = showBox2dDebug;
 	}
@@ -73,15 +73,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getSplashScreen() {
 		return splashScreen;
 	}
-	
+
 	public Screen getPlayGameScreen() {
 		return playGameScreen;
 	}
-	
+
 	public Screen getGameOverScreen() {
 		return gameOverScreen;
 	}
-	
+
 	public Screen getInstructionsScreen() {
 		return instructionsScreen;
 	}
@@ -124,13 +124,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		PlayGameState playGameState = new PlayGameState(this);
 		playGameState.setResourceManager(resourceManager);
-		
+
 		GameOverGameState gameOverGameState = new GameOverGameState(this);
 		gameOverGameState.setResourceManager(resourceManager);
-		
+
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);
-		
+
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
@@ -174,12 +174,55 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
 		}
-		
+
 		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased()) {
 			setShowBox2dDebug(!isShowBox2dDebug());
 		}
 
 		eventManager.process();
+	}
+
+	public static class TransitionBuilder {
+
+		private final Screen screen;
+		private final Game game;
+		private float leaveTime = 0f;
+		private float enterTime = 0f;
+		private boolean shouldDisposeCurrentScreen;
+
+		public TransitionBuilder leaveTime(float leaveTime) {
+			this.leaveTime = leaveTime;
+			return this;
+		}
+
+		public TransitionBuilder enterTime(float enterTime) {
+			this.enterTime = enterTime;
+			return this;
+		}
+
+		public TransitionBuilder disposeCurrent(boolean disposeCurrent) {
+			this.shouldDisposeCurrentScreen = disposeCurrent;
+			return this;
+		}
+
+		public TransitionBuilder(final Game game, final Screen screen) {
+			this.game = game;
+			this.screen = screen;
+		}
+
+		public void start() {
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					game.setScreen(screen, shouldDisposeCurrentScreen);
+				}
+			});
+		}
+
+	}
+
+	public TransitionBuilder transition(Screen screen) {
+		return new TransitionBuilder(this, screen);
 	}
 
 	@Override

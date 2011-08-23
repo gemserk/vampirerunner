@@ -130,6 +130,7 @@ public class PlayGameState extends GameStateImpl {
 
 		backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 5, height / 4);
+
 		worldCamera.zoom(64f);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
@@ -161,26 +162,19 @@ public class PlayGameState extends GameStateImpl {
 
 		VampireController vampireController = new VampireController();
 
-		backgroundRestrictedCamera = new CameraRestrictedImpl(-2000, 0, 1, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-512, -512, 2048, 2048));
-
-		// entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
-		// .put("spriteId", "BackgroundSprite") //
-		// .put("layer", -999) //
-		// .put("spatial", new SpatialImpl(0, 0, width, height, 0f)) //
-		// );
+		backgroundRestrictedCamera = new CameraRestrictedImpl(-1000, 0, 2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-256, -256, 1024, 1024));
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
-					
+
 					float startX;
-					
+
 					@Override
 					public void init(World world, Entity e) {
-						// TODO Auto-generated function stub
 						super.init(world, e);
 						startX = backgroundRestrictedCamera.getX();
 					}
-					
+
 					@Override
 					public void update(World world, Entity e) {
 						Entity player = world.getTagManager().getEntity(Tags.Vampire);
@@ -200,12 +194,12 @@ public class PlayGameState extends GameStateImpl {
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile01Sprite") //
 				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(0, 0, 1024, 1024, 0f)) //
+				.put("spatial", new SpatialImpl(0, 0, 512, 512, 0f)) //
 				);
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile02Sprite") //
 				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(1024, 0, 1024, 1024, 0f)) //
+				.put("spatial", new SpatialImpl(512, 0, 512, 512, 0f)) //
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
@@ -272,7 +266,10 @@ public class PlayGameState extends GameStateImpl {
 						Gdx.app.log("VampireRunner", "Game finished");
 
 						game.getGameData().put("gameInformation", gameInformation);
-						game.setScreen(game.getGameOverScreen(), true);
+						// game.setScreen(game.getGameOverScreen(), true);
+						game.transition(game.getGameOverScreen()) //
+								.disposeCurrent(true) //
+								.start();
 					}
 
 					@Handles
@@ -363,7 +360,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		// world.dispose();
+		spriteBatch.dispose();
+		worldWrapper.dispose();
 	}
 
 }

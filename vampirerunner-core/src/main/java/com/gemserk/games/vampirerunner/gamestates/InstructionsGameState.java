@@ -51,7 +51,7 @@ public class InstructionsGameState extends GameStateImpl {
 				.font(distanceFont) //
 				.color(Color.RED) //
 				.build());
-		
+
 		guiContainer.add(GuiControls.label("click to start").id("ClickToStart") //
 				.position(width * 0.5f, height * 0.3f) //
 				.center(0.5f, 0.5f) //
@@ -82,7 +82,9 @@ public class InstructionsGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
 		if (inputDevicesMonitor.getButton("play").isReleased())
-			game.setScreen(game.getPlayGameScreen(), true);
+			game.transition(game.getPlayGameScreen()) //
+					.disposeCurrent(true) //
+					.start();
 	}
 
 	@Override
@@ -90,4 +92,8 @@ public class InstructionsGameState extends GameStateImpl {
 		Gdx.input.setCatchBackKey(false);
 	}
 
+	@Override
+	public void dispose() {
+		spriteBatch.dispose();
+	}
 }

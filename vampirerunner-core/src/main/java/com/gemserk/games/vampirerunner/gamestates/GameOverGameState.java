@@ -80,12 +80,19 @@ public class GameOverGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
 		if (inputDevicesMonitor.getButton("tryAgain").isReleased())
-			game.setScreen(game.getInstructionsScreen(), true);
+			game.transition(game.getInstructionsScreen()) //
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
+	}
+	
+	@Override
+	public void dispose() {
+		spriteBatch.dispose();
 	}
 
 }
