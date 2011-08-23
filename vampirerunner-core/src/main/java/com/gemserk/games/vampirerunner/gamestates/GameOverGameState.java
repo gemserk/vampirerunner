@@ -1,6 +1,7 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,8 +11,6 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
-import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
-import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.GameInformation;
 import com.gemserk.resources.ResourceManager;
@@ -24,7 +23,19 @@ public class GameOverGameState extends GameStateImpl {
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
 
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private InputAdapter inputProcessor = new InputAdapter() {
+		@Override
+		public boolean keyUp(int keycode) {
+			nextScreen();
+			return super.keyUp(keycode);
+		}
+
+		@Override
+		public boolean touchUp(int x, int y, int pointer, int button) {
+			nextScreen();
+			return super.touchUp(x, y, pointer, button);
+		}
+	};
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -57,14 +68,14 @@ public class GameOverGameState extends GameStateImpl {
 				.build();
 
 		guiContainer.add(distanceLabel);
-
-		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
-
-		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
-			{
-				monitorMouseLeftButton("tryAgain");
-			}
-		};
+	}
+	
+	private void nextScreen() {
+		game.transition(game.getInstructionsScreen())//
+				.leaveTime(150) //
+				.enterTime(150) //
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	@Override
@@ -77,17 +88,19 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
+		Gdx.input.setInputProcessor(inputProcessor);
 		Synchronizers.synchronize(getDelta());
-		inputDevicesMonitor.update();
-		if (inputDevicesMonitor.getButton("tryAgain").isReleased())
-			game.transition(game.getInstructionsScreen()) //
-				.disposeCurrent(true) //
-				.start();
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
+	}
+	
+	@Override
+	public void pause() {
+		if (Gdx.input.getInputProcessor() == inputProcessor)
+			Gdx.input.setInputProcessor(null);
 	}
 	
 	@Override
