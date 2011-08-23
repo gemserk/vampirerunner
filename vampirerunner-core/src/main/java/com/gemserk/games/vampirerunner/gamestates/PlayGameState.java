@@ -38,7 +38,6 @@ import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
@@ -162,7 +161,7 @@ public class PlayGameState extends GameStateImpl {
 
 		VampireController vampireController = new VampireController();
 
-		backgroundRestrictedCamera = new CameraRestrictedImpl(-2000, 0, 1, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0, 0, 2048, 2048));
+		backgroundRestrictedCamera = new CameraRestrictedImpl(-2000, 0, 1, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-512, -512, 2048, 2048));
 
 		// entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 		// .put("spriteId", "BackgroundSprite") //
@@ -172,18 +171,24 @@ public class PlayGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
+					
+					float startX;
+					
+					@Override
+					public void init(World world, Entity e) {
+						// TODO Auto-generated function stub
+						super.init(world, e);
+						startX = backgroundRestrictedCamera.getX();
+					}
+					
 					@Override
 					public void update(World world, Entity e) {
 						Entity player = world.getTagManager().getEntity(Tags.Vampire);
 						if (player == null)
 							return;
-						SpatialComponent playerSpatialComponent = player.getComponent(SpatialComponent.class);
-						Spatial playerSpatial = playerSpatialComponent.getSpatial();
+						DistanceComponent distanceComponent = player.getComponent(DistanceComponent.class);
 
-						// float lastx = backgroundRestrictedCamera.getX();
-						// backgroundRestrictedCamera.setPosition(lastx + 1f * GlobalTime.getDelta(), 0f);
-
-						backgroundRestrictedCamera.setPosition(playerSpatial.getX(), 0f);
+						backgroundRestrictedCamera.setPosition(startX + distanceComponent.distance, 0f);
 
 						backgroundCamera.move(backgroundRestrictedCamera.getX(), backgroundRestrictedCamera.getY());
 						backgroundCamera.zoom(backgroundRestrictedCamera.getZoom());
