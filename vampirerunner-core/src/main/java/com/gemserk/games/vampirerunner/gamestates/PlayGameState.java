@@ -163,7 +163,7 @@ public class PlayGameState extends GameStateImpl {
 
 		VampireController vampireController = new VampireController();
 
-		backgroundRestrictedCamera = new CameraRestrictedImpl(0, 0, 2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
+		backgroundRestrictedCamera = new CameraRestrictedImpl(-256, 0, 2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -171,7 +171,7 @@ public class PlayGameState extends GameStateImpl {
 					float startX;
 					float cameraDistance = 0f;
 					float playerDistance;
-					float daySpeed = 10f;
+					float daySpeed = 0f;
 
 					@Override
 					public void init(World world, Entity e) {
@@ -188,9 +188,7 @@ public class PlayGameState extends GameStateImpl {
 						if (player != null) {
 							DistanceComponent distanceComponent = player.getComponent(DistanceComponent.class);
 							playerDistance = distanceComponent.distance;
-						} else {
-							daySpeed = 200f;
-						}
+						} 
 
 						float newPosition = startX + playerDistance - cameraDistance;
 

@@ -36,6 +36,20 @@ public class SplashGameState extends GameStateImpl {
 
 	private float internalSpeed = 1f;
 
+	private InputAdapter inputProcessor = new InputAdapter() {
+		@Override
+		public boolean keyUp(int keycode) {
+			nextScreen();
+			return super.keyUp(keycode);
+		}
+
+		@Override
+		public boolean touchUp(int x, int y, int pointer, int button) {
+			nextScreen();
+			return super.touchUp(x, y, pointer, button);
+		}
+	};
+
 	public SplashGameState(Game game) {
 		this.game = game;
 	}
@@ -72,20 +86,6 @@ public class SplashGameState extends GameStateImpl {
 
 		timeTransition = new TimeTransition();
 		timeTransition.start(2f);
-
-		Gdx.input.setInputProcessor(new InputAdapter() {
-			@Override
-			public boolean keyUp(int keycode) {
-				nextScreen();
-				return super.keyUp(keycode);
-			}
-
-			@Override
-			public boolean touchUp(int x, int y, int pointer, int button) {
-				nextScreen();
-				return super.touchUp(x, y, pointer, button);
-			}
-		});
 	}
 
 	@Override
@@ -112,7 +112,8 @@ public class SplashGameState extends GameStateImpl {
 	}
 
 	private void nextScreen() {
-		game.transition(game.getInstructionsScreen()).leaveTime(150) //
+		game.transition(game.getInstructionsScreen())//
+				.leaveTime(150) //
 				.enterTime(150) //
 				.disposeCurrent(true) //
 				.start();
@@ -121,13 +122,18 @@ public class SplashGameState extends GameStateImpl {
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setInputProcessor(inputProcessor);
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+		if (Gdx.input.getInputProcessor() == inputProcessor)
+			Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
 	public void dispose() {
-		// resourceManager.unloadAll();
-		Gdx.input.setInputProcessor(null);
-
 		spriteBatch.dispose();
 		spriteBatch = null;
 	}

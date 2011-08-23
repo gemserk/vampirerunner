@@ -2,6 +2,7 @@ package com.gemserk.games.vampirerunner.gamestates;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,8 +11,6 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
-import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
-import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.resources.ResourceManager;
 
@@ -23,7 +22,19 @@ public class InstructionsGameState extends GameStateImpl {
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
 
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private InputAdapter inputProcessor = new InputAdapter() {
+		@Override
+		public boolean keyUp(int keycode) {
+			nextScreen();
+			return super.keyUp(keycode);
+		}
+
+		@Override
+		public boolean touchUp(int x, int y, int pointer, int button) {
+			nextScreen();
+			return super.touchUp(x, y, pointer, button);
+		}
+	};
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -38,19 +49,16 @@ public class InstructionsGameState extends GameStateImpl {
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
 
-		int centerX = width / 2;
-		int centerY = height / 2;
-
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
 
 		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
-		
+
 		String[] instructions = new String[] { "Hold left click to move through walls", "click to start" };
-		
-		if (Gdx.app.getType()== ApplicationType.Android) 
+
+		if (Gdx.app.getType() == ApplicationType.Android)
 			instructions = new String[] { "Touch and hold screen to move through walls", "touch to start" };
-		
+
 		guiContainer.add(GuiControls.label("How to play") //
 				.position(width * 0.5f, height * 0.9f) //
 				.center(0.5f, 0.5f) //
@@ -71,14 +79,14 @@ public class InstructionsGameState extends GameStateImpl {
 				.color(Color.RED) //
 				.build());
 
-		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+	}
 
-		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
-			{
-				monitorMouseLeftButton("play");
-			}
-		};
-
+	private void nextScreen() {
+		game.transition(game.getPlayGameScreen())//
+				.leaveTime(150) //
+				.enterTime(150) //
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	@Override
@@ -92,16 +100,18 @@ public class InstructionsGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		inputDevicesMonitor.update();
-		if (inputDevicesMonitor.getButton("play").isReleased())
-			game.transition(game.getPlayGameScreen()) //
-					.disposeCurrent(true) //
-					.start();
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
+		Gdx.input.setInputProcessor(inputProcessor);
+	}
+
+	@Override
+	public void pause() {
+		if (Gdx.input.getInputProcessor() == inputProcessor)
+			Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
