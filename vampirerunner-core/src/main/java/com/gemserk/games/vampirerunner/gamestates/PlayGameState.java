@@ -107,6 +107,12 @@ public class PlayGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
+		
+		float gameZoom = 1f;
+		
+		if (Gdx.graphics.getWidth() < 640f) {
+			gameZoom = (float) Gdx.graphics.getWidth() / 640f;
+		}
 
 		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
 
@@ -132,7 +138,7 @@ public class PlayGameState extends GameStateImpl {
 		backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 5, height / 4);
 
-		worldCamera.zoom(64f);
+		worldCamera.zoom(64f * gameZoom);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
@@ -163,7 +169,7 @@ public class PlayGameState extends GameStateImpl {
 
 		VampireController vampireController = new VampireController();
 
-		backgroundRestrictedCamera = new CameraRestrictedImpl(-256, 0, 2, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
+		backgroundRestrictedCamera = new CameraRestrictedImpl(-256, 0, 2 * gameZoom, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {

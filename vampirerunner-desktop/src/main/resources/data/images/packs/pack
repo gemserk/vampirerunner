@@ -1,7 +1,7 @@
 
-generated1.png
+game-assets1.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 background
   rotate: false
@@ -10,23 +10,23 @@ background
   orig: 400, 320
   offset: 0, 0
   index: -1
+floor-bigtile-01
+  rotate: false
+  xy: 0, 322
+  size: 234, 128
+  orig: 234, 128
+  offset: 0, 0
+  index: -1
 floor-tile-01
   rotate: false
   xy: 402, 0
-  size: 48, 48
+  size: 48, 47
   orig: 48, 48
-  offset: 0, 0
-  index: -1
-vampire
-  rotate: false
-  xy: 452, 0
-  size: 32, 32
-  orig: 32, 32
   offset: 0, 0
   index: -1
 white-rectangle
   rotate: false
-  xy: 402, 50
+  xy: 452, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

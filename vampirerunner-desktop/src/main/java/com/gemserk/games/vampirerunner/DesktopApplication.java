@@ -15,9 +15,8 @@ public class DesktopApplication {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		config.title = "Ludum Dare 21 - Vampire Runner - arielsan - Gemserk";
-		config.width = 800;
+		config.width = 640;
 		config.height = 480;
-		// config.width = 320;
 		// config.height = 240;
 		config.fullscreen = false;
 		config.useGL20 = false;
