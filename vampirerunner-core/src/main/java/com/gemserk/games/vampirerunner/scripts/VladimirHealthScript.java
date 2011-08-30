@@ -5,7 +5,7 @@ import com.artemis.World;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
-import com.gemserk.commons.gdx.box2d.Contact;
+import com.gemserk.commons.gdx.box2d.Contacts;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
@@ -27,23 +27,20 @@ public class VladimirHealthScript extends ScriptJavaImpl {
 	public void update(World world, Entity e) {
 		if (!enabled)
 			return;
-		
+
 		SuperSkillComponent superSkillComponent = e.getComponent(superSkillComponentClass);
 		if (superSkillComponent.enabled && !superSkillComponent.energy.isEmpty())
 			return;
-		
+
 		PhysicsComponent physicsComponent = e.getComponent(physicsComponentClass);
 		Physics physics = physicsComponent.getPhysics();
 
-		Contact contact = physics.getContact();
-		for (int i = 0; i < contact.getContactCount(); i++) {
-			if (!contact.isInContact(i))
-				continue;
-			
-			eventManager.registerEvent(Events.playerDeath, e);
-			enabled = false;
-		}
-
+		Contacts contacts = physics.getContact();
+		if (!contacts.isInContact())
+			return;
+		eventManager.registerEvent(Events.playerDeath, e);
+		enabled = false;
+		return;
 	}
 
 }
