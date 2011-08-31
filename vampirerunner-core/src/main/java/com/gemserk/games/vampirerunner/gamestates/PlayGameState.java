@@ -136,7 +136,7 @@ public class PlayGameState extends GameStateImpl {
 		RenderLayers renderLayers = new RenderLayers();
 
 		backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
-		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 5, height / 4);
+		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
 
 		worldCamera.zoom(64f * gameZoom);
 

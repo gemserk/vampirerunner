@@ -74,7 +74,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		SpriteUtils.centerOn(lwjglLogo, width * 0.85f, lwjglLogo.getHeight() * 0.5f);
 		SpriteUtils.centerOn(libgdxLogo, width * 0.15f, libgdxLogo.getHeight() * 0.5f);
 
-		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(0f, 0f, 1f, 0f)).end(new Color(0f, 0f, 1f, 1f)).time(1f));
+		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(1f, 0f, 0f, 0f)).end(new Color(1f, 0f, 0f, 1f)).time(1f));
 
 		TaskQueue taskQueue = super.getTaskQueue();
 
@@ -105,6 +105,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 	private void mainMenu() {
 		game.transition(game.getInstructionsScreen()) //
+				.leaveTime(1000) //
 				.disposeCurrent() //
 				.start();
 	}
