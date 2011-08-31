@@ -32,8 +32,6 @@ import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.resources.GameResources;
 import com.gemserk.games.vampirerunner.transitions.FadeInTransition;
 import com.gemserk.games.vampirerunner.transitions.FadeOutTransition;
-import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -59,7 +57,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private Screen splashScreen;
 
-	private ResourceManager<String> resourceManager;
+	private CustomResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
@@ -94,6 +92,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Parameters getGameData() {
 		return gameData;
 	}
+	
+	public CustomResourceManager<String> getResourceManager() {
+		return resourceManager;
+	}
 
 	/**
 	 * Used to communicate between gamestates.
@@ -119,7 +121,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		eventManager = new EventManagerImpl();
-		resourceManager = new ResourceManagerImpl<String>();
+		resourceManager = new CustomResourceManager<String>();
 
 		GameResources.load(resourceManager);
 
