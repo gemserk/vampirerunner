@@ -109,6 +109,7 @@ public class SplashGameState extends GameStateImpl {
 		timeTransition.update(getDelta() * internalSpeed);
 		if (!timeTransition.isFinished())
 			return;
+		nextScreen();
 	}
 
 	private void nextScreen() {
