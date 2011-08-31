@@ -229,7 +229,7 @@ public class PlayGameState extends GameStateImpl {
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(1f, 1.8f, 1f, 1f, 0f)) //
+				.put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
 				.put("vampireController", vampireController) //
 				);
 
