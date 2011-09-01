@@ -3,7 +3,8 @@ package com.gemserk.games.vampirerunner;
 import java.util.ArrayList;
 
 import com.gemserk.resources.ResourceManagerImpl;
-import com.gemserk.resources.resourceloaders.ResourceLoader;
+import com.gemserk.resources.dataloaders.DataLoader;
+
 
 public class CustomResourceManager<K> extends ResourceManagerImpl<K> {
 	
@@ -13,8 +14,8 @@ public class CustomResourceManager<K> extends ResourceManagerImpl<K> {
 		return registeredResources;
 	}
 
-	public void add(K id, ResourceLoader resourceLoader) {
-		super.add(id, resourceLoader);
+	public void add(K id, DataLoader dataLoader) {
+		super.add(id, dataLoader);
 		registeredResources.add(id);
 	}
 	
