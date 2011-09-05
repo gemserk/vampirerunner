@@ -92,7 +92,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Parameters getGameData() {
 		return gameData;
 	}
-	
+
 	public CustomResourceManager<String> getResourceManager() {
 		return resourceManager;
 	}
@@ -189,7 +189,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		eventManager.process();
 	}
 
-	public static class TransitionBuilder {
+	private boolean withTransition = false;
+
+	public class TransitionBuilder {
 
 		private final Screen screen;
 		private final Game game;
@@ -247,11 +249,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		public void start() {
+			if (withTransition)
+				return;
+			withTransition = true;
 			final Screen currentScreen = game.getScreen();
 			game.setScreen(new TransitionScreen(new ScreenTransition( //
 					new FadeOutTransition(currentScreen, leaveTime, leaveTransitionHandler), //
 					new FadeInTransition(screen, enterTime, new TransitionHandler() {
 						public void onEnd() {
+							withTransition = false;
 							// disposes current transition screen, not previous screen.
 							game.setScreen(screen, true);
 							if (shouldDisposeCurrentScreen)
@@ -267,7 +273,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-
 
 	public TransitionBuilder transition(Screen screen) {
 		return new TransitionBuilder(this, screen);
