@@ -89,8 +89,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 				public void run() {
 					Gdx.app.log("VampireRunner", "Loading resource: " + resourceId);
 					Resource resource = resourceManager.get(resourceId);
-					// it would be nicer to have load/unload in the resource API, so I could call load() here, not reload()
-					resource.get();
+					resource.load();
 				}
 			}, "Loading assets");
 		}
@@ -105,7 +104,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 	private void mainMenu() {
 		game.transition(game.getInstructionsScreen()) //
-				.leaveTime(1000) //
+				.leaveTime(1500) //
 				.disposeCurrent() //
 				.start();
 	}

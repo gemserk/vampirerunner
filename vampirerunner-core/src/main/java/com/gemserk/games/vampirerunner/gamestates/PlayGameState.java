@@ -337,6 +337,8 @@ public class PlayGameState extends GameStateImpl {
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
+		
+		update();
 	}
 
 	@Override
@@ -369,14 +371,12 @@ public class PlayGameState extends GameStateImpl {
 
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
-
 	}
 
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
-
 	}
 
 	@Override
