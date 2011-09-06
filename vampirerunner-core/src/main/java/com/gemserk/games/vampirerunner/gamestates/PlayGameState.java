@@ -4,6 +4,7 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,6 +18,7 @@ import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
@@ -315,7 +317,7 @@ public class PlayGameState extends GameStateImpl {
 
 						entityFactory.instantiate(vladimirBloodExplosion, new ParametersWrapper().put("spatial", spatialComponent.getSpatial()));
 
-						entityFactory.instantiate(timedEventTemplate, new ParametersWrapper().put("time", 2f).put("eventId", Events.gameFinished));
+						entityFactory.instantiate(timedEventTemplate, new ParametersWrapper().put("time", 1.5f).put("eventId", Events.gameFinished));
 
 						for (int i = 0; i < parts.length; i++) {
 							Vector2 direction = new Vector2(1f, 0f);
@@ -333,6 +335,28 @@ public class PlayGameState extends GameStateImpl {
 					public void update(World world, Entity e) {
 						eventManager.process();
 					}
+				})) //
+				.build();
+
+		entityBuilder //
+				.component(new TagComponent("PlayerDeathSoundSpawner")) //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					private Resource<Sound> vampireDeathSoundResource;
+
+					@Override
+					public void init(World world, Entity e) {
+						vampireDeathSoundResource = resourceManager.get("VampireDeathSound");
+					}
+
+					@Handles
+					public void playerDeath(Event e) {
+						Sound sound = vampireDeathSoundResource.get();
+						sound.play();
+
+						musicResource.get().stop();
+					}
+
 				})) //
 				.build();
 
@@ -384,7 +408,6 @@ public class PlayGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
-
 		// volumeTransition.update(getDeltaInMs());
 		// if (!volumeTransition.isFinished()) {
 		// Music music = musicResource.get();

@@ -58,6 +58,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("BackgroundTile04Sprite", "BackgroundTile04");
 		
 		music("GameMusic", "data/audio/music.ogg");
+		sound("VampireDeathSound", "data/audio/vampiredeath.ogg");
 
 	}
 }
