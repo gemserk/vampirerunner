@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.gemserk.animation4j.transitions.FloatTransition;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -379,19 +378,19 @@ public class PlayGameState extends GameStateImpl {
 		spriteBatch.end();
 	}
 
-	FloatTransition volumeTransition = new FloatTransition();
+	// FloatTransition volumeTransition = new FloatTransition();
 
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
 
-		volumeTransition.update(getDeltaInMs());
-		if (!volumeTransition.isFinished()) {
-			Music music = musicResource.get();
-			float volume = volumeTransition.get();
-			music.setVolume(volume);
-		}
+		// volumeTransition.update(getDeltaInMs());
+		// if (!volumeTransition.isFinished()) {
+		// Music music = musicResource.get();
+		// float volume = volumeTransition.get();
+		// music.setVolume(volume);
+		// }
 	}
 
 	@Override
@@ -401,9 +400,9 @@ public class PlayGameState extends GameStateImpl {
 		if (!music.isPlaying()) {
 			music.setLooping(true);
 			music.play();
-			music.setVolume(0f);
-			volumeTransition.set(0f);
-			volumeTransition.set(1f, 5000);
+			music.setVolume(1f);
+			// volumeTransition.set(0f);
+			// volumeTransition.set(1f, 1000);
 		}
 	}
 
