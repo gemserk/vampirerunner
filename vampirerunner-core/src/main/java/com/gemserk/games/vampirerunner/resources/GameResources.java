@@ -56,6 +56,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("BackgroundTile02Sprite", "BackgroundTile02");
 		sprite("BackgroundTile03Sprite", "BackgroundTile03");
 		sprite("BackgroundTile04Sprite", "BackgroundTile04");
+		
+		music("GameMusic", "data/audio/music.ogg");
 
 	}
 }

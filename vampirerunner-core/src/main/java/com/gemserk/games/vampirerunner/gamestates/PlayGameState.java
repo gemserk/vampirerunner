@@ -3,6 +3,7 @@ package com.gemserk.games.vampirerunner.gamestates;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.animation4j.transitions.FloatTransition;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -65,6 +67,7 @@ import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampirePartExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
+import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
@@ -88,6 +91,7 @@ public class PlayGameState extends GameStateImpl {
 	private Sprite whiteRectangle2;
 	private CameraRestrictedImpl backgroundRestrictedCamera;
 	private Libgdx2dCamera backgroundCamera;
+	private Resource<Music> musicResource;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -107,9 +111,9 @@ public class PlayGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
-		
+
 		float gameZoom = 1f;
-		
+
 		if (Gdx.graphics.getWidth() < 640f) {
 			gameZoom = (float) Gdx.graphics.getWidth() / 640f;
 		}
@@ -194,7 +198,7 @@ public class PlayGameState extends GameStateImpl {
 						if (player != null) {
 							DistanceComponent distanceComponent = player.getComponent(DistanceComponent.class);
 							playerDistance = distanceComponent.distance;
-						} 
+						}
 
 						float newPosition = startX + playerDistance - cameraDistance;
 
@@ -337,8 +341,10 @@ public class PlayGameState extends GameStateImpl {
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
-		
+
 		update();
+
+		musicResource = resourceManager.get("GameMusic");
 	}
 
 	@Override
@@ -373,15 +379,39 @@ public class PlayGameState extends GameStateImpl {
 		spriteBatch.end();
 	}
 
+	FloatTransition volumeTransition = new FloatTransition();
+
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
+
+		volumeTransition.update(getDeltaInMs());
+		if (!volumeTransition.isFinished()) {
+			Music music = musicResource.get();
+			float volume = volumeTransition.get();
+			music.setVolume(volume);
+		}
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
+		Music music = musicResource.get();
+		if (!music.isPlaying()) {
+			music.setLooping(true);
+			music.play();
+			music.setVolume(0f);
+			volumeTransition.set(0f);
+			volumeTransition.set(1f, 5000);
+		}
+	}
+
+	@Override
+	public void pause() {
+		Music music = musicResource.get();
+		if (music.isPlaying())
+			music.stop();
 	}
 
 	@Override
