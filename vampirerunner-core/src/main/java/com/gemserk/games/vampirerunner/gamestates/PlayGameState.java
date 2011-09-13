@@ -308,8 +308,6 @@ public class PlayGameState extends GameStateImpl {
 					public void gameFinished(Event e) {
 						Gdx.app.log("VampireRunner", "Game finished");
 
-						game.getGameData().put("gameInformation", gameInformation);
-						// game.setScreen(game.getGameOverScreen(), true);
 						Profile profile = gamePreferences.getProfile();
 						
 						Score score = new Score(profile.getName(), gameInformation.score, new HashSet<String>(), new HashMap<String, Object>());

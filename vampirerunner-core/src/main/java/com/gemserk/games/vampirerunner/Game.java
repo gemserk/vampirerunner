@@ -160,9 +160,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		PlayGameState playGameState = new PlayGameState(this);
 		playGameState.setResourceManager(resourceManager);
+		playGameState.setGamePreferences(gamePreferences);
 
 		GameOverGameState gameOverGameState = new GameOverGameState(this);
 		gameOverGameState.setResourceManager(resourceManager);
+		gameOverGameState.setGamePreferences(gamePreferences);
+		gameOverGameState.setExecutorService(executorService);
+		gameOverGameState.setProfiles(profiles);
+		gameOverGameState.setScores(scores);
 
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);

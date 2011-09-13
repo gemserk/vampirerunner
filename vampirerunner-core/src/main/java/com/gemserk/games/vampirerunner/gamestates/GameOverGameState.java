@@ -47,10 +47,12 @@ public class GameOverGameState extends GameStateImpl {
 	class SubmitScoreHandler implements FutureHandler<String> {
 
 		public void done(String scoreId) {
+			Text scoreSubmitText = guiContainer.findControl("ScoresLabel");
 			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submitted!").setColor(Color.GREEN);
 		}
 
 		public void failed(Exception e) {
+			Text scoreSubmitText = guiContainer.findControl("ScoresLabel");
 			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
 			if (e != null)
 				Gdx.app.log("FaceHunt", e.getMessage(), e);
@@ -69,7 +71,6 @@ public class GameOverGameState extends GameStateImpl {
 	private GamePreferences gamePreferences;
 	private ExecutorService executorService;
 
-	private Text scoreSubmitText;
 	private Score score;
 	private Profile profile;
 	
@@ -93,6 +94,22 @@ public class GameOverGameState extends GameStateImpl {
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
+	
+	public void setScores(Scores scores) {
+		this.scores = scores;
+	}
+	
+	public void setProfiles(Profiles profiles) {
+		this.profiles = profiles;
+	}
+	
+	public void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
+	}
+	
+	public void setGamePreferences(GamePreferences gamePreferences) {
+		this.gamePreferences = gamePreferences;
+	}
 
 	public GameOverGameState(Game game) {
 		this.game = game;
@@ -109,14 +126,12 @@ public class GameOverGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
 
-//		GameInformation gameInformation = game.getGameData().get("gameInformation");
-
 		BitmapFont scoresFont = resourceManager.getResourceValue("ScoresFont");
 
 		score = getParameters().get("score");
 
-		final Text distanceLabel = GuiControls.label("Score: " + score.getPoints()) //
-				.id("ScoreLabel") //
+		final Text distanceLabel = GuiControls.label("Score: " + score.getPoints() + " pts submitting...") //
+				.id("ScoresLabel") //
 				.position(width * 0.5f, height * 0.5f) //
 				.center(0.5f, 0.5f) //
 				.font(scoresFont) //
@@ -138,6 +153,7 @@ public class GameOverGameState extends GameStateImpl {
 
 			@Override
 			public void failed(Exception e) {
+				Text scoreSubmitText = guiContainer.findControl("ScoresLabel");
 				scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
 				if (e != null)
 					Gdx.app.log("VampireRunner", e.getMessage(), e);
@@ -172,6 +188,10 @@ public class GameOverGameState extends GameStateImpl {
 	public void update() {
 		Gdx.input.setInputProcessor(inputProcessor);
 		Synchronizers.synchronize(getDelta());
+		
+		registerProfileProcessor.update();
+		submitScoreProcessor.update();
+		
 	}
 
 	@Override
