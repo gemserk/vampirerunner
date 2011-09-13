@@ -171,6 +171,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);
+		instructionsGameState.setGamePreferences(gamePreferences);
+		instructionsGameState.setProfiles(profiles);
 
 		HighscoresGameState highscoresGameState = new HighscoresGameState(this);
 		highscoresGameState.setResourceManager(resourceManager);

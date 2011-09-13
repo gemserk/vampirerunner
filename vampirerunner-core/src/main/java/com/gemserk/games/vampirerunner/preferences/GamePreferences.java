@@ -32,6 +32,14 @@ public class GamePreferences {
 	}
 	
 	/**
+	 * Returns locally saved profiles.
+	 */
+	public Set<Profile> getSavedProfiles() {
+		String profilesListJson = preferences.getString("profiles", "[]");
+		return profileJsonSerializer.parseList(profilesListJson);
+	}
+	
+	/**
 	 * Updates the current profile with values of specified profile, it also updates saved profile list.
 	 */
 	public void updateProfile(Profile profile) {
