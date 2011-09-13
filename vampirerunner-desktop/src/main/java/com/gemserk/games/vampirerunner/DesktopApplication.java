@@ -19,7 +19,7 @@ public class DesktopApplication {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-		config.title = "Vampire Runner - Gemserk";
+		config.title = "Gemserk's Vampire Runner";
 		config.width = 800;
 		config.height = 480;
 		// config.height = 240;

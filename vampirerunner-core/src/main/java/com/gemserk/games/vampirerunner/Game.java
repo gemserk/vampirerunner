@@ -2,9 +2,12 @@ package com.gemserk.games.vampirerunner;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,9 +30,11 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
+import com.gemserk.games.vampirerunner.gamestates.HighscoresGameState;
 import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
 import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
+import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.games.vampirerunner.resources.GameResources;
 import com.gemserk.games.vampirerunner.transitions.FadeInTransition;
 import com.gemserk.games.vampirerunner.transitions.FadeOutTransition;
@@ -74,7 +79,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen playGameScreen;
 	private Screen gameOverScreen;
 	private Screen instructionsScreen;
-	
+
 	public Scores scores;
 	public Profiles profiles;
 
@@ -107,22 +112,22 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	 */
 	public EventManager getEventManager() {
 		return eventManager;
-	} 
-	
+	}
+
 	public void setScores(Scores scores) {
 		this.scores = scores;
 	}
-	
+
 	public void setProfiles(Profiles profiles) {
 		this.profiles = profiles;
 	}
-	
+
 	@Override
 	public void create() {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
-		
+
 		gameData = new ParametersWrapper();
 
 		try {
@@ -132,6 +137,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+
+		ExecutorService executorService = Executors.newCachedThreadPool();
+		Preferences preferences = Gdx.app.getPreferences("gemserk-vampirerunner");
+
+		GamePreferences gamePreferences = new GamePreferences(preferences);
 
 		eventManager = new EventManagerImpl();
 		resourceManager = new CustomResourceManager<String>();
@@ -151,16 +161,24 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);
 
+		HighscoresGameState highscoresGameState = new HighscoresGameState(this);
+		highscoresGameState.setResourceManager(resourceManager);
+		highscoresGameState.setExecutorService(executorService);
+		highscoresGameState.setGamePreferences(gamePreferences);
+		highscoresGameState.setScores(scores);
+
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
 		instructionsScreen = new ScreenImpl(instructionsGameState);
+		Screen highscoresScreen = new ScreenImpl(highscoresGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
 		registrator.registerEventListeners(this);
 
-		setScreen(splashScreen);
+//		setScreen(splashScreen);
+		setScreen(highscoresScreen);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
