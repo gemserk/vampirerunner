@@ -1,7 +1,11 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -76,6 +80,10 @@ import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.scores.Score;
+import com.gemserk.scores.Scores;
+import com.gemserk.scores.Scores.Range;
+import com.gemserk.util.concurrent.FutureHandler;
+import com.gemserk.util.concurrent.FutureProcessor;
 
 public class PlayGameState extends GameStateImpl {
 
@@ -99,11 +107,22 @@ public class PlayGameState extends GameStateImpl {
 	private CameraRestrictedImpl backgroundRestrictedCamera;
 	private Libgdx2dCamera backgroundCamera;
 	private Resource<Music> musicResource;
-	
+	private FutureProcessor<Score> bestDailyScoreFutureProcessor;
+
+	private Scores scores;
+	private ExecutorService executorService;
 	private GamePreferences gamePreferences;
-	
+
 	public void setGamePreferences(GamePreferences gamePreferences) {
 		this.gamePreferences = gamePreferences;
+	}
+
+	public void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
+	}
+
+	public void setScores(Scores scores) {
+		this.scores = scores;
 	}
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
@@ -141,6 +160,14 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		guiContainer.add(distanceLabel);
+
+		guiContainer.add(GuiControls.label("") //
+				.id("BestScoreLabel") //
+				.position(width * 0.95f, height * 0.95f) //
+				.center(1f, 0.5f) //
+				.font(distanceFont) //
+				.color(Color.RED) //
+				.build());
 
 		final EventManager eventManager = new EventManagerImpl();
 
@@ -309,9 +336,9 @@ public class PlayGameState extends GameStateImpl {
 						Gdx.app.log("VampireRunner", "Game finished");
 
 						Profile profile = gamePreferences.getProfile();
-						
+
 						Score score = new Score(profile.getName(), gameInformation.score, new HashSet<String>(), new HashMap<String, Object>());
-						
+
 						game.transition(game.getGameOverScreen()) //
 								.parameter("score", score) //
 								.disposeCurrent(true) //
@@ -380,9 +407,44 @@ public class PlayGameState extends GameStateImpl {
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
 
-		update();
+		FutureHandler<Score> bestDailyScoreFutureHandler = new FutureHandler<Score>() {
+
+			@Override
+			public void failed(Exception e) {
+				Gdx.app.log("VampireRunner", "Failed to retrieve best daily score", e);
+			}
+
+			@Override
+			public void done(Score score) {
+				Text bestScoreLabel = guiContainer.findControl("BestScoreLabel");
+				if (bestScoreLabel == null)
+					return;
+				if (score != null)
+					bestScoreLabel.setText("Today Highscore: " + score.getPoints());
+				else
+					bestScoreLabel.setText("No Highscore today yet");
+			}
+		};
+
+		bestDailyScoreFutureProcessor = new FutureProcessor<Score>(bestDailyScoreFutureHandler);
+
+		Callable<Score> bestDailyScoreCallable = new Callable<Score>() {
+			@Override
+			public Score call() throws Exception {
+				Collection<Score> scoreList = scores.getOrderedByPoints(new HashSet<String>(), 1, false, Range.Day);
+				if (scoreList.isEmpty())
+					return null;
+				return scoreList.iterator().next();
+			}
+		};
+
+		Future<Score> future = executorService.submit(bestDailyScoreCallable);
+
+		bestDailyScoreFutureProcessor.setFuture(future);
 
 		musicResource = resourceManager.get("GameMusic");
+
+		// update();
 	}
 
 	@Override
@@ -423,6 +485,8 @@ public class PlayGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
+
+		bestDailyScoreFutureProcessor.update();
 		// volumeTransition.update(getDeltaInMs());
 		// if (!volumeTransition.isFinished()) {
 		// Music music = musicResource.get();
@@ -434,21 +498,21 @@ public class PlayGameState extends GameStateImpl {
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
-		Music music = musicResource.get();
-		if (!music.isPlaying()) {
-			music.setLooping(true);
-			music.play();
-			music.setVolume(1f);
-			// volumeTransition.set(0f);
-			// volumeTransition.set(1f, 1000);
-		}
+		// Music music = musicResource.get();
+		// if (!music.isPlaying()) {
+		// music.setLooping(true);
+		// music.play();
+		// music.setVolume(1f);
+		// // volumeTransition.set(0f);
+		// // volumeTransition.set(1f, 1000);
+		// }
 	}
 
 	@Override
 	public void pause() {
-		Music music = musicResource.get();
-		if (music.isPlaying())
-			music.stop();
+		// Music music = musicResource.get();
+		// if (music.isPlaying())
+		// music.stop();
 	}
 
 	@Override
