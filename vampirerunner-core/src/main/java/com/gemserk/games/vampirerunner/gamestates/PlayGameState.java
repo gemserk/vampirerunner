@@ -444,7 +444,7 @@ public class PlayGameState extends GameStateImpl {
 
 		musicResource = resourceManager.get("GameMusic");
 
-		// update();
+		 update();
 	}
 
 	@Override
