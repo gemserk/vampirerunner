@@ -49,6 +49,7 @@ public class GameOverGameState extends GameStateImpl {
 		public void done(String scoreId) {
 			Text scoreSubmitText = guiContainer.findControl("ScoresLabel");
 			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submitted!").setColor(Color.GREEN);
+			enableInput();
 		}
 
 		public void failed(Exception e) {
@@ -56,6 +57,7 @@ public class GameOverGameState extends GameStateImpl {
 			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
 			if (e != null)
 				Gdx.app.log("FaceHunt", e.getMessage(), e);
+			enableInput();
 		}
 
 	}
@@ -139,6 +141,13 @@ public class GameOverGameState extends GameStateImpl {
 				.build();
 
 		guiContainer.add(distanceLabel);
+		guiContainer.add(GuiControls.label("Tap to continue") //
+				.id("TapLabel") //
+				.position(width * 0.5f, height * 0.1f) //
+				.center(0.5f, 0.5f) //
+				.font(scoresFont) //
+				.color(0f, 0f, 0f, 0f) //
+				.build());
 		
 		profile = gamePreferences.getProfile();
 
@@ -157,6 +166,7 @@ public class GameOverGameState extends GameStateImpl {
 				scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
 				if (e != null)
 					Gdx.app.log("VampireRunner", e.getMessage(), e);
+				enableInput();
 			}
 
 		});
@@ -168,6 +178,12 @@ public class GameOverGameState extends GameStateImpl {
 				return profiles.register(profile.getName(), profile.isGuest());
 			}
 		}));
+	}
+	
+	private void enableInput() {
+		Gdx.input.setInputProcessor(inputProcessor);
+		Text tapText = guiContainer.findControl("TapLabel");
+		tapText.setColor(1f, 0f, 0f, 1f);
 	}
 	
 	private void nextScreen() {
@@ -186,9 +202,7 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
-		Gdx.input.setInputProcessor(inputProcessor);
 		Synchronizers.synchronize(getDelta());
-		
 		registerProfileProcessor.update();
 		submitScoreProcessor.update();
 		
