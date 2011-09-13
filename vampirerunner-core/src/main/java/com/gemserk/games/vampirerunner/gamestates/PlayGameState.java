@@ -1,5 +1,8 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -47,6 +50,7 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.datastore.profiles.Profile;
 import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.GameInformation;
@@ -54,6 +58,7 @@ import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
+import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
@@ -70,6 +75,7 @@ import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
+import com.gemserk.scores.Score;
 
 public class PlayGameState extends GameStateImpl {
 
@@ -93,6 +99,12 @@ public class PlayGameState extends GameStateImpl {
 	private CameraRestrictedImpl backgroundRestrictedCamera;
 	private Libgdx2dCamera backgroundCamera;
 	private Resource<Music> musicResource;
+	
+	private GamePreferences gamePreferences;
+	
+	public void setGamePreferences(GamePreferences gamePreferences) {
+		this.gamePreferences = gamePreferences;
+	}
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -298,7 +310,12 @@ public class PlayGameState extends GameStateImpl {
 
 						game.getGameData().put("gameInformation", gameInformation);
 						// game.setScreen(game.getGameOverScreen(), true);
+						Profile profile = gamePreferences.getProfile();
+						
+						Score score = new Score(profile.getName(), gameInformation.score, new HashSet<String>(), new HashMap<String, Object>());
+						
 						game.transition(game.getGameOverScreen()) //
+								.parameter("score", score) //
 								.disposeCurrent(true) //
 								.start();
 					}

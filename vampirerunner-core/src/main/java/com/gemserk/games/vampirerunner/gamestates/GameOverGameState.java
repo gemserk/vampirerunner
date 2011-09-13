@@ -1,5 +1,8 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -11,17 +14,67 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.datastore.profiles.Profile;
+import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.Game;
-import com.gemserk.games.vampirerunner.GameInformation;
+import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.resources.ResourceManager;
+import com.gemserk.scores.Score;
+import com.gemserk.scores.Scores;
+import com.gemserk.util.concurrent.FutureHandler;
+import com.gemserk.util.concurrent.FutureProcessor;
 
 public class GameOverGameState extends GameStateImpl {
+	
+	class SubmitScoreCallable implements Callable<String> {
+
+		private final Score score;
+
+		private final Profile profile;
+
+		private SubmitScoreCallable(Score score, Profile profile) {
+			this.score = score;
+			this.profile = profile;
+		}
+
+		@Override
+		public String call() throws Exception {
+			return scores.submit(profile.getPrivateKey(), score);
+		}
+
+	}
+
+	class SubmitScoreHandler implements FutureHandler<String> {
+
+		public void done(String scoreId) {
+			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submitted!").setColor(Color.GREEN);
+		}
+
+		public void failed(Exception e) {
+			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
+			if (e != null)
+				Gdx.app.log("FaceHunt", e.getMessage(), e);
+		}
+
+	}
 
 	private final Game game;
 	private ResourceManager<String> resourceManager;
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
+	
+	private Scores scores;
+	private Profiles profiles;
+	private GamePreferences gamePreferences;
+	private ExecutorService executorService;
+
+	private Text scoreSubmitText;
+	private Score score;
+	private Profile profile;
+	
+	private FutureProcessor<String> submitScoreProcessor;
+	private FutureProcessor<Profile> registerProfileProcessor;
 
 	private InputAdapter inputProcessor = new InputAdapter() {
 		@Override
@@ -56,18 +109,49 @@ public class GameOverGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
 
-		GameInformation gameInformation = game.getGameData().get("gameInformation");
+//		GameInformation gameInformation = game.getGameData().get("gameInformation");
 
-		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
+		BitmapFont scoresFont = resourceManager.getResourceValue("ScoresFont");
 
-		final Text distanceLabel = GuiControls.label("Score: " + gameInformation.score).id("DistanceLabel") //
+		score = getParameters().get("score");
+
+		final Text distanceLabel = GuiControls.label("Score: " + score.getPoints()) //
+				.id("ScoreLabel") //
 				.position(width * 0.5f, height * 0.5f) //
 				.center(0.5f, 0.5f) //
-				.font(distanceFont) //
+				.font(scoresFont) //
 				.color(Color.RED) //
 				.build();
 
 		guiContainer.add(distanceLabel);
+		
+		profile = gamePreferences.getProfile();
+
+		submitScoreProcessor = new FutureProcessor<String>(new SubmitScoreHandler());
+		registerProfileProcessor = new FutureProcessor<Profile>(new FutureHandler<Profile>() {
+
+			@Override
+			public void done(Profile profile) {
+				gamePreferences.updateProfile(profile);
+				submitScoreProcessor.setFuture(executorService.submit(new SubmitScoreCallable(score, profile)));
+			}
+
+			@Override
+			public void failed(Exception e) {
+				scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
+				if (e != null)
+					Gdx.app.log("VampireRunner", e.getMessage(), e);
+			}
+
+		});
+		registerProfileProcessor.setFuture(executorService.submit(new Callable<Profile>() {
+			@Override
+			public Profile call() throws Exception {
+				if (profile.getPublicKey() != null)
+					return profile;
+				return profiles.register(profile.getName(), profile.isGuest());
+			}
+		}));
 	}
 	
 	private void nextScreen() {
