@@ -81,7 +81,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen instructionsScreen;
 	private Screen highscoresScreen;
 
-
 	public Scores scores;
 	public Profiles profiles;
 
@@ -100,7 +99,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getInstructionsScreen() {
 		return instructionsScreen;
 	}
-	
+
 	public Screen getHighscoresScreen() {
 		return highscoresScreen;
 	}
@@ -190,8 +189,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		registrator.registerEventListeners(this);
 
-//		setScreen(splashScreen);
-		setScreen(highscoresScreen);
+		setScreen(splashScreen);
+		// setScreen(highscoresScreen);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
