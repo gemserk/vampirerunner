@@ -1,17 +1,16 @@
 package com.gemserk.games.vampirerunner;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.File;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.gemserk.datastore.profiles.ProfilesMemoryImpl;
-import com.gemserk.scores.Score;
+import com.gemserk.datastore.profiles.Profiles;
+import com.gemserk.datastore.profiles.ProfilesFileImpl;
 import com.gemserk.scores.Scores;
-import com.gemserk.scores.ScoresMemoryImpl;
+import com.gemserk.scores.ScoresFileImpl;
 
 public class DesktopApplication {
 
@@ -35,16 +34,11 @@ public class DesktopApplication {
 
 		// Scores scores = new ScoresHttpImpl("f3ba5a778d0996ffffae1088dd1773341c068552", "http://gemserkscores.appspot.com", new ScoreSerializerJSONImpl());
 		// Profiles profiles = new ProfilesHttpImpl("http://gemserkscores.appspot.com");
-		
-		// if DEBUG -> 
-		ProfilesMemoryImpl profiles = new ProfilesMemoryImpl();
-		Scores scores = new ScoresMemoryImpl(profiles) {
-			{
-				submit(new Score("arielsan", 360, new HashSet<String>(), new HashMap<String, Object>()));
-				submit(new Score("ruben01", 1, new HashSet<String>(), new HashMap<String, Object>()));
-				submit(new Score("t4ils", 1525, new HashSet<String>(), new HashMap<String, Object>()));
-			}
-		};
+
+		// if DEBUG ->
+//		ProfilesMemoryImpl profiles = new ProfilesMemoryImpl();
+		Profiles profiles =new ProfilesFileImpl(new File("/tmp/gemserk/vampirerunner/profiles.json")); 
+		Scores scores = new ScoresFileImpl(new File("/tmp/gemserk/vampirerunner/scores.json"), profiles);
 
 		game.setScores(scores);
 		game.setProfiles(profiles);
