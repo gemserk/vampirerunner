@@ -231,7 +231,9 @@ public class HighscoresGameState extends GameStateImpl {
 	}
 	
 	private void mainMenu() {
-		game.transition(game.getInstructionsScreen()).start();
+		game.transition(game.getInstructionsScreen()) //
+			.disposeCurrent() //
+			.start();
 	}
 
 	@Override
@@ -321,7 +323,5 @@ public class HighscoresGameState extends GameStateImpl {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		font.dispose();
-		resourceManager.unloadAll();
 	}
 }

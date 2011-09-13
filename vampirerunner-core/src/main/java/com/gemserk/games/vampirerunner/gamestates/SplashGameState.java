@@ -103,7 +103,8 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	}
 
 	private void mainMenu() {
-		game.transition(game.getInstructionsScreen()) //
+		game.transition(game.getHighscoresScreen()) //
+//		game.transition(game.getInstructionsScreen()) //
 				.leaveTime(1500) //
 				.disposeCurrent() //
 				.start();
@@ -141,11 +142,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
-	}
-
-	@Override
-	public void pause() {
-
 	}
 
 	@Override

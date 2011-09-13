@@ -71,9 +71,7 @@ public class GameOverGameState extends GameStateImpl {
 	}
 	
 	private void nextScreen() {
-		game.transition(game.getInstructionsScreen())//
-				.leaveTime(150) //
-				.enterTime(150) //
+		game.transition(game.getHighscoresScreen())//
 				.disposeCurrent(true) //
 				.start();
 	}
