@@ -190,7 +190,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		registrator.registerEventListeners(this);
 
-		setScreen(splashScreen);
+//		setScreen(splashScreen);
+		setScreen(highscoresScreen);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {

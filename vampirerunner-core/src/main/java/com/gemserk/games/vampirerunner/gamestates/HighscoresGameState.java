@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
@@ -26,6 +27,7 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.datastore.profiles.Profile;
 import com.gemserk.games.vampirerunner.Game;
+import com.gemserk.games.vampirerunner.gui.MultipleTextButtonContainer;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.scores.Score;
@@ -146,8 +148,10 @@ public class HighscoresGameState extends GameStateImpl {
 		};
 
 		guiContainer = new Container("ButtonsPanel");
-
-		guiContainer.add(GuiControls.textButton() //
+		
+		MultipleTextButtonContainer buttonsPanel = new MultipleTextButtonContainer();
+		
+		buttonsPanel.add(GuiControls.textButton() //
 				.id("AllButton") //
 				.font(font) //
 				.text("All") //
@@ -163,7 +167,7 @@ public class HighscoresGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		guiContainer.add(GuiControls.textButton() //
+		buttonsPanel.add(GuiControls.textButton() //
 				.id("MonthlyButton") //
 				.font(font) //
 				.text("Monthly") //
@@ -179,7 +183,7 @@ public class HighscoresGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		guiContainer.add(GuiControls.textButton() //
+		buttonsPanel.add(GuiControls.textButton() //
 				.id("WeeklyButton") //
 				.font(font) //
 				.text("Weekly") //
@@ -195,7 +199,7 @@ public class HighscoresGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		guiContainer.add(GuiControls.textButton() //
+		buttonsPanel.add(GuiControls.textButton() //
 				.id("DailyButton") //
 				.font(font) //
 				.text("Daily") //
@@ -210,12 +214,16 @@ public class HighscoresGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
+		
+		buttonsPanel.select("DailyButton");
+		
+		guiContainer.add(buttonsPanel);
 
 		guiContainer.add(GuiControls.textButton() //
 				.font(font) //
 				.text("Tap here to return") //
 				.position(viewportWidth * 0.5f, viewportHeight * 0.1f) //
-				.notOverColor(1f, 0f, 0f, 1f) //
+				.notOverColor(1f, 1f, 1f, 1f) //
 				.overColor(1f, 0f, 0f, 1f) //
 				.boundsOffset(40f, 40f) //
 				.handler(new ButtonHandler() {
@@ -258,16 +266,10 @@ public class HighscoresGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
+		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
 		scoresRefreshProcessor.update();
-
 		guiContainer.update();
-
-		// if (tapScreenButton.isPressed())
-		// game.transition(game.menuScreen, true, 1000);
-		//
-		// if (inputDevicesMonitor.getButton("back").isReleased())
-		// game.transition(game.menuScreen, true, 1000);
 	}
 
 	private void reloadScores(Range range) {

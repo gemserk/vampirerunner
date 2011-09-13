@@ -94,13 +94,6 @@ public class InstructionsGameState extends GameStateImpl {
 				.color(Color.RED) //
 				.build());
 
-		// guiContainer.add(GuiControls.label(instructions[1]).id("ClickToStart") //
-		// .position(width * 0.5f, height * 0.3f) //
-		// .center(0.5f, 0.5f) //
-		// .font(distanceFont) //
-		// .color(Color.RED) //
-		// .build());
-
 		guiContainer.add(GuiControls.textButton() //
 				.id("ClickToStart") //
 				.text(instructions[1]) //
@@ -179,7 +172,6 @@ public class InstructionsGameState extends GameStateImpl {
 							gamePreferences.updateProfile(profile);
 
 						} catch (Exception e) {
-							// profile couldn't be updated... :(
 							Gdx.app.log("Vampire Runner", e.getMessage(), e);
 							game.getScreen().resume();
 							return;
@@ -192,7 +184,6 @@ public class InstructionsGameState extends GameStateImpl {
 
 					Text profileLabel = guiContainer.findControl("ProfileLabel");
 					profileLabel.setText("Playing as " + username);
-					// changeUsernameButton.setText("Username: " + username + "\n(tap to change it)");
 					
 				}
 				game.getScreen().resume();
