@@ -6,8 +6,8 @@
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Ludum Dare 21 - Vampire Runner</name>
-	<description>Ludum Dare 21 - Vampire Runner</description>
+	<name>Vampire Runner</name>
+	<description>Vampire Runner</description>
 
 	<organization>
 		<name>Gemserk</name>
@@ -41,7 +41,6 @@
 			<url>https://maven.gemserk.com/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
 
 	<modules>
 		<module>vampirerunner-core</module>
@@ -87,21 +86,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
-				<executions>
-					<execution>
-						<phase>install</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>

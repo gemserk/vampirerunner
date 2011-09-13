@@ -5,6 +5,11 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.gemserk.datastore.profiles.Profiles;
+import com.gemserk.datastore.profiles.ProfilesHttpImpl;
+import com.gemserk.scores.ScoreSerializerJSONImpl;
+import com.gemserk.scores.Scores;
+import com.gemserk.scores.ScoresHttpImpl;
 
 public class DesktopApplication {
 
@@ -24,7 +29,15 @@ public class DesktopApplication {
 		config.forceExit = true;
 		config.vSyncEnabled = true;
 
-		new LwjglApplication(new Game(), config);
+		Game game = new Game();
+		
+		Scores scores = new ScoresHttpImpl("f3ba5a778d0996ffffae1088dd1773341c068552", "http://gemserkscores.appspot.com", new ScoreSerializerJSONImpl());
+		Profiles profiles = new ProfilesHttpImpl("http://gemserkscores.appspot.com");
+		
+		game.setScores(scores);
+		game.setProfiles(profiles);
+		
+		new LwjglApplication(game, config);
 	}
 
 }

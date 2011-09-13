@@ -25,6 +25,7 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
 import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
 import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
@@ -32,6 +33,7 @@ import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.resources.GameResources;
 import com.gemserk.games.vampirerunner.transitions.FadeInTransition;
 import com.gemserk.games.vampirerunner.transitions.FadeOutTransition;
+import com.gemserk.scores.Scores;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -72,6 +74,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen playGameScreen;
 	private Screen gameOverScreen;
 	private Screen instructionsScreen;
+	
+	public Scores scores;
+	public Profiles profiles;
 
 	public Screen getSplashScreen() {
 		return splashScreen;
@@ -102,14 +107,22 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	 */
 	public EventManager getEventManager() {
 		return eventManager;
+	} 
+	
+	public void setScores(Scores scores) {
+		this.scores = scores;
 	}
-
+	
+	public void setProfiles(Profiles profiles) {
+		this.profiles = profiles;
+	}
+	
 	@Override
 	public void create() {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
-
+		
 		gameData = new ParametersWrapper();
 
 		try {
