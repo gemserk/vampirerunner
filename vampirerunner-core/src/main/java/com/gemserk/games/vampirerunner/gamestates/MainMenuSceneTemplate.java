@@ -31,24 +31,18 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
-import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
-import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
-import com.gemserk.games.vampirerunner.templates.TimedEventTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
-import com.gemserk.games.vampirerunner.templates.VampirePartExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
-import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class MainMenuSceneTemplate {
@@ -124,14 +118,9 @@ public class MainMenuSceneTemplate {
 		EntityTemplate floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		EntityTemplate cameraTemplate = new CameraTemplate();
 
-		EntityTemplate obstacleTemplate = new ObstacleTemplate(resourceManager, bodyBuilder);
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
-
-		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
-		final EntityTemplate timedEventTemplate = new TimedEventTemplate(eventManager);
-		final EntityTemplate vladimirPartExplosion = new VampirePartExplosionTemplate(resourceManager);
 
 		VampireController vampireController = new VampireController();
 
@@ -184,7 +173,9 @@ public class MainMenuSceneTemplate {
 				.put("spatial", new SpatialImpl(0, 0, 512, 512, 0f)) //
 				);
 
-		entityFactory.instantiate(cloudSpawnerTemplate);
+		entityFactory.instantiate(cloudSpawnerTemplate, new ParametersWrapper() //
+				.put("bounds", new Rectangle(0f, 140f, 800f, 320f)) //
+				);
 
 		// entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
 		// .put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
@@ -202,8 +193,7 @@ public class MainMenuSceneTemplate {
 		// an entity which removes old tiles
 
 		entityBuilder //
-				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Tiles), //
-						new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
+				.component(new ScriptComponent(new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
 				.build();
 
 	}

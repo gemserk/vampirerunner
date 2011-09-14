@@ -24,7 +24,11 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 
 		private final String[] cloudSpriteIds = { "Cloud01Sprite", "Cloud02Sprite", "Cloud03Sprite" };
 		private int cloudsCount = 4;
-		private Rectangle bounds = new Rectangle(0f, 240f, 800f, 220f);
+		private Rectangle bounds;
+		
+		public CloudSpawnerScript(Rectangle bounds) {
+			this.bounds = bounds;
+		}
 
 		@Override
 		public void init(World world, Entity e) {
@@ -98,7 +102,8 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 
 	@Override
 	public void apply(Entity entity) {
+		Rectangle bounds = parameters.get("bounds");
 		entity.addComponent(new TagComponent(Tags.CloudSpawner));
-		entity.addComponent(new ScriptComponent(new CloudSpawnerScript()));
+		entity.addComponent(new ScriptComponent(new CloudSpawnerScript(bounds)));
 	}
 }

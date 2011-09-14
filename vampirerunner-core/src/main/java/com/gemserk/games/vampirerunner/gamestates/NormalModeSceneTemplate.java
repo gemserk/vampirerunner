@@ -203,7 +203,9 @@ public class NormalModeSceneTemplate {
 				.put("spatial", new SpatialImpl(1024, 0, 512, 512, 0f)) //
 				);
 
-		entityFactory.instantiate(cloudSpawnerTemplate);
+		entityFactory.instantiate(cloudSpawnerTemplate, new ParametersWrapper() //
+				.put("bounds", new Rectangle(0f, 240f, 800f, 220f)) //
+				);
 
 		entityBuilder //
 				.component(new TagComponent(Tags.Player)) //
