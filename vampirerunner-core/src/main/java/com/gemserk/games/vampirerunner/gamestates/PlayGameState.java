@@ -438,8 +438,7 @@ public class PlayGameState extends GameStateImpl {
 				})) //
 				.build();
 
-		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
-
+		
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
 
@@ -470,9 +469,10 @@ public class PlayGameState extends GameStateImpl {
 			}
 
 		};
+		
+		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
 
 		Future<Score> future = executorService.submit(bestDailyScoreFutureHandler);
-
 		bestDailyScoreFutureProcessor = new FutureProcessor<Score>(bestDailyScoreFutureHandler, future);
 
 		musicResource = resourceManager.get("GameMusic");
@@ -518,7 +518,6 @@ public class PlayGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
-
 		bestDailyScoreFutureProcessor.update();
 		// volumeTransition.update(getDeltaInMs());
 		// if (!volumeTransition.isFinished()) {
