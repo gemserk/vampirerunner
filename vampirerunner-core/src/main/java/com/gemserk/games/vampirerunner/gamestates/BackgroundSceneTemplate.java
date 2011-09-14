@@ -1,7 +1,5 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
-import com.artemis.Entity;
-import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -11,7 +9,6 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
-import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.MovementSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
@@ -23,16 +20,11 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
-import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.vampirerunner.Tags;
-import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
@@ -42,7 +34,7 @@ import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
-import com.gemserk.games.vampirerunner.templates.VampireTemplate;
+import com.gemserk.games.vampirerunner.templates.VampireIdleTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundSceneTemplate {
@@ -114,7 +106,7 @@ public class BackgroundSceneTemplate {
 
 		// initialize templates
 		EntityTemplate staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
-		EntityTemplate vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder, eventManager);
+		EntityTemplate vampireTemplate = new VampireIdleTemplate(resourceManager);
 		EntityTemplate floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		EntityTemplate cameraTemplate = new CameraTemplate();
 
@@ -124,43 +116,7 @@ public class BackgroundSceneTemplate {
 
 		VampireController vampireController = new VampireController();
 
-		final Camera backgroundRestrictedCamera = new CameraRestrictedImpl(-256, 0, 2 * gameZoom, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
-
-		entityBuilder //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-
-					float startX;
-					float cameraDistance = 0f;
-					float playerDistance;
-					float daySpeed = 0f;
-
-					@Override
-					public void init(World world, Entity e) {
-						super.init(world, e);
-						startX = backgroundRestrictedCamera.getX();
-					}
-
-					@Override
-					public void update(World world, Entity e) {
-						// day speed
-						cameraDistance += daySpeed * GlobalTime.getDelta();
-
-						Entity player = world.getTagManager().getEntity(Tags.Vampire);
-						if (player != null) {
-							DistanceComponent distanceComponent = player.getComponent(DistanceComponent.class);
-							playerDistance = distanceComponent.distance;
-						}
-
-						float newPosition = startX + playerDistance - cameraDistance;
-
-						backgroundRestrictedCamera.setPosition(newPosition, 0f);
-
-						backgroundCamera.move(backgroundRestrictedCamera.getX(), backgroundRestrictedCamera.getY());
-						backgroundCamera.zoom(backgroundRestrictedCamera.getZoom());
-
-					}
-				})) //
-				.build();
+		backgroundCamera.zoom(2 * gameZoom);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //
@@ -177,10 +133,9 @@ public class BackgroundSceneTemplate {
 				.put("bounds", new Rectangle(0f, 140f, 800f, 320f)) //
 				);
 
-		// entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
-		// .put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
-		// .put("vampireController", vampireController) //
-		// );
+		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
+				.put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
+				);
 
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("libgdxCamera", worldCamera) //

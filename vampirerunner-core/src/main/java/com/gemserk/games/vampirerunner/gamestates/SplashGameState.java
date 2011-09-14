@@ -15,10 +15,8 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.games.vampirerunner.CustomResourceManager;
 import com.gemserk.games.vampirerunner.Game;
-import com.gemserk.games.vampirerunner.resources.GameResources;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.resources.progress.TaskQueue;
 import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
@@ -37,6 +35,10 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	private Sprite gemserkLogoBlur;
 
 	private Color blurColor = new Color();
+	
+	public void setResourceManager(ResourceManager<String> resourceManager) {
+		this.resourceManager = resourceManager;
+	}
 
 	public SplashGameState(Game game) {
 		this.game = game;
@@ -54,10 +56,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setColor(1f, 1f, 0f, 1f);
-
-		resourceManager = new ResourceManagerImpl<String>();
-
-		GameResources.load(resourceManager);
 
 		gemserkLogo = resourceManager.getResourceValue("GemserkLogo");
 		gemserkLogoBlur = resourceManager.getResourceValue("GemserkLogoBlur");

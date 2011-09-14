@@ -40,6 +40,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		animation("VampireRunningAnimation", "VampireSpriteSheet", 0, 32, 32, 32, 6, true, 1000);
 		animation("VampireFlyingAnimation", "VampireSpriteSheet", 32 * 2, 0, 32, 32, 2, true, 2000);
 		animation("VampireBloodAnimation", "VampireSpriteSheet", 0, 32 * 3, 32, 32, 7, false, 100);
+		animation("VampireIdleAnimation", "VampireSpriteSheet", 0, 0, 32, 32, 2, true, 1500, 250);
 
 		font("DistanceFont", "data/fonts/purisa-20-outlined.png", "data/fonts/purisa-20-outlined.fnt", true);
 		font("ScoresFont", "data/fonts/purisa-20-outlined.png", "data/fonts/purisa-20-outlined.fnt", true);

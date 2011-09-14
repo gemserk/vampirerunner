@@ -188,7 +188,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		highscoresGameState.setGamePreferences(gamePreferences);
 		highscoresGameState.setScores(scores);
 
-		splashScreen = new ScreenImpl(new SplashGameState(this));
+		SplashGameState splashGameState = new SplashGameState(this);
+		splashGameState.setResourceManager(resourceManager);
+		
+		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
 		instructionsScreen = new ScreenImpl(instructionsGameState);
@@ -244,6 +247,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		
 		if (inputDevicesMonitor.getButton("restartScreen").isReleased()) {
 			getScreen().restart();
+			
+			backgroundGameScene.dispose();
+			
+			BackgroundSceneTemplate backgroundSceneTemplate = new BackgroundSceneTemplate();
+			backgroundSceneTemplate.setResourceManager(resourceManager);
+			
+			backgroundGameScene = new WorldWrapper(new World());
+			
+			backgroundSceneTemplate.apply(backgroundGameScene);
 		}
 
 		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased()) {
@@ -319,8 +331,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			withTransition = true;
 			final Screen currentScreen = game.getScreen();
 			game.setScreen(new TransitionScreen(new ScreenTransition( //
-					new FadeOutTransition(currentScreen, leaveTime, leaveTransitionHandler), //
-					new FadeInTransition(screen, enterTime, new TransitionHandler() {
+					new FadeOutTransition(resourceManager, currentScreen, leaveTime, leaveTransitionHandler), //
+					new FadeInTransition(resourceManager, screen, enterTime, new TransitionHandler() {
 						public void onEnd() {
 							withTransition = false;
 							// disposes current transition screen, not previous screen.
