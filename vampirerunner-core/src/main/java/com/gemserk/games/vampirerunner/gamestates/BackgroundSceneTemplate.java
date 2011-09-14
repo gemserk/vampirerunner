@@ -45,7 +45,7 @@ import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.resources.ResourceManager;
 
-public class MainMenuSceneTemplate {
+public class BackgroundSceneTemplate {
 
 	private ResourceManager<String> resourceManager;
 	private EntityFactory entityFactory;

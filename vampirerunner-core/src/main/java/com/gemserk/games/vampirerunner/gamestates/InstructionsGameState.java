@@ -126,12 +126,12 @@ public class InstructionsGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		MainMenuSceneTemplate mainMenuSceneTemplate = new MainMenuSceneTemplate();
-		mainMenuSceneTemplate.setResourceManager(resourceManager);
+		BackgroundSceneTemplate backgroundSceneTemplate = new BackgroundSceneTemplate();
+		backgroundSceneTemplate.setResourceManager(resourceManager);
 		
 		worldWrapper = new WorldWrapper(new World());
 		
-		mainMenuSceneTemplate.apply(worldWrapper);
+		backgroundSceneTemplate.apply(worldWrapper);
 
 	}
 	
