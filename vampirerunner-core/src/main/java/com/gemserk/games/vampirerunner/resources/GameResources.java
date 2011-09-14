@@ -26,11 +26,14 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("LibgdxLogo", "LibgdxLogoTexture", 0, 25, 512, 256 - 50);
 
 		textureAtlas("TextureAtlas", "data/images/packs/pack");
+
 		spriteAtlas("BackgroundSprite", "TextureAtlas", "background");
-		// spriteAtlas("VampireSprite", "TextureAtlas", "vampire");
-		// spriteAtlas("FloorTile01Sprite", "TextureAtlas", "floor-tile-01");
 		spriteAtlas("WhiteRectangleSprite", "TextureAtlas", "white-rectangle");
 		spriteAtlas("FloorTile01Sprite", "TextureAtlas", "floor-bigtile-01");
+		
+		spriteAtlas("Cloud01Sprite", "TextureAtlas", "cloud01");
+		spriteAtlas("Cloud02Sprite", "TextureAtlas", "cloud02");
+		spriteAtlas("Cloud03Sprite", "TextureAtlas", "cloud03");
 
 		texture("VampireSpriteSheet", internal("data/images/spritesheets/vampire-spritesheet.png"), false);
 		// animation speed should depend on the vampire speed.

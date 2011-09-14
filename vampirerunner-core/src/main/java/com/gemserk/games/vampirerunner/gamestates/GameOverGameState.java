@@ -21,6 +21,7 @@ import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.scores.Score;
 import com.gemserk.scores.Scores;
+import com.gemserk.util.concurrent.FutureHandleCallable;
 import com.gemserk.util.concurrent.FutureHandler;
 import com.gemserk.util.concurrent.FutureProcessor;
 
@@ -29,7 +30,6 @@ public class GameOverGameState extends GameStateImpl {
 	class SubmitScoreCallable implements Callable<String> {
 
 		private final Score score;
-
 		private final Profile profile;
 
 		private SubmitScoreCallable(Score score, Profile profile) {
@@ -152,7 +152,8 @@ public class GameOverGameState extends GameStateImpl {
 		profile = gamePreferences.getProfile();
 
 		submitScoreProcessor = new FutureProcessor<String>(new SubmitScoreHandler());
-		registerProfileProcessor = new FutureProcessor<Profile>(new FutureHandler<Profile>() {
+		
+		FutureHandleCallable<Profile> registerProfileFutureHandler = new FutureHandleCallable<Profile>() {
 
 			@Override
 			public void done(Profile profile) {
@@ -168,16 +169,18 @@ public class GameOverGameState extends GameStateImpl {
 					Gdx.app.log("VampireRunner", e.getMessage(), e);
 				enableInput();
 			}
-
-		});
-		registerProfileProcessor.setFuture(executorService.submit(new Callable<Profile>() {
+			
 			@Override
 			public Profile call() throws Exception {
 				if (profile.getPublicKey() != null)
 					return profile;
 				return profiles.register(profile.getName(), profile.isGuest());
 			}
-		}));
+
+		};
+		
+		registerProfileProcessor = new FutureProcessor<Profile>(registerProfileFutureHandler);
+		registerProfileProcessor.setFuture(executorService.submit(registerProfileFutureHandler));
 	}
 	
 	private void enableInput() {

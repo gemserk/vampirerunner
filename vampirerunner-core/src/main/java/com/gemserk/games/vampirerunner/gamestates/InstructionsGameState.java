@@ -33,20 +33,6 @@ public class InstructionsGameState extends GameStateImpl {
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
 
-	// private InputAdapter inputProcessor = new InputAdapter() {
-	// @Override
-	// public boolean keyUp(int keycode) {
-	// nextScreen();
-	// return super.keyUp(keycode);
-	// }
-	//
-	// @Override
-	// public boolean touchUp(int x, int y, int pointer, int button) {
-	// nextScreen();
-	// return super.touchUp(x, y, pointer, button);
-	// }
-	// };
-
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -223,13 +209,6 @@ public class InstructionsGameState extends GameStateImpl {
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
-		// Gdx.input.setInputProcessor(inputProcessor);
-	}
-
-	@Override
-	public void pause() {
-		// if (Gdx.input.getInputProcessor() == inputProcessor)
-		// Gdx.input.setInputProcessor(null);
 	}
 
 	@Override

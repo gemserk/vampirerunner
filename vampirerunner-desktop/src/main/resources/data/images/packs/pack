@@ -12,22 +12,48 @@ background
   index: -1
 floor-bigtile-01
   rotate: false
-  xy: 0, 322
+  xy: 0, 324
   size: 234, 128
   orig: 234, 128
   offset: 0, 0
   index: -1
 floor-tile-01
   rotate: false
-  xy: 402, 0
-  size: 48, 47
+  xy: 404, 0
+  size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 white-rectangle
   rotate: false
-  xy: 452, 0
+  xy: 456, 0
   size: 32, 32
   orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+game-assets2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cloud01
+  rotate: false
+  xy: 0, 0
+  size: 322, 56
+  orig: 322, 56
+  offset: 0, 0
+  index: -1
+cloud03
+  rotate: false
+  xy: 0, 60
+  size: 322, 55
+  orig: 322, 55
+  offset: 0, 0
+  index: -1
+cloud02
+  rotate: false
+  xy: 0, 119
+  size: 287, 42
+  orig: 287, 42
   offset: 0, 0
   index: -1

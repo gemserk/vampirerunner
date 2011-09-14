@@ -10,7 +10,6 @@ import com.gemserk.commons.gdx.games.Spatial;
 public class CameraScript extends ScriptJavaImpl {
 
 	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
-	// private static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
 
 	private final Libgdx2dCamera libgdx2dCamera;
 	private final String targetId;

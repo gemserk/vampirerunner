@@ -1,6 +1,7 @@
 package com.gemserk.games.vampirerunner.components;
 
 import com.artemis.Component;
+import com.badlogic.gdx.math.Rectangle;
 import com.gemserk.componentsengine.utils.Container;
 
 public class Components {
@@ -38,6 +39,16 @@ public class Components {
 			this.consumeRate = consumeRate;
 			this.enabled = false;
 		}
+	}
+	
+	public static class BoundsComponent extends Component {
+		
+		public Rectangle bounds;
+
+		public BoundsComponent(Rectangle rectangle) {
+			this.bounds = rectangle;
+		}
+		
 	}
 
 }

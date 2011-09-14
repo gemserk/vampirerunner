@@ -3,7 +3,6 @@ package com.gemserk.games.vampirerunner.gamestates;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -32,6 +31,7 @@ import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.commons.artemis.systems.MovementSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
@@ -49,6 +49,7 @@ import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
@@ -69,6 +70,8 @@ import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
+import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
+import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
@@ -82,7 +85,7 @@ import com.gemserk.resources.ResourceManager;
 import com.gemserk.scores.Score;
 import com.gemserk.scores.Scores;
 import com.gemserk.scores.Scores.Range;
-import com.gemserk.util.concurrent.FutureHandler;
+import com.gemserk.util.concurrent.FutureHandleCallable;
 import com.gemserk.util.concurrent.FutureProcessor;
 
 public class PlayGameState extends GameStateImpl {
@@ -105,7 +108,6 @@ public class PlayGameState extends GameStateImpl {
 	private Sprite whiteRectangle;
 	private Sprite whiteRectangle2;
 	private CameraRestrictedImpl backgroundRestrictedCamera;
-	private Libgdx2dCamera backgroundCamera;
 	private Resource<Music> musicResource;
 	private FutureProcessor<Score> bestDailyScoreFutureProcessor;
 
@@ -179,17 +181,20 @@ public class PlayGameState extends GameStateImpl {
 
 		RenderLayers renderLayers = new RenderLayers();
 
-		backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
+		final Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
+		final Libgdx2dCamera secondBackgroundCamera = new Libgdx2dCameraTransformImpl(0, 0);
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
 
 		worldCamera.zoom(64f * gameZoom);
 
-		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -100, backgroundCamera));
+		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -500, backgroundCamera));
+		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
 
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
+		worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
@@ -205,8 +210,12 @@ public class PlayGameState extends GameStateImpl {
 		vampireTemplate = new VampireTemplate(resourceManager, bodyBuilder, eventManager);
 		floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		cameraTemplate = new CameraTemplate();
+
 		EntityTemplate obstacleTemplate = new ObstacleTemplate(resourceManager, bodyBuilder);
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
+		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
+		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
+
 		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
 		final EntityTemplate timedEventTemplate = new TimedEventTemplate(eventManager);
 		final EntityTemplate vladimirPartExplosion = new VampirePartExplosionTemplate(resourceManager);
@@ -251,6 +260,24 @@ public class PlayGameState extends GameStateImpl {
 				})) //
 				.build();
 
+		entityBuilder //
+				.component(new TagComponent("SecondBackgroundCamera")) //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+					@Override
+					public void update(World world, Entity e) {
+						Entity player = world.getTagManager().getEntity(Tags.Vampire);
+						if (player == null)
+							return;
+
+						SpatialComponent spatialComponent = player.getComponent(SpatialComponent.class);
+						Spatial spatial = spatialComponent.getSpatial();
+						secondBackgroundCamera.zoom(1f);
+						// secondBackgroundCamera.move(spatial.getX() * 2.5f, 0);
+
+					}
+				})) //
+				.build();
+
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile01Sprite") //
 				.put("layer", -999) //
@@ -271,6 +298,15 @@ public class PlayGameState extends GameStateImpl {
 				.put("layer", -999) //
 				.put("spatial", new SpatialImpl(1024, 0, 512, 512, 0f)) //
 				);
+
+		entityFactory.instantiate(cloudSpawnerTemplate);
+
+		// entityFactory.instantiate(cloudTemplate, new ParametersWrapper() //
+		// .put("spriteId", "Cloud01Sprite") //
+		// .put("layer", -250) //
+		// .put("x", 0f) //
+		// .put("y", 30f) //
+		// );
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
 				.put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
@@ -407,7 +443,7 @@ public class PlayGameState extends GameStateImpl {
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
 
-		FutureHandler<Score> bestDailyScoreFutureHandler = new FutureHandler<Score>() {
+		FutureHandleCallable<Score> bestDailyScoreFutureHandler = new FutureHandleCallable<Score>() {
 
 			@Override
 			public void failed(Exception e) {
@@ -424,11 +460,7 @@ public class PlayGameState extends GameStateImpl {
 				else
 					bestScoreLabel.setText("No Highscore today yet");
 			}
-		};
 
-		bestDailyScoreFutureProcessor = new FutureProcessor<Score>(bestDailyScoreFutureHandler);
-
-		Callable<Score> bestDailyScoreCallable = new Callable<Score>() {
 			@Override
 			public Score call() throws Exception {
 				Collection<Score> scoreList = scores.getOrderedByPoints(new HashSet<String>(), 1, false, Range.Day);
@@ -436,15 +468,16 @@ public class PlayGameState extends GameStateImpl {
 					return null;
 				return scoreList.iterator().next();
 			}
+
 		};
 
-		Future<Score> future = executorService.submit(bestDailyScoreCallable);
+		Future<Score> future = executorService.submit(bestDailyScoreFutureHandler);
 
-		bestDailyScoreFutureProcessor.setFuture(future);
+		bestDailyScoreFutureProcessor = new FutureProcessor<Score>(bestDailyScoreFutureHandler, future);
 
 		musicResource = resourceManager.get("GameMusic");
 
-		 update();
+		update();
 	}
 
 	@Override
