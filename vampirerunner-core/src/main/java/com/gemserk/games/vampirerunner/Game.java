@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Preferences;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
+import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
@@ -29,6 +31,7 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.datastore.profiles.Profiles;
+import com.gemserk.games.vampirerunner.gamestates.BackgroundSceneTemplate;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
 import com.gemserk.games.vampirerunner.gamestates.HighscoresGameState;
 import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
@@ -118,6 +121,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public EventManager getEventManager() {
 		return eventManager;
 	}
+	
+	public WorldWrapper getBackgroundGameScene() {
+		return backgroundGameScene;
+	}
 
 	public void setScores(Scores scores) {
 		this.scores = scores;
@@ -199,10 +206,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			{
 				monitorKey("grabScreenshot", Keys.NUM_9);
 				monitorKey("toggleBox2dDebug", Keys.NUM_8);
+				monitorKey("restartScreen", Keys.NUM_1);
 			}
 		};
 
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
+		
+		BackgroundSceneTemplate backgroundSceneTemplate = new BackgroundSceneTemplate();
+		backgroundSceneTemplate.setResourceManager(resourceManager);
+		
+		backgroundGameScene = new WorldWrapper(new World());
+		
+		backgroundSceneTemplate.apply(backgroundGameScene);
 	}
 
 	@Override
@@ -226,6 +241,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
 		}
+		
+		if (inputDevicesMonitor.getButton("restartScreen").isReleased()) {
+			getScreen().restart();
+		}
 
 		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased()) {
 			setShowBox2dDebug(!isShowBox2dDebug());
@@ -235,6 +254,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 
 	private boolean withTransition = false;
+	private WorldWrapper backgroundGameScene;
 
 	public class TransitionBuilder {
 
@@ -328,6 +348,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		super.dispose();
 		resourceManager.unloadAll();
 		spriteBatch.dispose();
+		getBackgroundGameScene().dispose();
 	}
 
 }

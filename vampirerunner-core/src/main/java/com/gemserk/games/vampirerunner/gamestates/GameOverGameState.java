@@ -129,6 +129,8 @@ public class GameOverGameState extends GameStateImpl {
 		guiContainer = new Container();
 
 		BitmapFont scoresFont = resourceManager.getResourceValue("ScoresFont");
+		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
+		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		score = getParameters().get("score");
 
@@ -139,13 +141,20 @@ public class GameOverGameState extends GameStateImpl {
 				.font(scoresFont) //
 				.color(Color.RED) //
 				.build();
+		
+		guiContainer.add(GuiControls.label("Game Over") //
+				.position(width * 0.5f, height * 0.9f) //
+				.center(0.5f, 0.5f) //
+				.font(titleFont) //
+				.color(1f, 0f, 0f, 1f) //
+				.build());
 
 		guiContainer.add(distanceLabel);
 		guiContainer.add(GuiControls.label("Tap to continue") //
 				.id("TapLabel") //
 				.position(width * 0.5f, height * 0.1f) //
 				.center(0.5f, 0.5f) //
-				.font(scoresFont) //
+				.font(buttonFont) //
 				.color(0f, 0f, 0f, 0f) //
 				.build());
 		
@@ -198,6 +207,7 @@ public class GameOverGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		game.getBackgroundGameScene().render();
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
@@ -206,9 +216,9 @@ public class GameOverGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
+		game.getBackgroundGameScene().update(getDeltaInMs());
 		registerProfileProcessor.update();
 		submitScoreProcessor.update();
-		
 	}
 
 	@Override

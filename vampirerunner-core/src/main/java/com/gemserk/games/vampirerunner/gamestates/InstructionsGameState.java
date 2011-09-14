@@ -2,7 +2,6 @@ package com.gemserk.games.vampirerunner.gamestates;
 
 import java.util.Set;
 
-import com.artemis.World;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
-import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
@@ -34,8 +32,6 @@ public class InstructionsGameState extends GameStateImpl {
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
-
-	private WorldWrapper worldWrapper;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -63,33 +59,42 @@ public class InstructionsGameState extends GameStateImpl {
 		
 		Profile profile = gamePreferences.getProfile();
 
-		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
+		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
+		BitmapFont instructionsFont = resourceManager.getResourceValue("InstructionsFont");
+		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		String[] instructions = new String[] { "Hold left click to move through walls", "click to start", "click here to change it" };
+		String[] instructions = new String[] { "Hold left click to move through walls", "<< click here to start >>", "<< click here to change it >>" };
 
 		if (Gdx.app.getType() == ApplicationType.Android)
-			instructions = new String[] { "Touch and hold screen to move through walls", "touch to start", "tap here to change it" };
-
-		guiContainer.add(GuiControls.label("How to play") //
+			instructions = new String[] { "Touch and hold screen to move through walls", "<< touch to start >>", "<< tap here to change it >>" };
+		
+		guiContainer.add(GuiControls.label("VAMPIRE RUNNER") //
 				.position(width * 0.5f, height * 0.9f) //
 				.center(0.5f, 0.5f) //
-				.font(distanceFont) //
+				.font(titleFont) //
+				.color(1f, 0f, 0f, 1f) //
+				.build());
+
+		guiContainer.add(GuiControls.label("How to play") //
+				.position(width * 0.5f, height * 0.75f) //
+				.center(0.5f, 0.5f) //
+				.font(titleFont) //
 				.color(1f, 1f, 0f, 1f) //
 				.build());
 
 		guiContainer.add(GuiControls.label(instructions[0]).id("Instructions") //
-				.position(width * 0.5f, height * 0.8f) //
+				.position(width * 0.5f, height * 0.65f) //
 				.center(0.5f, 0.5f) //
-				.font(distanceFont) //
-				.color(Color.RED) //
+				.font(instructionsFont) //
+				.color(1f, 0f, 0f, 1f) //
 				.build());
 
 		guiContainer.add(GuiControls.textButton() //
 				.id("ClickToStart") //
 				.text(instructions[1]) //
-				.position(width * 0.5f, height * 0.7f) //
+				.position(width * 0.5f, height * 0.5f) //
 				.center(0.5f, 0.5f) //
-				.font(distanceFont) //
+				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
 				.notOverColor(1f, 1f, 1f, 1f) //
 				.boundsOffset(40f, 40f) //
@@ -103,18 +108,18 @@ public class InstructionsGameState extends GameStateImpl {
 		
 		guiContainer.add(GuiControls.label("Playing as " + profile.getName()) //
 				.id("ProfileLabel") //
-				.position(width * 0.5f, height * 0.4f) //
+				.position(width * 0.5f, height * 0.3f) //
 				.center(0.5f, 0.5f) //
-				.font(distanceFont) //
+				.font(instructionsFont) //
 				.color(Color.RED) //
 				.build());
 		
 		guiContainer.add(GuiControls.textButton() //
 				.id("ChangeProfileButton") //
 				.text(instructions[2]) //
-				.position(width * 0.5f, height * 0.3f) //
+				.position(width * 0.5f, height * 0.2f) //
 				.center(0.5f, 0.5f) //
-				.font(distanceFont) //
+				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
 				.notOverColor(1f, 1f, 1f, 1f) //
 				.boundsOffset(40f, 40f) //
@@ -125,14 +130,6 @@ public class InstructionsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-
-		BackgroundSceneTemplate backgroundSceneTemplate = new BackgroundSceneTemplate();
-		backgroundSceneTemplate.setResourceManager(resourceManager);
-		
-		worldWrapper = new WorldWrapper(new World());
-		
-		backgroundSceneTemplate.apply(worldWrapper);
-
 	}
 	
 	private void changeProfileName() {
@@ -205,7 +202,7 @@ public class InstructionsGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		worldWrapper.render();
+		game.getBackgroundGameScene().render();
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
@@ -215,7 +212,7 @@ public class InstructionsGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		guiContainer.update();
-		worldWrapper.update(getDeltaInMs());
+		game.getBackgroundGameScene().update(getDeltaInMs());
 	}
 
 	@Override
@@ -226,6 +223,5 @@ public class InstructionsGameState extends GameStateImpl {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		worldWrapper.dispose();
 	}
 }

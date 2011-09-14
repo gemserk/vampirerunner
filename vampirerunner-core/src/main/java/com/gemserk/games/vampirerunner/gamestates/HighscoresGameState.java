@@ -14,7 +14,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -88,8 +87,6 @@ public class HighscoresGameState extends GameStateImpl {
 
 	private ResourceManager<String> resourceManager;
 
-	private Sprite backgroundSprite;
-
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private GamePreferences gamePreferences;
@@ -122,10 +119,8 @@ public class HighscoresGameState extends GameStateImpl {
 		viewportWidth = Gdx.graphics.getWidth();
 		viewportHeight = Gdx.graphics.getHeight();
 
-		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
-		backgroundSprite.setPosition(0, 0);
-		backgroundSprite.setSize(viewportWidth, viewportHeight);
-
+		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
+		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 		font = resourceManager.getResourceValue("ScoresFont");
 
 		font.setScale(1f);
@@ -148,12 +143,19 @@ public class HighscoresGameState extends GameStateImpl {
 		};
 
 		guiContainer = new Container("ButtonsPanel");
-		
+
+		guiContainer.add(GuiControls.label("Highscores") //
+				.position(viewportWidth * 0.5f, viewportHeight * 0.95f) //
+				.center(0.5f, 0.5f) //
+				.font(titleFont) //
+				.color(1f, 0f, 0f, 1f) //
+				.build());
+
 		MultipleTextButtonContainer buttonsPanel = new MultipleTextButtonContainer();
-		
+
 		buttonsPanel.add(GuiControls.textButton() //
 				.id("AllButton") //
-				.font(font) //
+				.font(buttonFont) //
 				.text("All") //
 				.position(viewportWidth * 0.9f, viewportHeight * 0.85f) //
 				.notOverColor(0.6f, 0.6f, 0.6f, 1f) //
@@ -169,7 +171,7 @@ public class HighscoresGameState extends GameStateImpl {
 
 		buttonsPanel.add(GuiControls.textButton() //
 				.id("MonthlyButton") //
-				.font(font) //
+				.font(buttonFont) //
 				.text("Monthly") //
 				.position(viewportWidth * 0.9f, viewportHeight * 0.65f) //
 				.notOverColor(0.6f, 0.6f, 0.6f, 1f) //
@@ -185,7 +187,7 @@ public class HighscoresGameState extends GameStateImpl {
 
 		buttonsPanel.add(GuiControls.textButton() //
 				.id("WeeklyButton") //
-				.font(font) //
+				.font(buttonFont) //
 				.text("Weekly") //
 				.position(viewportWidth * 0.9f, viewportHeight * 0.45f) //
 				.notOverColor(0.6f, 0.6f, 0.6f, 1f) //
@@ -201,7 +203,7 @@ public class HighscoresGameState extends GameStateImpl {
 
 		buttonsPanel.add(GuiControls.textButton() //
 				.id("DailyButton") //
-				.font(font) //
+				.font(buttonFont) //
 				.text("Daily") //
 				.position(viewportWidth * 0.9f, viewportHeight * 0.25f) //
 				.notOverColor(0.6f, 0.6f, 0.6f, 1f) //
@@ -214,13 +216,13 @@ public class HighscoresGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		
+
 		buttonsPanel.select("DailyButton");
-		
+
 		guiContainer.add(buttonsPanel);
 
 		guiContainer.add(GuiControls.textButton() //
-				.font(font) //
+				.font(buttonFont) //
 				.text("Tap here to return") //
 				.position(viewportWidth * 0.5f, viewportHeight * 0.1f) //
 				.notOverColor(1f, 1f, 1f, 1f) //
@@ -237,11 +239,11 @@ public class HighscoresGameState extends GameStateImpl {
 		// tapScreenText = new Text("Tap the screen to return", viewportWidth * 0.5f, viewportHeight * 0.1f).setColor(yellowColor);
 
 	}
-	
+
 	private void mainMenu() {
 		game.transition(game.getInstructionsScreen()) //
-			.disposeCurrent() //
-			.start();
+				.disposeCurrent() //
+				.start();
 	}
 
 	@Override
@@ -252,8 +254,9 @@ public class HighscoresGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		game.getBackgroundGameScene().render();
 		spriteBatch.begin();
-		backgroundSprite.draw(spriteBatch);
+
 		for (int i = 0; i < texts.size(); i++) {
 			Text text = texts.get(i);
 			text.draw(spriteBatch, font);
@@ -267,6 +270,7 @@ public class HighscoresGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
+		game.getBackgroundGameScene().update(getDeltaInMs());
 		inputDevicesMonitor.update();
 		scoresRefreshProcessor.update();
 		guiContainer.update();
@@ -283,16 +287,23 @@ public class HighscoresGameState extends GameStateImpl {
 		texts.clear();
 
 		float x = viewportWidth * 0.5f;
-		float y = viewportHeight * 0.98f;
+		float y = viewportHeight * 0.9f;
 
-		texts.add(new Text("HIGHSCORES", x, y, 0.5f, 0.5f).setColor(Color.RED));
+		BitmapFont font = resourceManager.getResourceValue("ScoresFont");
+
+		// float lineHeight = font.getCapHeight();
+		//
+		// float newScale = 20f / lineHeight;
+		// font.setScale(newScale);
+
+		// texts.add(new Text("HIGHSCORES", x, y, 0.5f, 0.5f).setColor(Color.RED));
 
 		y -= font.getLineHeight() * font.getScaleY();
 
-		texts.add(new Text("Name", viewportWidth * 0.3f, y, 0f, 0.5f).setColor(Color.RED));
-		texts.add(new Text("Score", viewportWidth * 0.7f, y, 1f, 0.5f).setColor(Color.RED));
-
-		y -= font.getLineHeight() * font.getScaleY();
+		// texts.add(new Text("Name", viewportWidth * 0.3f, y, 0f, 0.5f).setColor(Color.RED));
+		// texts.add(new Text("Score", viewportWidth * 0.7f, y, 1f, 0.5f).setColor(Color.RED));
+		//
+		// y -= font.getLineHeight() * font.getScaleY();
 
 		int index = 1;
 
@@ -300,7 +311,7 @@ public class HighscoresGameState extends GameStateImpl {
 
 		for (Score score : scoreList) {
 
-			Color scoreColor = Color.WHITE;
+			Color scoreColor = new Color(1f, 1f, 0f, 1f);
 
 			if (profile.getPublicKey() != null && profile.getPublicKey().equals(score.getProfilePublicKey()))
 				scoreColor = Color.RED;

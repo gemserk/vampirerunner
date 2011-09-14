@@ -1,6 +1,7 @@
 package com.gemserk.games.vampirerunner.templates;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -43,7 +44,7 @@ public class CloudTemplate extends EntityTemplateImpl {
 		float height = sprite.getHeight() * 2;
 		
 		entity.addComponent(new SpatialComponent(new SpatialImpl(x, y, width, height, 0f)));
-		entity.addComponent(new SpriteComponent(sprite));
+		entity.addComponent(new SpriteComponent(sprite, new Color(0.9f, 0.9f, 0.9f, 1f)));
 		entity.addComponent(new RenderableComponent(layer));
 		
 		entity.addComponent(new BoundsComponent(new Rectangle(0f, 0f, width, height)));

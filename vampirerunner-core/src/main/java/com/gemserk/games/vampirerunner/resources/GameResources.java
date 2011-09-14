@@ -41,8 +41,12 @@ public class GameResources extends LibgdxResourceBuilder {
 		animation("VampireFlyingAnimation", "VampireSpriteSheet", 32 * 2, 0, 32, 32, 2, true, 2000);
 		animation("VampireBloodAnimation", "VampireSpriteSheet", 0, 32 * 3, 32, 32, 7, false, 100);
 
-		font("DistanceFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
-		font("ScoresFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
+		font("DistanceFont", "data/fonts/purisa-20-outlined.png", "data/fonts/purisa-20-outlined.fnt", true);
+		font("ScoresFont", "data/fonts/purisa-20-outlined.png", "data/fonts/purisa-20-outlined.fnt", true);
+		
+		font("TitleFont", "data/fonts/ogilvie-32-outlined.png", "data/fonts/ogilvie-32-outlined.fnt", true);
+		font("InstructionsFont", "data/fonts/purisa-20-gradient.png", "data/fonts/purisa-20-gradient.fnt", false);
+		font("ButtonFont", "data/fonts/purisa-20-gradient.png", "data/fonts/purisa-20-gradient.fnt", false);
 
 		sprite("VampireRightArm", "VampireSpriteSheet", 0, 32 * 2, 32, 32);
 		sprite("VampireLeftArm", "VampireSpriteSheet", 32 * 1, 32 * 2, 32, 32);
