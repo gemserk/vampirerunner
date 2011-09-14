@@ -62,7 +62,7 @@ import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
-public class NormalModeGameTemplate {
+public class NormalModeSceneTemplate {
 
 	private ResourceManager<String> resourceManager;
 	private WorldWrapper worldWrapper;

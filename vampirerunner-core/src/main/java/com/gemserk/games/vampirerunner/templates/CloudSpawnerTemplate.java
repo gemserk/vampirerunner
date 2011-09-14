@@ -23,8 +23,8 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 	class CloudSpawnerScript extends ScriptJavaImpl {
 
 		private final String[] cloudSpriteIds = { "Cloud01Sprite", "Cloud02Sprite", "Cloud03Sprite" };
-		private int cloudsCount = 2;
-		private Rectangle bounds = new Rectangle(0f, 240f, 800f, 280f);
+		private int cloudsCount = 4;
+		private Rectangle bounds = new Rectangle(0f, 240f, 800f, 220f);
 
 		@Override
 		public void init(World world, Entity e) {
@@ -32,7 +32,7 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 				entityFactory.instantiate(cloudTemplate, new ParametersWrapper() //
 						.put("spriteId", cloudSpriteIds[MathUtils.random(0, cloudSpriteIds.length - 1)]) //
 						.put("layer", -250) //
-						.put("x", MathUtils.random(bounds.x, bounds.x + bounds.width)) //
+						.put("x", MathUtils.random(bounds.x, bounds.x + bounds.width * 3f)) //
 						.put("y", MathUtils.random(bounds.y, bounds.y + bounds.height)) //
 						.put("speed", -60f) //
 						);
@@ -60,17 +60,28 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 					cloud.delete();
 					cloudsCount++;
 				}
-				
+
 			}
 
 			while (cloudsCount > 0) {
-				entityFactory.instantiate(cloudTemplate, new ParametersWrapper() //
+				Entity cloud = entityFactory.instantiate(cloudTemplate, new ParametersWrapper() //
 						.put("spriteId", cloudSpriteIds[MathUtils.random(0, cloudSpriteIds.length - 1)]) //
 						.put("layer", -250) //
-						.put("x", bounds.width + MathUtils.random(bounds.x, bounds.x + bounds.width)) //
+						.put("x", 0f) //
 						.put("y", MathUtils.random(bounds.y, bounds.y + bounds.height)) //
 						.put("speed", -60f) //
 						);
+
+				SpatialComponent spatialComponent = cloud.getComponent(SpatialComponent.class);
+				Spatial spatial = spatialComponent.getSpatial();
+
+				BoundsComponent boundsComponent = cloud.getComponent(BoundsComponent.class);
+				Rectangle cloudBounds = boundsComponent.bounds;
+
+				float x = bounds.width + MathUtils.random(bounds.x, bounds.x + bounds.width) + cloudBounds.width * 0.5f;
+
+				spatial.setPosition(x, spatial.getY());
+
 				cloudsCount--;
 			}
 

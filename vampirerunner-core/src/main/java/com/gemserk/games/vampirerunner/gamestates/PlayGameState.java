@@ -95,7 +95,7 @@ public class PlayGameState extends GameStateImpl {
 
 		guiContainer.add(distanceLabel);
 
-		guiContainer.add(GuiControls.label("") //
+		guiContainer.add(GuiControls.label("Refreshing best score...") //
 				.id("BestScoreLabel") //
 				.position(width * 0.95f, height * 0.95f) //
 				.center(1f, 0.5f) //
@@ -103,14 +103,14 @@ public class PlayGameState extends GameStateImpl {
 				.color(Color.RED) //
 				.build());
 
-		NormalModeGameTemplate normalModeGameTemplate = new NormalModeGameTemplate();
-		normalModeGameTemplate.setResourceManager(resourceManager);
+		NormalModeSceneTemplate normalModeSceneTemplate = new NormalModeSceneTemplate();
+		normalModeSceneTemplate.setResourceManager(resourceManager);
 		
-		normalModeGameTemplate.create();
+		normalModeSceneTemplate.create();
 
-		worldWrapper = normalModeGameTemplate.getWorldWrapper();
+		worldWrapper = normalModeSceneTemplate.getWorldWrapper();
 
-		normalModeGameTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
+		normalModeSceneTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
 			@Override
 			public void update(World world, Entity e) {
 				Entity player = world.getTagManager().getEntity(Tags.Vampire);
@@ -121,7 +121,7 @@ public class PlayGameState extends GameStateImpl {
 			}
 		})).build();
 
-		normalModeGameTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
+		normalModeSceneTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
 
 			private World world;
 
@@ -149,7 +149,7 @@ public class PlayGameState extends GameStateImpl {
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
 
-		normalModeGameTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
+		normalModeSceneTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
 			@Override
 			public void update(World world, Entity e) {
 				float totalWidth = Gdx.graphics.getWidth() * 0.8f;
