@@ -3,19 +3,13 @@ package com.gemserk.games.vampirerunner.gamestates;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpatialComponent;
-import com.gemserk.commons.artemis.components.TagComponent;
-import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
-import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.MovementSystem;
@@ -37,12 +31,10 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
-import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
@@ -57,10 +49,9 @@ import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampirePartExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
-import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
-public class NormalModeSceneTemplate {
+public class MainMenuSceneTemplate {
 
 	private ResourceManager<String> resourceManager;
 	private EntityFactory entityFactory;
@@ -183,48 +174,22 @@ public class NormalModeSceneTemplate {
 				.build();
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
-				.put("spriteId", "BackgroundTile01Sprite") //
+				.put("spriteId", "BackgroundTile03Sprite") //
 				.put("layer", -999) //
 				.put("spatial", new SpatialImpl(-512, 0, 512, 512, 0f)) //
 				);
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
-				.put("spriteId", "BackgroundTile02Sprite") //
-				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(0, 0, 512, 512, 0f)) //
-				);
-		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
-				.put("spriteId", "BackgroundTile03Sprite") //
-				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(512, 0, 512, 512, 0f)) //
-				);
-		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile04Sprite") //
 				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(1024, 0, 512, 512, 0f)) //
+				.put("spatial", new SpatialImpl(0, 0, 512, 512, 0f)) //
 				);
 
 		entityFactory.instantiate(cloudSpawnerTemplate);
 
-		entityBuilder //
-				.component(new TagComponent(Tags.Player)) //
-				.component(new DistanceComponent()) //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-					@Override
-					public void update(World world, Entity e) {
-						Entity vampire = world.getTagManager().getEntity(Tags.Vampire);
-						if (vampire == null)
-							return;
-						DistanceComponent vampireDistanceComponent = vampire.getComponent(DistanceComponent.class);
-						DistanceComponent distanceComponent = e.getComponent(DistanceComponent.class);
-						distanceComponent.distance = vampireDistanceComponent.distance;
-					}
-				})) //
-				.build();
-
-		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
-				.put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
-				.put("vampireController", vampireController) //
-				);
+		// entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
+		// .put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
+		// .put("vampireController", vampireController) //
+		// );
 
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("libgdxCamera", worldCamera) //
@@ -239,89 +204,6 @@ public class NormalModeSceneTemplate {
 		entityBuilder //
 				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Tiles), //
 						new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
-				.build();
-
-		entityBuilder //
-				.component(new ScriptComponent(new PreviousTilesRemoverScript(Groups.Obstacles), //
-						new ObstacleGeneratorScript(entityFactory, obstacleTemplate, 5f))) //
-				.build();
-
-		entityBuilder //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-
-					private World world;
-					private String[] parts = new String[] { "VampireHead", "VampireLeftArm", "VampireRightArm", "VampireLeftLeg", "VampireRightLeg", "VampireTorso" };
-
-					@Override
-					public void init(World world, Entity e) {
-						this.world = world;
-						eventManager.registerEvent(Events.gameStarted, e);
-					}
-
-					@Handles
-					public void gameStarted(Event e) {
-						Gdx.app.log("VampireRunner", "Game started");
-					}
-
-					@Handles
-					public void gameFinished(Event e) {
-						Gdx.app.log("VampireRunner", "Game finished");
-					}
-
-					@Handles
-					public void playerDeath(Event e) {
-						Gdx.app.log("VampireRunner", "Player death");
-						Entity entity = (Entity) e.getSource();
-						entity.delete();
-
-						SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
-
-						// play death animation by creating a new entity
-						// game.getGameData().put("gameInformation", gameInformation);
-						// game.setScreen(game.getGameOverScreen(), true);
-
-						entityFactory.instantiate(vladimirBloodExplosion, new ParametersWrapper().put("spatial", spatialComponent.getSpatial()));
-
-						entityFactory.instantiate(timedEventTemplate, new ParametersWrapper().put("time", 1.5f).put("eventId", Events.gameFinished));
-
-						for (int i = 0; i < parts.length; i++) {
-							Vector2 direction = new Vector2(1f, 0f);
-							direction.rotate(MathUtils.random(0, 360f));
-							entityFactory.instantiate(vladimirPartExplosion, new ParametersWrapper() //
-									.put("sprite", parts[i]) //
-									.put("spatial", new SpatialImpl(spatialComponent.getSpatial())) //
-									.put("direction", direction) //
-									);
-						}
-
-					}
-
-					@Override
-					public void update(World world, Entity e) {
-						eventManager.process();
-					}
-				})) //
-				.build();
-
-		entityBuilder //
-				.component(new TagComponent("PlayerDeathSoundSpawner")) //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-
-					private Resource<Sound> vampireDeathSoundResource;
-
-					@Override
-					public void init(World world, Entity e) {
-						vampireDeathSoundResource = resourceManager.get("VampireDeathSound");
-					}
-
-					@Handles
-					public void playerDeath(Event e) {
-						Sound sound = vampireDeathSoundResource.get();
-						sound.play();
-						// musicResource.get().stop();
-					}
-
-				})) //
 				.build();
 
 	}
