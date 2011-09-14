@@ -103,12 +103,12 @@ public class PlayGameState extends GameStateImpl {
 				.color(Color.RED) //
 				.build());
 
+		worldWrapper = new WorldWrapper(new World());
+		
 		NormalModeSceneTemplate normalModeSceneTemplate = new NormalModeSceneTemplate();
 		normalModeSceneTemplate.setResourceManager(resourceManager);
 		
-		normalModeSceneTemplate.create();
-
-		worldWrapper = normalModeSceneTemplate.getWorldWrapper();
+		normalModeSceneTemplate.apply(worldWrapper);
 
 		normalModeSceneTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
 			@Override

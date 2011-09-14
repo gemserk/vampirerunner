@@ -35,7 +35,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Events;
@@ -65,13 +64,8 @@ import com.gemserk.resources.ResourceManager;
 public class NormalModeSceneTemplate {
 
 	private ResourceManager<String> resourceManager;
-	private WorldWrapper worldWrapper;
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
-
-	public WorldWrapper getWorldWrapper() {
-		return worldWrapper;
-	}
 
 	public EntityBuilder getEntityBuilder() {
 		return entityBuilder;
@@ -85,7 +79,11 @@ public class NormalModeSceneTemplate {
 		this.resourceManager = resourceManager;
 	}
 
-	public void create() {
+	/**
+	 * Applies a world template for the specified worldwrapper.
+	 * @param worldWrapper
+	 */
+	public void apply(WorldWrapper worldWrapper) {
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
 
@@ -102,9 +100,6 @@ public class NormalModeSceneTemplate {
 
 		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, 0f), false);
 		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
-
-		World world = new World();
-		worldWrapper = new WorldWrapper(world);
 
 		RenderLayers renderLayers = new RenderLayers();
 
@@ -129,8 +124,8 @@ public class NormalModeSceneTemplate {
 
 		worldWrapper.init();
 
-		entityFactory = new EntityFactoryImpl(world);
-		entityBuilder = new EntityBuilder(world);
+		entityFactory = new EntityFactoryImpl(worldWrapper.getWorld());
+		entityBuilder = new EntityBuilder(worldWrapper.getWorld());
 
 		// initialize templates
 		EntityTemplate staticSpriteTemplate = new StaticSpriteEntityTemplate(resourceManager);
@@ -182,24 +177,6 @@ public class NormalModeSceneTemplate {
 
 						backgroundCamera.move(backgroundRestrictedCamera.getX(), backgroundRestrictedCamera.getY());
 						backgroundCamera.zoom(backgroundRestrictedCamera.getZoom());
-
-					}
-				})) //
-				.build();
-
-		entityBuilder //
-				.component(new TagComponent("SecondBackgroundCamera")) //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-					@Override
-					public void update(World world, Entity e) {
-						Entity player = world.getTagManager().getEntity(Tags.Vampire);
-						if (player == null)
-							return;
-
-						SpatialComponent spatialComponent = player.getComponent(SpatialComponent.class);
-						Spatial spatial = spatialComponent.getSpatial();
-						secondBackgroundCamera.zoom(1f);
-						// secondBackgroundCamera.move(spatial.getX() * 2.5f, 0);
 
 					}
 				})) //
