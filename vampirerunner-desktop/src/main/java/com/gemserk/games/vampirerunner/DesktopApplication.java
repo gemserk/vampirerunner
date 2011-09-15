@@ -52,8 +52,9 @@ public class DesktopApplication {
 
 		if (runningInDebug) {
 			Analytics.traker.setEnabled(false);
-			profiles = new ProfilesFileImpl(new File("/tmp/gemserk/vampirerunner/profiles.json"));
-			scores = new ScoresFileImpl(new File("/tmp/gemserk/vampirerunner/scores.json"), profiles);
+			String tmpFolder = System.getProperty("java.io.tmpdir");
+			profiles = new ProfilesFileImpl(new File(tmpFolder, "gemserk/vampirerunner/profiles.json"));
+			scores = new ScoresFileImpl(new File(tmpFolder, "gemserk/vampirerunner/scores.json"), profiles);
 		}
 
 		game.setScores(scores);
