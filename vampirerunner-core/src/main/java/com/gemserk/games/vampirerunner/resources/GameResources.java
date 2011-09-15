@@ -1,5 +1,6 @@
 package com.gemserk.games.vampirerunner.resources;
 
+import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.gdx.resources.LibgdxResourceBuilder;
 import com.gemserk.resources.ResourceManager;
 
@@ -30,7 +31,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("BackgroundSprite", "TextureAtlas", "background");
 		spriteAtlas("WhiteRectangleSprite", "TextureAtlas", "white-rectangle");
 		spriteAtlas("FloorTile01Sprite", "TextureAtlas", "floor-bigtile-01");
-		
+
 		spriteAtlas("Cloud01Sprite", "TextureAtlas", "cloud01");
 		spriteAtlas("Cloud02Sprite", "TextureAtlas", "cloud02");
 		spriteAtlas("Cloud03Sprite", "TextureAtlas", "cloud03");
@@ -42,12 +43,19 @@ public class GameResources extends LibgdxResourceBuilder {
 		animation("VampireBloodAnimation", "VampireSpriteSheet", 0, 32 * 3, 32, 32, 7, false, 100);
 		animation("VampireIdleAnimation", "VampireSpriteSheet", 0, 0, 32, 32, 2, true, 1500, 250);
 
-		font("DistanceFont", "data/fonts/purisa-20-outlined.png", "data/fonts/purisa-20-outlined.fnt", true);
-		font("ScoresFont", "data/fonts/purisa-20-outlined.png", "data/fonts/purisa-20-outlined.fnt", true);
-		
-		font("TitleFont", "data/fonts/ogilvie-32-outlined.png", "data/fonts/ogilvie-32-outlined.fnt", true);
-		font("InstructionsFont", "data/fonts/purisa-20-gradient.png", "data/fonts/purisa-20-gradient.fnt", false);
-		font("ButtonFont", "data/fonts/purisa-20-gradient.png", "data/fonts/purisa-20-gradient.fnt", false);
+		if (Gdx.graphics.getHeight() >= 480f) {
+			font("DistanceFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", true);
+			font("ScoresFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", true);
+			font("TitleFont", "data/fonts/ogilvie-40-bold-outlined.png", "data/fonts/ogilvie-40-bold-outlined.fnt", true);
+			font("InstructionsFont", "data/fonts/purisa-20-gradient.png", "data/fonts/purisa-20-gradient.fnt", false);
+			font("ButtonFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", false);
+		} else {
+			font("DistanceFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
+			font("ScoresFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
+			font("TitleFont", "data/fonts/ogilvie-20-bold-outlined.png", "data/fonts/ogilvie-20-bold-outlined.fnt", true);
+			font("InstructionsFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
+			font("ButtonFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
+		}
 
 		sprite("VampireRightArm", "VampireSpriteSheet", 0, 32 * 2, 32, 32);
 		sprite("VampireLeftArm", "VampireSpriteSheet", 32 * 1, 32 * 2, 32, 32);
@@ -65,8 +73,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("BackgroundTile02Sprite", "BackgroundTile02");
 		sprite("BackgroundTile03Sprite", "BackgroundTile03");
 		sprite("BackgroundTile04Sprite", "BackgroundTile04");
-		
-		music("GameMusic", "data/audio/music.ogg");
+
+		// music("GameMusic", "data/audio/music.ogg");
 		sound("VampireDeathSound", "data/audio/vampiredeath.ogg");
 
 	}

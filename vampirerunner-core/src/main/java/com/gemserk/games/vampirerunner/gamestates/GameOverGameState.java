@@ -3,6 +3,7 @@ package com.gemserk.games.vampirerunner.gamestates;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -26,7 +27,7 @@ import com.gemserk.util.concurrent.FutureHandler;
 import com.gemserk.util.concurrent.FutureProcessor;
 
 public class GameOverGameState extends GameStateImpl {
-	
+
 	class SubmitScoreCallable implements Callable<String> {
 
 		private final Score score;
@@ -67,7 +68,7 @@ public class GameOverGameState extends GameStateImpl {
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
-	
+
 	private Scores scores;
 	private Profiles profiles;
 	private GamePreferences gamePreferences;
@@ -75,7 +76,7 @@ public class GameOverGameState extends GameStateImpl {
 
 	private Score score;
 	private Profile profile;
-	
+
 	private FutureProcessor<String> submitScoreProcessor;
 	private FutureProcessor<Profile> registerProfileProcessor;
 
@@ -93,22 +94,24 @@ public class GameOverGameState extends GameStateImpl {
 		}
 	};
 
+	// private TimeTransition timeTransition;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
-	
+
 	public void setScores(Scores scores) {
 		this.scores = scores;
 	}
-	
+
 	public void setProfiles(Profiles profiles) {
 		this.profiles = profiles;
 	}
-	
+
 	public void setExecutorService(ExecutorService executorService) {
 		this.executorService = executorService;
 	}
-	
+
 	public void setGamePreferences(GamePreferences gamePreferences) {
 		this.gamePreferences = gamePreferences;
 	}
@@ -141,27 +144,32 @@ public class GameOverGameState extends GameStateImpl {
 				.font(scoresFont) //
 				.color(Color.RED) //
 				.build();
-		
-		guiContainer.add(GuiControls.label("Game Over") //
-				.position(width * 0.5f, height * 0.9f) //
+
+		guiContainer.add(GuiControls.label("GAME OVER") //
+				.position(width * 0.5f, height * 0.95f) //
 				.center(0.5f, 0.5f) //
 				.font(titleFont) //
 				.color(1f, 0f, 0f, 1f) //
 				.build());
 
 		guiContainer.add(distanceLabel);
-		guiContainer.add(GuiControls.label("Tap to continue") //
+
+		String continueLabelText = "Click to continue";
+		if (Gdx.app.getType() == ApplicationType.Android)
+			continueLabelText = "Tap to continue";
+
+		guiContainer.add(GuiControls.label(continueLabelText) //
 				.id("TapLabel") //
 				.position(width * 0.5f, height * 0.1f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
-				.color(0f, 0f, 0f, 0f) //
+				.color(1f, 1f, 1f, 0f) //
 				.build());
-		
+
 		profile = gamePreferences.getProfile();
 
 		submitScoreProcessor = new FutureProcessor<String>(new SubmitScoreHandler());
-		
+
 		FutureHandleCallable<Profile> registerProfileFutureHandler = new FutureHandleCallable<Profile>() {
 
 			@Override
@@ -178,7 +186,7 @@ public class GameOverGameState extends GameStateImpl {
 					Gdx.app.log("VampireRunner", e.getMessage(), e);
 				enableInput();
 			}
-			
+
 			@Override
 			public Profile call() throws Exception {
 				if (profile.getPublicKey() != null)
@@ -187,17 +195,19 @@ public class GameOverGameState extends GameStateImpl {
 			}
 
 		};
-		
+
 		registerProfileProcessor = new FutureProcessor<Profile>(registerProfileFutureHandler);
 		registerProfileProcessor.setFuture(executorService.submit(registerProfileFutureHandler));
 	}
-	
+
 	private void enableInput() {
 		Gdx.input.setInputProcessor(inputProcessor);
 		Text tapText = guiContainer.findControl("TapLabel");
-		tapText.setColor(1f, 0f, 0f, 1f);
+		tapText.setColor(1f, 1f, 1f, 1f);
+		// timeTransition = new TimeTransition();
+		// timeTransition.start(2f);
 	}
-	
+
 	private void nextScreen() {
 		game.transition(game.getHighscoresScreen())//
 				.disposeCurrent(true) //
@@ -219,19 +229,27 @@ public class GameOverGameState extends GameStateImpl {
 		game.getBackgroundGameScene().update(getDeltaInMs());
 		registerProfileProcessor.update();
 		submitScoreProcessor.update();
+
+		// if (timeTransition != null) {
+		// timeTransition.update(getDelta());
+		// if (timeTransition.isFinished()) {
+		// nextScreen();
+		// timeTransition = null;
+		// }
+		// }
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
 	}
-	
+
 	@Override
 	public void pause() {
 		if (Gdx.input.getInputProcessor() == inputProcessor)
 			Gdx.input.setInputProcessor(null);
 	}
-	
+
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();

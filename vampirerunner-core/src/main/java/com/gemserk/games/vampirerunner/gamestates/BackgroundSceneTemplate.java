@@ -85,6 +85,8 @@ public class BackgroundSceneTemplate {
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
 
 		worldCamera.zoom(64f * gameZoom);
+		backgroundCamera.zoom(2 * gameZoom);
+		secondBackgroundCamera.zoom(gameZoom);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -500, backgroundCamera));
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
@@ -116,7 +118,6 @@ public class BackgroundSceneTemplate {
 
 		VampireController vampireController = new VampireController();
 
-		backgroundCamera.zoom(2 * gameZoom);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //

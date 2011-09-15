@@ -26,6 +26,7 @@ public class DesktopApplication {
 		config.title = "Gemserk's Vampire Runner";
 		config.width = 800;
 		config.height = 480;
+		// config.width = 320;
 		// config.height = 240;
 		config.fullscreen = false;
 		config.useGL20 = false;

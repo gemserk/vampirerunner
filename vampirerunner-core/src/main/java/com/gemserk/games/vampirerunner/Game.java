@@ -209,6 +209,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			{
 				monitorKey("grabScreenshot", Keys.NUM_9);
 				monitorKey("toggleBox2dDebug", Keys.NUM_8);
+				monitorKey("toggleFps", Keys.NUM_7);
 				monitorKey("restartScreen", Keys.NUM_1);
 			}
 		};
@@ -257,10 +258,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			
 			backgroundSceneTemplate.apply(backgroundGameScene);
 		}
+		
+		if (inputDevicesMonitor.getButton("toggleFps").isReleased()) 
+			setShowFps(!isShowFps());
 
-		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased()) {
+		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased()) 
 			setShowBox2dDebug(!isShowBox2dDebug());
-		}
 
 		eventManager.process();
 	}

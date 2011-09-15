@@ -154,11 +154,13 @@ public class PlayGameState extends GameStateImpl {
 			public void update(World world, Entity e) {
 				float totalWidth = Gdx.graphics.getWidth() * 0.8f;
 
-				whiteRectangle.setPosition(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.8f);
+				float y = Gdx.graphics.getHeight() * 0.85f;
+				
+				whiteRectangle.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
 				whiteRectangle.setColor(1f, 0f, 0f, 1f);
 				whiteRectangle.setSize(totalWidth, 10f);
 
-				whiteRectangle2.setPosition(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.8f);
+				whiteRectangle2.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
 				whiteRectangle2.setColor(0f, 0f, 1f, 1f);
 
 				Entity vladimir = world.getTagManager().getEntity(Tags.Vampire);

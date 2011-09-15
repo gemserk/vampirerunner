@@ -135,16 +135,13 @@ public class HighscoresGameState extends GameStateImpl {
 
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				if (Gdx.app.getType() == ApplicationType.Android)
-					monitorKey("back", Keys.BACK);
-				else
-					monitorKey("back", Keys.ESCAPE);
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 			}
 		};
 
 		guiContainer = new Container("ButtonsPanel");
 
-		guiContainer.add(GuiControls.label("Highscores") //
+		guiContainer.add(GuiControls.label("HIGHSCORES") //
 				.position(viewportWidth * 0.5f, viewportHeight * 0.95f) //
 				.center(0.5f, 0.5f) //
 				.font(titleFont) //
@@ -221,9 +218,13 @@ public class HighscoresGameState extends GameStateImpl {
 
 		guiContainer.add(buttonsPanel);
 
+		String returnText = "Click here to return";
+		if (Gdx.app.getType() == ApplicationType.Android)
+			returnText = "Tap here to return";
+
 		guiContainer.add(GuiControls.textButton() //
 				.font(buttonFont) //
-				.text("Tap here to return") //
+				.text(returnText) //
 				.position(viewportWidth * 0.5f, viewportHeight * 0.1f) //
 				.notOverColor(1f, 1f, 1f, 1f) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -274,6 +275,9 @@ public class HighscoresGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		scoresRefreshProcessor.update();
 		guiContainer.update();
+		
+		if (inputDevicesMonitor.getButton("back").isReleased()) 
+			mainMenu();
 	}
 
 	private void reloadScores(Range range) {
@@ -320,8 +324,8 @@ public class HighscoresGameState extends GameStateImpl {
 			if (name.length() > 15)
 				name = name.substring(0, 15);
 
-			Text numberText = new Text("" + index + ". ", viewportWidth * 0.3f, y, 1f, 0.5f).setColor(scoreColor);
-			Text nameText = new Text(name, viewportWidth * 0.3f, y, 0f, 0.5f).setColor(scoreColor);
+			Text numberText = new Text("" + index + ". ", viewportWidth * 0.15f, y, 1f, 0.5f).setColor(scoreColor);
+			Text nameText = new Text(name, viewportWidth * 0.15f, y, 0f, 0.5f).setColor(scoreColor);
 			Text pointsText = new Text(Long.toString(score.getPoints()), viewportWidth * 0.7f, y, 1f, 0.5f).setColor(scoreColor);
 
 			texts.add(numberText);

@@ -66,10 +66,10 @@ public class InstructionsGameState extends GameStateImpl {
 		String[] instructions = new String[] { "Hold left click to move through walls", "<< click here to start >>", "<< click here to change it >>" };
 
 		if (Gdx.app.getType() == ApplicationType.Android)
-			instructions = new String[] { "Touch and hold screen to move through walls", "<< touch to start >>", "<< tap here to change it >>" };
+			instructions = new String[] { "Touch and hold screen to move through walls", "<< tap here to start >>", "<< tap here to change it >>" };
 		
 		guiContainer.add(GuiControls.label("VAMPIRE RUNNER") //
-				.position(width * 0.5f, height * 0.9f) //
+				.position(width * 0.5f, height * 0.95f) //
 				.center(0.5f, 0.5f) //
 				.font(titleFont) //
 				.color(1f, 0f, 0f, 1f) //
@@ -203,6 +203,7 @@ public class InstructionsGameState extends GameStateImpl {
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		game.getBackgroundGameScene().render();
+		
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
