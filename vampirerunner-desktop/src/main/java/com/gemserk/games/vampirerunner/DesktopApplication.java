@@ -7,6 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.dmurph.tracking.AnalyticsConfigData;
+import com.dmurph.tracking.JGoogleAnalyticsTracker;
+import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
+import com.gemserk.analytics.Analytics;
+import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.datastore.profiles.ProfilesFileImpl;
 import com.gemserk.datastore.profiles.ProfilesHttpImpl;
@@ -20,6 +25,10 @@ public class DesktopApplication {
 	protected static final Logger logger = LoggerFactory.getLogger(DesktopApplication.class);
 
 	public static void main(String[] argv) {
+		
+		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-5");
+		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
+		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
@@ -42,6 +51,7 @@ public class DesktopApplication {
 		Profiles profiles = new ProfilesHttpImpl("http://gemserkscores.appspot.com");
 
 		if (runningInDebug) {
+			Analytics.traker.setEnabled(false);
 			profiles = new ProfilesFileImpl(new File("/tmp/gemserk/vampirerunner/profiles.json"));
 			scores = new ScoresFileImpl(new File("/tmp/gemserk/vampirerunner/scores.json"), profiles);
 		}

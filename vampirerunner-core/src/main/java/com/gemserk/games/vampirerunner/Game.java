@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -222,6 +223,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		backgroundGameScene = new WorldWrapper(new World());
 		
 		backgroundSceneTemplate.apply(backgroundGameScene);
+		
+		Analytics.traker.trackPageView("/start", "/start", null);
 	}
 
 	@Override

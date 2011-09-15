@@ -101,6 +101,10 @@
 			<artifactId>datastore-desktop</artifactId>
 			<version>${datastore.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.gemserk.analytics.googleanalytics</groupId>
+			<artifactId>jgoogleanalyticstracker-desktop</artifactId>
+		</dependency>
 	</dependencies>
 
 	<profiles>

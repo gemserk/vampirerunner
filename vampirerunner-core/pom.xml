@@ -55,6 +55,10 @@
 			<artifactId>datastore-core</artifactId>
 			<version>${datastore.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.dmurph</groupId>
+			<artifactId>JGoogleAnalyticsTracker</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

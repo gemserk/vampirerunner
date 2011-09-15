@@ -53,6 +53,7 @@
 		<commons.gdx.version>0.0.5-SNAPSHOT</commons.gdx.version>
 		<datastore.version>0.0.6-SNAPSHOT</datastore.version>
 		<gdx.version>0.9.2-SNAPSHOT</gdx.version>
+		<jgoogleanalytics.version>1.2.1-GEMSERK-RC1</jgoogleanalytics.version>
 	</properties>
 
 	<build>
@@ -136,6 +137,21 @@
 				<artifactId>jmock-junit4</artifactId>
 				<version>2.5.1</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.dmurph</groupId>
+				<artifactId>JGoogleAnalyticsTracker</artifactId>
+				<version>${jgoogleanalytics.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.gemserk.analytics.googleanalytics</groupId>
+				<artifactId>jgoogleanalyticstracker-android</artifactId>
+				<version>${jgoogleanalytics.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.gemserk.analytics.googleanalytics</groupId>
+				<artifactId>jgoogleanalyticstracker-desktop</artifactId>
+				<version>${jgoogleanalytics.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
