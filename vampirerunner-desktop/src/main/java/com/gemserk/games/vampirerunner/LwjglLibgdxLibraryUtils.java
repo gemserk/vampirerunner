@@ -21,7 +21,8 @@ public class LwjglLibgdxLibraryUtils {
 			public Object run() {
 				String library_path = System.getProperty("org.lwjgl.librarypath");
 				if (library_path != null) {
-					System.load(library_path + File.separator + System.mapLibraryName(lib_name));
+//					System.load(library_path + File.separator + System.mapLibraryName(lib_name));
+					System.load(library_path + File.separator + lib_name);
 				} else {
 					System.loadLibrary(lib_name);
 				}
