@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -178,6 +179,8 @@ public class PlayGameState extends GameStateImpl {
 		// musicResource = resourceManager.get("GameMusic");
 
 		update();
+		
+		Analytics.traker.trackPageView("/startGame", "/startGame", null);
 	}
 
 	private void refreshTodayBestScore() {

@@ -122,7 +122,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public EventManager getEventManager() {
 		return eventManager;
 	}
-	
+
 	public WorldWrapper getBackgroundGameScene() {
 		return backgroundGameScene;
 	}
@@ -191,7 +191,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		SplashGameState splashGameState = new SplashGameState(this);
 		splashGameState.setResourceManager(resourceManager);
-		
+
 		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
@@ -216,15 +216,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		};
 
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
-		
+
 		BackgroundSceneTemplate backgroundSceneTemplate = new BackgroundSceneTemplate();
 		backgroundSceneTemplate.setResourceManager(resourceManager);
-		
+
 		backgroundGameScene = new WorldWrapper(new World());
-		
+
 		backgroundSceneTemplate.apply(backgroundGameScene);
-		
+
+		String version = getGameData().get("version");
+
 		Analytics.traker.trackPageView("/start", "/start", null);
+		Analytics.traker.trackPageView("/info/version/" + version, "/info/version/" + version, null);
 	}
 
 	@Override
@@ -248,24 +251,24 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
 		}
-		
+
 		if (inputDevicesMonitor.getButton("restartScreen").isReleased()) {
 			getScreen().restart();
-			
+
 			backgroundGameScene.dispose();
-			
+
 			BackgroundSceneTemplate backgroundSceneTemplate = new BackgroundSceneTemplate();
 			backgroundSceneTemplate.setResourceManager(resourceManager);
-			
+
 			backgroundGameScene = new WorldWrapper(new World());
-			
+
 			backgroundSceneTemplate.apply(backgroundGameScene);
 		}
-		
-		if (inputDevicesMonitor.getButton("toggleFps").isReleased()) 
+
+		if (inputDevicesMonitor.getButton("toggleFps").isReleased())
 			setShowFps(!isShowFps());
 
-		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased()) 
+		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased())
 			setShowBox2dDebug(!isShowBox2dDebug());
 
 		eventManager.process();
