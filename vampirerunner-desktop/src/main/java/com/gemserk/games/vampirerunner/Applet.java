@@ -20,17 +20,17 @@ import com.gemserk.scores.ScoresHttpImpl;
 public class Applet extends java.applet.Applet {
 
 	private static final long serialVersionUID = 6396112708370503447L;
-	
+
 	private Canvas canvas;
-	
+
 	private LwjglApplication application;
 
 	public void start() {
-		
+
 	}
 
 	public void stop() {
-		
+
 	}
 
 	public void destroy() {
@@ -39,15 +39,15 @@ public class Applet extends java.applet.Applet {
 	}
 
 	public void init() {
-		
+
 		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-5");
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
-		
+
 		GdxNativesLoader.disableNativesLoading = true;
-		
-		System.loadLibrary("gdx");
-		
+		// System.loadLibrary("gdx");
+		LwjglLibgdxLibraryUtils.loadLibgdxLibrary();
+
 		try {
 			setLayout(new BorderLayout());
 			// ApplicationListener game = (ApplicationListener) Class.forName(getParameter("game")).newInstance();
@@ -55,21 +55,21 @@ public class Applet extends java.applet.Applet {
 			canvas = new Canvas() {
 				public final void addNotify() {
 					super.addNotify();
-					
-					Game game = new Game(){
+
+					Game game = new Game() {
 						@Override
 						public void create() {
 							Gdx.graphics.setVSync(true);
 							super.create();
 						};
 					};
-					
+
 					Scores scores = new ScoresHttpImpl("f3ba5a778d0996ffffae1088dd1773341c068552", "http://gemserkscores.appspot.com", new ScoreSerializerJSONImpl());
 					Profiles profiles = new ProfilesHttpImpl("http://gemserkscores.appspot.com");
-					
+
 					game.setScores(scores);
 					game.setProfiles(profiles);
-					
+
 					application = new LwjglApplication(game, false, this) {
 						public com.badlogic.gdx.Application.ApplicationType getType() {
 							return ApplicationType.Applet;
