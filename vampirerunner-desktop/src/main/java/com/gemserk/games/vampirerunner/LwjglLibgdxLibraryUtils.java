@@ -6,6 +6,9 @@ import java.security.PrivilegedAction;
 
 import org.lwjgl.LWJGLUtil;
 
+/**
+ * It is some kind of utility for LWJGL Applets to try to load libGDX from org.lwjgl.librarypath
+ */
 public class LwjglLibgdxLibraryUtils {
 
 	private static final String amd64Bits = "amd64";
@@ -16,16 +19,15 @@ public class LwjglLibgdxLibraryUtils {
 		return amd64Bits.equals(osArch) || x86_64Bits.equals(osArch);
 	}
 
+	/**
+	 * Tries to load the library from the org.lwjgl.librarypath
+	 */
 	private static void doLoadLibrary(final String lib_name) {
 		AccessController.doPrivileged(new PrivilegedAction<Object>() {
 			public Object run() {
 				String library_path = System.getProperty("org.lwjgl.librarypath");
-				if (library_path != null) {
-//					System.load(library_path + File.separator + System.mapLibraryName(lib_name));
+				if (library_path != null) 
 					System.load(library_path + File.separator + lib_name);
-				} else {
-					System.loadLibrary(lib_name);
-				}
 				return null;
 			}
 		});

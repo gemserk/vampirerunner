@@ -108,7 +108,7 @@ public class NormalModeSceneTemplate {
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
 
 		worldCamera.zoom(64f * gameZoom);
-		secondBackgroundCamera.zoom(gameZoom);
+		secondBackgroundCamera.zoom(64 * gameZoom);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -500, backgroundCamera));
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
@@ -205,7 +205,7 @@ public class NormalModeSceneTemplate {
 				);
 
 		entityFactory.instantiate(cloudSpawnerTemplate, new ParametersWrapper() //
-				.put("bounds", new Rectangle(0f, 240f, 800f, 220f)) //
+				.put("bounds", new Rectangle(0f, 3.25f, 12.5f, 3.25f)) //
 				);
 
 		entityBuilder //

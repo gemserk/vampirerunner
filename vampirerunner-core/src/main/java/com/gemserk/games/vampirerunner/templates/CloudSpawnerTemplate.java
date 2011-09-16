@@ -38,7 +38,7 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 						.put("layer", -250) //
 						.put("x", MathUtils.random(bounds.x, bounds.x + bounds.width * 3f)) //
 						.put("y", MathUtils.random(bounds.y, bounds.y + bounds.height)) //
-						.put("speed", -60f) //
+						.put("speed", -1f) //
 						);
 				cloudsCount--;
 			}
@@ -73,7 +73,7 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 						.put("layer", -250) //
 						.put("x", 0f) //
 						.put("y", MathUtils.random(bounds.y, bounds.y + bounds.height)) //
-						.put("speed", -60f) //
+						.put("speed", -1f) //
 						);
 
 				SpatialComponent spatialComponent = cloud.getComponent(SpatialComponent.class);

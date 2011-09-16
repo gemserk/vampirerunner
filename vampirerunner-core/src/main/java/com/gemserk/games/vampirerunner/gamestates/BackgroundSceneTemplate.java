@@ -27,13 +27,11 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
-import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
-import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireIdleTemplate;
 import com.gemserk.resources.ResourceManager;
 
@@ -86,7 +84,7 @@ public class BackgroundSceneTemplate {
 
 		worldCamera.zoom(64f * gameZoom);
 		backgroundCamera.zoom(2 * gameZoom);
-		secondBackgroundCamera.zoom(gameZoom);
+		secondBackgroundCamera.zoom(64 *gameZoom);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -500, backgroundCamera));
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
@@ -112,12 +110,8 @@ public class BackgroundSceneTemplate {
 		EntityTemplate floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		EntityTemplate cameraTemplate = new CameraTemplate();
 
-		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
-
-		VampireController vampireController = new VampireController();
-
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //
@@ -131,7 +125,7 @@ public class BackgroundSceneTemplate {
 				);
 
 		entityFactory.instantiate(cloudSpawnerTemplate, new ParametersWrapper() //
-				.put("bounds", new Rectangle(0f, 140f, 800f, 320f)) //
+				.put("bounds", new Rectangle(0f, 3.25f, 12.5f, 3.25f)) //
 				);
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
@@ -140,10 +134,6 @@ public class BackgroundSceneTemplate {
 
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("libgdxCamera", worldCamera) //
-				);
-
-		entityFactory.instantiate(vampireControllerTemplate, new ParametersWrapper() //
-				.put("vampireController", vampireController) //
 				);
 
 		// an entity which removes old tiles
