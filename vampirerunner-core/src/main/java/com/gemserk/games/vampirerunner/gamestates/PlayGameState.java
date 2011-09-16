@@ -23,6 +23,7 @@ import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.datastore.profiles.Profile;
@@ -40,6 +41,73 @@ import com.gemserk.util.concurrent.FutureProcessor;
 
 public class PlayGameState extends GameStateImpl {
 
+	static class EnergyBarControl implements Control {
+
+		private final String id;
+		private float x, y;
+
+		private Sprite barBackgroundSprite;
+		private Sprite barForegroundSprite;
+		
+		private float percentage;
+
+		public EnergyBarControl(String id, Sprite whiteRectangleSprite) {
+			this.id = id;
+			this.barBackgroundSprite = whiteRectangleSprite;
+			this.barForegroundSprite = new Sprite(whiteRectangleSprite);
+		}
+
+		@Override
+		public String getId() {
+			return id;
+		}
+
+		@Override
+		public float getX() {
+			return x;
+		}
+
+		@Override
+		public float getY() {
+			return y;
+		}
+
+		@Override
+		public void setPosition(float x, float y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		public void setPercentage(float percentage) {
+			this.percentage = percentage;
+		}
+
+		@Override
+		public void update() {
+			float totalWidth = Gdx.graphics.getWidth() * 0.8f;
+
+			float y = Gdx.graphics.getHeight() * 0.85f;
+
+			barBackgroundSprite.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
+			barBackgroundSprite.setColor(1f, 0f, 0f, 1f);
+			barBackgroundSprite.setSize(totalWidth, 10f);
+
+			barForegroundSprite.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
+			barForegroundSprite.setColor(0f, 0f, 1f, 1f);
+
+			barForegroundSprite.setSize(totalWidth * percentage, 10f);
+		}
+
+		@Override
+		public void draw(SpriteBatch spriteBatch) {
+			
+			barBackgroundSprite.draw(spriteBatch);
+			barForegroundSprite.draw(spriteBatch);
+
+		}
+
+	}
+
 	private final Game game;
 	private ResourceManager<String> resourceManager;
 	private WorldWrapper worldWrapper;
@@ -48,8 +116,8 @@ public class PlayGameState extends GameStateImpl {
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
-	private Sprite whiteRectangle;
-	private Sprite whiteRectangle2;
+	// private Sprite whiteRectangle;
+	// private Sprite whiteRectangle2;
 	// private Resource<Music> musicResource;
 	private FutureProcessor<Score> bestDailyScoreFutureProcessor;
 
@@ -105,10 +173,10 @@ public class PlayGameState extends GameStateImpl {
 				.build());
 
 		worldWrapper = new WorldWrapper(new World());
-		
+
 		NormalModeSceneTemplate normalModeSceneTemplate = new NormalModeSceneTemplate();
 		normalModeSceneTemplate.setResourceManager(resourceManager);
-		
+
 		normalModeSceneTemplate.apply(worldWrapper);
 
 		normalModeSceneTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
@@ -147,28 +215,27 @@ public class PlayGameState extends GameStateImpl {
 			}
 		})).build();
 
-		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
-		whiteRectangle2 = resourceManager.getResourceValue("WhiteRectangleSprite");
+		Sprite whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
+
+		EnergyBarControl healthBar = new EnergyBarControl("HealthBar", whiteRectangle);
+
+		healthBar.setPosition(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.85f);
+
+		guiContainer.add(healthBar);
 
 		normalModeSceneTemplate.getEntityBuilder().component(new ScriptComponent(new ScriptJavaImpl() {
 			@Override
 			public void update(World world, Entity e) {
-				float totalWidth = Gdx.graphics.getWidth() * 0.8f;
-
-				float y = Gdx.graphics.getHeight() * 0.85f;
-				
-				whiteRectangle.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
-				whiteRectangle.setColor(1f, 0f, 0f, 1f);
-				whiteRectangle.setSize(totalWidth, 10f);
-
-				whiteRectangle2.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
-				whiteRectangle2.setColor(0f, 0f, 1f, 1f);
-
 				Entity vladimir = world.getTagManager().getEntity(Tags.Vampire);
-				if (vladimir != null) {
-					SuperSkillComponent superSkillComponent = vladimir.getComponent(SuperSkillComponent.class);
-					whiteRectangle2.setSize(totalWidth * superSkillComponent.energy.getPercentage(), 10f);
-				}
+				if (vladimir == null)
+					return;
+				SuperSkillComponent superSkillComponent = vladimir.getComponent(SuperSkillComponent.class);
+				
+				EnergyBarControl healthBar = guiContainer.findControl("HealthBar");
+				if (healthBar == null)
+					return;
+
+				healthBar.setPercentage(superSkillComponent.energy.getPercentage());
 			}
 		})).build();
 
@@ -179,7 +246,7 @@ public class PlayGameState extends GameStateImpl {
 		// musicResource = resourceManager.get("GameMusic");
 
 		update();
-		
+
 		Analytics.traker.trackPageView("/startGame", "/startGame", null);
 	}
 
@@ -225,10 +292,6 @@ public class PlayGameState extends GameStateImpl {
 		// box2dCustomDebugRenderer.render();
 
 		spriteBatch.begin();
-
-		whiteRectangle.draw(spriteBatch);
-		whiteRectangle2.draw(spriteBatch);
-
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
 	}
@@ -240,6 +303,7 @@ public class PlayGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
 		bestDailyScoreFutureProcessor.update();
+		guiContainer.update();
 		// volumeTransition.update(getDeltaInMs());
 		// if (!volumeTransition.isFinished()) {
 		// Music music = musicResource.get();
