@@ -44,15 +44,16 @@ public class GameResources extends LibgdxResourceBuilder {
 		animation("VampireIdleAnimation", "VampireSpriteSheet", 0, 0, 32, 32, 2, true, 1500, 250);
 
 		if (Gdx.graphics.getHeight() >= 480f) {
-			font("DistanceFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", true);
-			font("ScoresFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", true);
-			font("TitleFont", "data/fonts/ogilvie-40-bold-outlined.png", "data/fonts/ogilvie-40-bold-outlined.fnt", true);
+			font("DistanceFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", false);
+			font("ScoresFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", false);
+			font("ScoresFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", false);
+			font("TitleFont", "data/fonts/ogilvie-40-bold-outlined.png", "data/fonts/ogilvie-40-bold-outlined.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-20-gradient.png", "data/fonts/purisa-20-gradient.fnt", false);
 			font("ButtonFont", "data/fonts/purisa-20-bold-outlined.png", "data/fonts/purisa-20-bold-outlined.fnt", false);
 		} else {
 			font("DistanceFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
 			font("ScoresFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
-			font("TitleFont", "data/fonts/ogilvie-20-bold-outlined.png", "data/fonts/ogilvie-20-bold-outlined.fnt", true);
+			font("TitleFont", "data/fonts/ogilvie-20-bold-outlined.png", "data/fonts/ogilvie-20-bold-outlined.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
 			font("ButtonFont", "data/fonts/purisa-12-bold.png", "data/fonts/purisa-12-bold.fnt", false);
 		}

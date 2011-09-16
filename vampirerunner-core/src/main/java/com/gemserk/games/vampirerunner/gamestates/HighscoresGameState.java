@@ -292,6 +292,8 @@ public class HighscoresGameState extends GameStateImpl {
 
 		float x = viewportWidth * 0.5f;
 		float y = viewportHeight * 0.9f;
+		
+		float limitHeight = viewportHeight * 0.2f;
 
 		BitmapFont font = resourceManager.getResourceValue("ScoresFont");
 
@@ -314,6 +316,9 @@ public class HighscoresGameState extends GameStateImpl {
 		Profile profile = gamePreferences.getProfile();
 
 		for (Score score : scoreList) {
+			
+			if (y <= limitHeight)
+				break;
 
 			Color scoreColor = new Color(1f, 1f, 0f, 1f);
 
