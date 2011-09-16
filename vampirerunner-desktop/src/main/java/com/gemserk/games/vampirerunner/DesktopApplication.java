@@ -24,19 +24,46 @@ public class DesktopApplication {
 
 	protected static final Logger logger = LoggerFactory.getLogger(DesktopApplication.class);
 
+	private static class Arguments {
+
+		int width = 800;
+		int height = 480;
+
+		public void parse(String[] argv) {
+			if (argv.length == 0)
+				return;
+
+			String displayString = argv[0];
+			String[] displayValues = displayString.split("x");
+			
+			if (displayValues.length < 2)
+				return;
+
+			try {
+				width = Integer.parseInt(displayValues[0]);
+				height = Integer.parseInt(displayValues[1]);
+			} catch (NumberFormatException e) {
+				System.out.println("error when parsing resolution from arguments: " + displayString);
+			}
+
+		}
+
+	}
+
 	public static void main(String[] argv) {
-		
+
 		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-5");
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
+		
+		Arguments arguments = new Arguments();
+		arguments.parse(argv);
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		config.title = "Gemserk's Vampire Runner";
-		config.width = 800;
-		config.height = 480;
-		// config.width = 320;
-		// config.height = 240;
+		config.width = arguments.width;
+		config.height = arguments.height;
 		config.fullscreen = false;
 		config.useGL20 = false;
 		config.useCPUSynch = true;
