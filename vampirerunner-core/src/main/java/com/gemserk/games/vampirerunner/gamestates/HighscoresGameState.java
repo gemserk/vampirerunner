@@ -48,7 +48,7 @@ public class HighscoresGameState extends GameStateImpl {
 		@Override
 		public Collection<Score> call() throws Exception {
 			Set<String> tags = new HashSet<String>();
-			return scores.getOrderedByPoints(tags, 10, false, range);
+			return scores.getOrderedByPoints(tags, 20, false, range);
 		}
 	}
 
