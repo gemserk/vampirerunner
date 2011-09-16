@@ -23,7 +23,6 @@ import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
-import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.datastore.profiles.Profile;
@@ -31,6 +30,7 @@ import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
+import com.gemserk.games.vampirerunner.gui.EnergyBarControl;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.scores.Score;
@@ -40,73 +40,6 @@ import com.gemserk.util.concurrent.FutureHandleCallable;
 import com.gemserk.util.concurrent.FutureProcessor;
 
 public class PlayGameState extends GameStateImpl {
-
-	static class EnergyBarControl implements Control {
-
-		private final String id;
-		private float x, y;
-
-		private Sprite barBackgroundSprite;
-		private Sprite barForegroundSprite;
-		
-		private float percentage;
-
-		public EnergyBarControl(String id, Sprite whiteRectangleSprite) {
-			this.id = id;
-			this.barBackgroundSprite = whiteRectangleSprite;
-			this.barForegroundSprite = new Sprite(whiteRectangleSprite);
-		}
-
-		@Override
-		public String getId() {
-			return id;
-		}
-
-		@Override
-		public float getX() {
-			return x;
-		}
-
-		@Override
-		public float getY() {
-			return y;
-		}
-
-		@Override
-		public void setPosition(float x, float y) {
-			this.x = x;
-			this.y = y;
-		}
-
-		public void setPercentage(float percentage) {
-			this.percentage = percentage;
-		}
-
-		@Override
-		public void update() {
-			float totalWidth = Gdx.graphics.getWidth() * 0.8f;
-
-			float y = Gdx.graphics.getHeight() * 0.85f;
-
-			barBackgroundSprite.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
-			barBackgroundSprite.setColor(1f, 0f, 0f, 1f);
-			barBackgroundSprite.setSize(totalWidth, 10f);
-
-			barForegroundSprite.setPosition(Gdx.graphics.getWidth() * 0.05f, y);
-			barForegroundSprite.setColor(0f, 0f, 1f, 1f);
-
-			barForegroundSprite.setSize(totalWidth * percentage, 10f);
-		}
-
-		@Override
-		public void draw(SpriteBatch spriteBatch) {
-			
-			barBackgroundSprite.draw(spriteBatch);
-			barForegroundSprite.draw(spriteBatch);
-
-		}
-
-	}
 
 	private final Game game;
 	private ResourceManager<String> resourceManager;
@@ -220,6 +153,8 @@ public class PlayGameState extends GameStateImpl {
 		EnergyBarControl healthBar = new EnergyBarControl("HealthBar", whiteRectangle);
 
 		healthBar.setPosition(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.85f);
+		healthBar.setWidthPercentage(0.9f);
+		healthBar.setHeight(10f);
 
 		guiContainer.add(healthBar);
 
@@ -230,12 +165,12 @@ public class PlayGameState extends GameStateImpl {
 				if (vladimir == null)
 					return;
 				SuperSkillComponent superSkillComponent = vladimir.getComponent(SuperSkillComponent.class);
-				
+
 				EnergyBarControl healthBar = guiContainer.findControl("HealthBar");
 				if (healthBar == null)
 					return;
 
-				healthBar.setPercentage(superSkillComponent.energy.getPercentage());
+				healthBar.setPercentage(superSkillComponent.energy);
 			}
 		})).build();
 
