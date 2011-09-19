@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,6 +26,8 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.datastore.profiles.Profile;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.Tags;
@@ -57,6 +60,7 @@ public class PlayGameState extends GameStateImpl {
 	private Scores scores;
 	private ExecutorService executorService;
 	private GamePreferences gamePreferences;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public void setGamePreferences(GamePreferences gamePreferences) {
 		this.gamePreferences = gamePreferences;
@@ -173,12 +177,14 @@ public class PlayGameState extends GameStateImpl {
 				healthBar.setPercentage(superSkillComponent.energy);
 			}
 		})).build();
-
-		// box2dCustomDebugRenderer = new Box2DCustomDebugRenderer(worldCamera, physicsWorld);
+		
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {{
+			monitorKeys("back", Keys.BACK, Keys.ESCAPE);
+		}};
 
 		refreshTodayBestScore();
-
-		// musicResource = resourceManager.get("GameMusic");
 
 		update();
 
@@ -245,11 +251,22 @@ public class PlayGameState extends GameStateImpl {
 		// float volume = volumeTransition.get();
 		// music.setVolume(volume);
 		// }
+		
+		inputDevicesMonitor.update();
+		if (inputDevicesMonitor.getButton("back").isReleased()) 
+			mainMenu();
+	}
+	
+
+	private void mainMenu() {
+		game.transition(game.getInstructionsScreen())//
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	@Override
 	public void resume() {
-		Gdx.input.setCatchBackKey(false);
+		Gdx.input.setCatchBackKey(true);
 		// Music music = musicResource.get();
 		// if (!music.isPlaying()) {
 		// music.setLooping(true);

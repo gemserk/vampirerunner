@@ -33,11 +33,12 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 		@Override
 		public void init(World world, Entity e) {
 			while (cloudsCount > 0) {
+				float randomY = (float) Math.floor(MathUtils.random(bounds.y, bounds.y + bounds.height));
 				entityFactory.instantiate(cloudTemplate, new ParametersWrapper() //
 						.put("spriteId", cloudSpriteIds[MathUtils.random(0, cloudSpriteIds.length - 1)]) //
 						.put("layer", -250) //
 						.put("x", MathUtils.random(bounds.x, bounds.x + bounds.width * 3f)) //
-						.put("y", MathUtils.random(bounds.y, bounds.y + bounds.height)) //
+						.put("y", randomY) //
 						.put("speed", -1f) //
 						);
 				cloudsCount--;
@@ -68,11 +69,12 @@ public class CloudSpawnerTemplate extends EntityTemplateImpl {
 			}
 
 			while (cloudsCount > 0) {
+				float randomY = (float) Math.floor(MathUtils.random(bounds.y, bounds.y + bounds.height));
 				Entity cloud = entityFactory.instantiate(cloudTemplate, new ParametersWrapper() //
 						.put("spriteId", cloudSpriteIds[MathUtils.random(0, cloudSpriteIds.length - 1)]) //
 						.put("layer", -250) //
 						.put("x", 0f) //
-						.put("y", MathUtils.random(bounds.y, bounds.y + bounds.height)) //
+						.put("y", randomY) //
 						.put("speed", -1f) //
 						);
 
