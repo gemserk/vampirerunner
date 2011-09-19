@@ -128,7 +128,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		guiContainer.add(GuiControls.label("Score: " + score.getPoints() + " pts submitting...") //
 				.id("ScoresLabel") //
-				.position(width * 0.5f, height * 0.7f) //
+				.position(width * 0.5f, height * 0.75f) //
 				.center(0.5f, 0.5f) //
 				.font(scoresFont) //
 				.color(Color.RED) //
@@ -141,7 +141,7 @@ public class GameOverGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.notOverColor(1f, 1f, 0f, 1f) //
 				.overColor(1f, 0f, 0f, 1f) //
-				.position(width * 0.5f, height * 0.5f) //
+				.position(width * 0.5f, height * 0.6f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
@@ -157,11 +157,27 @@ public class GameOverGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.notOverColor(1f, 1f, 0f, 1f) //
 				.overColor(1f, 0f, 0f, 1f) //
-				.position(width * 0.5f, height * 0.3f) //
+				.position(width * 0.5f, height * 0.45f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
 						nextScreen();
+					}
+				}) //
+				.build());
+		
+		guiContainer.add(GuiControls.textButton() //
+				.id("MainMenuButton") //
+				.text("Main menu") //
+				.boundsOffset(30f, 30f) //
+				.font(buttonFont) //
+				.notOverColor(1f, 1f, 0f, 1f) //
+				.overColor(1f, 0f, 0f, 1f) //
+				.position(width * 0.5f, height * 0.3f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						mainMenuScreen();
 					}
 				}) //
 				.build());
@@ -203,6 +219,12 @@ public class GameOverGameState extends GameStateImpl {
 		game.transition(game.getPlayGameScreen())//
 				.disposeCurrent(true) //
 				.restartScreen() //
+				.start();
+	}
+	
+	private void mainMenuScreen() {
+		game.transition(game.getInstructionsScreen())//
+				.disposeCurrent(true) //
 				.start();
 	}
 
