@@ -145,9 +145,9 @@ public class PlayGameState extends GameStateImpl {
 
 				Profile profile = gamePreferences.getProfile();
 				Score score = new Score(profile.getName(), points, new HashSet<String>(), new HashMap<String, Object>());
+
 				game.transition(game.getGameOverScreen()) //
 						.parameter("score", score) //
-						.disposeCurrent(true) //
 						.start();
 			}
 		})).build();
@@ -254,13 +254,13 @@ public class PlayGameState extends GameStateImpl {
 		
 		inputDevicesMonitor.update();
 		if (inputDevicesMonitor.getButton("back").isReleased()) 
-			mainMenu();
+			pauseScreen();
 	}
 	
 
-	private void mainMenu() {
-		game.transition(game.getInstructionsScreen())//
-				.disposeCurrent(true) //
+	private void pauseScreen() {
+		game.transition(game.getPauseScreen())//
+				.disposeCurrent(false) //
 				.start();
 	}
 

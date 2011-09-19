@@ -78,22 +78,6 @@ public class GameOverGameState extends GameStateImpl {
 	private FutureProcessor<String> submitScoreProcessor;
 	private FutureProcessor<Profile> registerProfileProcessor;
 
-	// private InputAdapter inputProcessor = new InputAdapter() {
-	// @Override
-	// public boolean keyUp(int keycode) {
-	// nextScreen();
-	// return super.keyUp(keycode);
-	// }
-	//
-	// @Override
-	// public boolean touchUp(int x, int y, int pointer, int button) {
-	// nextScreen();
-	// return super.touchUp(x, y, pointer, button);
-	// }
-	// };
-
-	// private TimeTransition timeTransition;
-
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -218,6 +202,7 @@ public class GameOverGameState extends GameStateImpl {
 	private void tryAgain() {
 		game.transition(game.getPlayGameScreen())//
 				.disposeCurrent(true) //
+				.restartScreen() //
 				.start();
 	}
 
@@ -242,27 +227,12 @@ public class GameOverGameState extends GameStateImpl {
 		game.getBackgroundGameScene().update(getDeltaInMs());
 		registerProfileProcessor.update();
 		submitScoreProcessor.update();
-
 		guiContainer.update();
-
-		// if (timeTransition != null) {
-		// timeTransition.update(getDelta());
-		// if (timeTransition.isFinished()) {
-		// nextScreen();
-		// timeTransition = null;
-		// }
-		// }
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
-	}
-
-	@Override
-	public void pause() {
-		// if (Gdx.input.getInputProcessor() == inputProcessor)
-		// Gdx.input.setInputProcessor(null);
 	}
 
 	@Override

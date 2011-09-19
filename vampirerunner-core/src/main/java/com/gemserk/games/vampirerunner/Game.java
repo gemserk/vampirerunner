@@ -36,6 +36,7 @@ import com.gemserk.games.vampirerunner.gamestates.BackgroundSceneTemplate;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
 import com.gemserk.games.vampirerunner.gamestates.HighscoresGameState;
 import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
+import com.gemserk.games.vampirerunner.gamestates.PauseGameState;
 import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
@@ -84,6 +85,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen gameOverScreen;
 	private Screen instructionsScreen;
 	private Screen highscoresScreen;
+	private Screen pauseScreen;
 
 	public Scores scores;
 	public Profiles profiles;
@@ -106,6 +108,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public Screen getHighscoresScreen() {
 		return highscoresScreen;
+	}
+	
+	public Screen getPauseScreen() {
+		return pauseScreen;
 	}
 
 	public Parameters getGameData() {
@@ -191,12 +197,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		SplashGameState splashGameState = new SplashGameState(this);
 		splashGameState.setResourceManager(resourceManager);
+		
+		PauseGameState pauseGameState = new PauseGameState(this);
+		pauseGameState.setResourceManager(resourceManager);
 
 		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
 		instructionsScreen = new ScreenImpl(instructionsGameState);
 		highscoresScreen = new ScreenImpl(highscoresGameState);
+		pauseScreen = new ScreenImpl(pauseGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
@@ -284,7 +294,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		float leaveTime;
 		float enterTime;
+		
 		boolean shouldDisposeCurrentScreen;
+		boolean shouldRestartNextScreen;
 
 		TransitionHandler leaveTransitionHandler = new TransitionHandler();
 
@@ -315,6 +327,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			this.shouldDisposeCurrentScreen = disposeCurrent;
 			return this;
 		}
+		
+		public TransitionBuilder restartScreen() {
+			this.shouldRestartNextScreen = true;
+			return this;
+		}
 
 		public TransitionBuilder leaveTransitionHandler(TransitionHandler transitionHandler) {
 			this.leaveTransitionHandler = transitionHandler;
@@ -338,6 +355,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			if (withTransition)
 				return;
 			withTransition = true;
+			
+			if (shouldRestartNextScreen)
+				screen.dispose();
+			
 			final Screen currentScreen = game.getScreen();
 			game.setScreen(new TransitionScreen(new ScreenTransition( //
 					new FadeOutTransition(resourceManager, currentScreen, leaveTime, leaveTransitionHandler), //

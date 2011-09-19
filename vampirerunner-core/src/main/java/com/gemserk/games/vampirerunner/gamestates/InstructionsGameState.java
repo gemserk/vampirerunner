@@ -195,6 +195,7 @@ public class InstructionsGameState extends GameStateImpl {
 		game.transition(game.getPlayGameScreen())//
 				.leaveTime(150) //
 				.enterTime(150) //
+				.restartScreen() //
 				.disposeCurrent(true) //
 				.start();
 	}
