@@ -3,16 +3,16 @@ package com.gemserk.games.vampirerunner.gamestates;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.datastore.profiles.Profile;
@@ -50,7 +50,6 @@ public class GameOverGameState extends GameStateImpl {
 		public void done(String scoreId) {
 			Text scoreSubmitText = guiContainer.findControl("ScoresLabel");
 			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submitted!").setColor(Color.GREEN);
-			enableInput();
 		}
 
 		public void failed(Exception e) {
@@ -58,7 +57,6 @@ public class GameOverGameState extends GameStateImpl {
 			scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
 			if (e != null)
 				Gdx.app.log("FaceHunt", e.getMessage(), e);
-			enableInput();
 		}
 
 	}
@@ -80,19 +78,19 @@ public class GameOverGameState extends GameStateImpl {
 	private FutureProcessor<String> submitScoreProcessor;
 	private FutureProcessor<Profile> registerProfileProcessor;
 
-	private InputAdapter inputProcessor = new InputAdapter() {
-		@Override
-		public boolean keyUp(int keycode) {
-			nextScreen();
-			return super.keyUp(keycode);
-		}
-
-		@Override
-		public boolean touchUp(int x, int y, int pointer, int button) {
-			nextScreen();
-			return super.touchUp(x, y, pointer, button);
-		}
-	};
+	// private InputAdapter inputProcessor = new InputAdapter() {
+	// @Override
+	// public boolean keyUp(int keycode) {
+	// nextScreen();
+	// return super.keyUp(keycode);
+	// }
+	//
+	// @Override
+	// public boolean touchUp(int x, int y, int pointer, int button) {
+	// nextScreen();
+	// return super.touchUp(x, y, pointer, button);
+	// }
+	// };
 
 	// private TimeTransition timeTransition;
 
@@ -137,14 +135,6 @@ public class GameOverGameState extends GameStateImpl {
 
 		score = getParameters().get("score");
 
-		final Text distanceLabel = GuiControls.label("Score: " + score.getPoints() + " pts submitting...") //
-				.id("ScoresLabel") //
-				.position(width * 0.5f, height * 0.5f) //
-				.center(0.5f, 0.5f) //
-				.font(scoresFont) //
-				.color(Color.RED) //
-				.build();
-
 		guiContainer.add(GuiControls.label("GAME OVER") //
 				.position(width * 0.5f, height * 0.95f) //
 				.center(0.5f, 0.5f) //
@@ -152,18 +142,44 @@ public class GameOverGameState extends GameStateImpl {
 				.color(1f, 0f, 0f, 1f) //
 				.build());
 
-		guiContainer.add(distanceLabel);
-
-		String continueLabelText = "Click to continue";
-		if (Gdx.app.getType() == ApplicationType.Android)
-			continueLabelText = "Tap to continue";
-
-		guiContainer.add(GuiControls.label(continueLabelText) //
-				.id("TapLabel") //
-				.position(width * 0.5f, height * 0.1f) //
+		guiContainer.add(GuiControls.label("Score: " + score.getPoints() + " pts submitting...") //
+				.id("ScoresLabel") //
+				.position(width * 0.5f, height * 0.7f) //
 				.center(0.5f, 0.5f) //
+				.font(scoresFont) //
+				.color(Color.RED) //
+				.build());
+
+		guiContainer.add(GuiControls.textButton() //
+				.id("TryAgainButton") //
+				.text("Try Again") //
+				.boundsOffset(30f, 30f) //
 				.font(buttonFont) //
-				.color(1f, 1f, 1f, 0f) //
+				.notOverColor(1f, 1f, 0f, 1f) //
+				.overColor(1f, 0f, 0f, 1f) //
+				.position(width * 0.5f, height * 0.5f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						tryAgain();
+					}
+				}) //
+				.build());
+
+		guiContainer.add(GuiControls.textButton() //
+				.id("HighscoresButton") //
+				.text("Highscores") //
+				.boundsOffset(30f, 30f) //
+				.font(buttonFont) //
+				.notOverColor(1f, 1f, 0f, 1f) //
+				.overColor(1f, 0f, 0f, 1f) //
+				.position(width * 0.5f, height * 0.3f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						nextScreen();
+					}
+				}) //
 				.build());
 
 		profile = gamePreferences.getProfile();
@@ -184,7 +200,6 @@ public class GameOverGameState extends GameStateImpl {
 				scoreSubmitText.setText("Score: " + score.getPoints() + " pts submit failed").setColor(Color.RED);
 				if (e != null)
 					Gdx.app.log("VampireRunner", e.getMessage(), e);
-				enableInput();
 			}
 
 			@Override
@@ -200,12 +215,10 @@ public class GameOverGameState extends GameStateImpl {
 		registerProfileProcessor.setFuture(executorService.submit(registerProfileFutureHandler));
 	}
 
-	private void enableInput() {
-		Gdx.input.setInputProcessor(inputProcessor);
-		Text tapText = guiContainer.findControl("TapLabel");
-		tapText.setColor(1f, 1f, 1f, 1f);
-		// timeTransition = new TimeTransition();
-		// timeTransition.start(2f);
+	private void tryAgain() {
+		game.transition(game.getPlayGameScreen())//
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	private void nextScreen() {
@@ -230,6 +243,8 @@ public class GameOverGameState extends GameStateImpl {
 		registerProfileProcessor.update();
 		submitScoreProcessor.update();
 
+		guiContainer.update();
+
 		// if (timeTransition != null) {
 		// timeTransition.update(getDelta());
 		// if (timeTransition.isFinished()) {
@@ -246,8 +261,8 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void pause() {
-		if (Gdx.input.getInputProcessor() == inputProcessor)
-			Gdx.input.setInputProcessor(null);
+		// if (Gdx.input.getInputProcessor() == inputProcessor)
+		// Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
