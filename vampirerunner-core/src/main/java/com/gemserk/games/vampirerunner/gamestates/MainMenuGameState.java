@@ -214,8 +214,7 @@ public class MainMenuGameState extends GameStateImpl {
 	}
 
 	private void playScreen() {
-		game.transition(game.getPlayGameScreen())//
-				.restartScreen() //
+		game.transition(game.getInstructionsScreen())//
 				.disposeCurrent(true) //
 				.start();
 	}

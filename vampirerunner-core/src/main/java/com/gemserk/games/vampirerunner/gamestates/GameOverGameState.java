@@ -216,9 +216,8 @@ public class GameOverGameState extends GameStateImpl {
 	}
 
 	private void tryAgain() {
-		game.transition(game.getPlayGameScreen())//
+		game.transition(game.getInstructionsScreen())//
 				.disposeCurrent(true) //
-				.restartScreen() //
 				.start();
 	}
 	

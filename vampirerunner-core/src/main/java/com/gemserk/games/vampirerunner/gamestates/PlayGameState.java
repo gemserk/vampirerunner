@@ -48,12 +48,8 @@ public class PlayGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	private WorldWrapper worldWrapper;
 
-	// private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
-
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
-	// private Sprite whiteRectangle;
-	// private Sprite whiteRectangle2;
 	// private Resource<Music> musicResource;
 	private FutureProcessor<Score> bestDailyScoreFutureProcessor;
 
@@ -89,6 +85,11 @@ public class PlayGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
+		
+//		String[] instructions = new String[] { "Hold left click to move through walls" };
+//
+//		if (Gdx.app.getType() == ApplicationType.Android)
+//			instructions = new String[] { "Touch and hold screen to move through walls" };
 
 		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
 
@@ -108,6 +109,14 @@ public class PlayGameState extends GameStateImpl {
 				.font(distanceFont) //
 				.color(Color.RED) //
 				.build());
+		
+//		guiContainer.add(GuiControls.label(instructions[0]) //
+//				.id("InstructionsLabel") //
+//				.position(width * 0.5f, height * 0.75f) //
+//				.center(0.5f, 0.5f) //
+//				.font(distanceFont) //
+//				.color(Color.RED) //
+//				.build());
 
 		worldWrapper = new WorldWrapper(new World());
 
@@ -207,7 +216,7 @@ public class PlayGameState extends GameStateImpl {
 				if (score != null)
 					bestScoreLabel.setText("Today Highscore: " + score.getPoints());
 				else
-					bestScoreLabel.setText("No Highscore today yet");
+					bestScoreLabel.setText("No scores today, yet");
 			}
 
 			@Override

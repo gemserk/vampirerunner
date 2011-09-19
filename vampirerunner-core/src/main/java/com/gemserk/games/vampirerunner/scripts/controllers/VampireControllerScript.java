@@ -15,7 +15,6 @@ public class VampireControllerScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(World world, Entity e) {
-		// vampireController.moveThrough = Gdx.input.isKeyPressed(Keys.SPACE);
 		vampireController.usingSuperSkill = Gdx.input.isTouched();
 	}
 
