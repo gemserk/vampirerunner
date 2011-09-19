@@ -169,7 +169,7 @@ public class GameOverGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		
+
 		guiContainer.add(GuiControls.textButton() //
 				.id("MainMenuButton") //
 				.text("Main menu") //
@@ -217,7 +217,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		registerProfileProcessor = new FutureProcessor<Profile>(registerProfileFutureHandler);
 		registerProfileProcessor.setFuture(executorService.submit(registerProfileFutureHandler));
-		
+
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -229,10 +229,12 @@ public class GameOverGameState extends GameStateImpl {
 
 	private void tryAgain() {
 		game.transition(game.getInstructionsScreen())//
+				.leaveTime(0.1f) //
+				.enterTime(0.1f) //
 				.disposeCurrent(true) //
 				.start();
 	}
-	
+
 	private void mainMenuScreen() {
 		game.transition(game.getMainMenuScreen())//
 				.disposeCurrent(true) //
@@ -262,8 +264,8 @@ public class GameOverGameState extends GameStateImpl {
 		submitScoreProcessor.update();
 		guiContainer.update();
 		inputDevicesMonitor.update();
-		
-		if (inputDevicesMonitor.getButton("tryAgain").isReleased()) 
+
+		if (inputDevicesMonitor.getButton("tryAgain").isReleased())
 			tryAgain();
 	}
 

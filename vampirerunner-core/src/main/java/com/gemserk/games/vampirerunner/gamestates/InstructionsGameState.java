@@ -87,6 +87,8 @@ public class InstructionsGameState extends GameStateImpl {
 
 	private void startGame() {
 		game.transition(game.getPlayGameScreen())//
+				.leaveTime(0.1f) //
+				.enterTime(0.1f) //
 				.restartScreen() //
 				.disposeCurrent(true) //
 				.start();
