@@ -3,12 +3,14 @@ package com.gemserk.games.vampirerunner.scripts;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
-import com.gemserk.animation4j.transitions.Transition;
-import com.gemserk.animation4j.transitions.Transitions;
+import com.gemserk.animation4j.gdx.converters.ColorConverter;
+import com.gemserk.animation4j.interpolator.GenericInterpolator;
+import com.gemserk.animation4j.interpolator.Interpolator;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
@@ -24,9 +26,13 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 	private float lastGeneratedPositionX;
 	private float distanceToGenerate = 24f;
 
-	private Transition<Color> floorColorTransition;
+	private final Color startColor = new Color(1f, 1f, 1f, 1f);
+	private final Color endColor = new Color(0.4f, 0.4f, 0.4f, 1f);
+	private float alpha;
 
 	private Parameters parameters = new ParametersWrapper();
+
+	private Interpolator<Color> interpolator;
 
 	public TerrainGeneratorScript(EntityFactory entityFactory, EntityTemplate tileTemplate, float lastGeneratedPositionX) {
 		this.entityFactory = entityFactory;
@@ -36,7 +42,8 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 
 	@Override
 	public void init(World world, Entity e) {
-		floorColorTransition = Transitions.transitionBuilder(Color.WHITE).time(50f).end(new Color(0.4f, 0.4f, 0.4f, 1f)).build();
+		alpha = 0f;
+		interpolator = new GenericInterpolator<Color>(new ColorConverter());
 		generateTerrain(world);
 	}
 
@@ -46,6 +53,8 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 	}
 
 	public void generateTerrain(World world) {
+		alpha += GlobalTime.getDelta() / 50f;
+		
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
 		if (player == null)
 			return;
@@ -53,7 +62,7 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
 
-		Color color = floorColorTransition.get();
+		Color color = interpolator.interpolate(startColor, endColor, alpha);
 
 		while (lastGeneratedPositionX - playerSpatial.getX() < distanceToGenerate) {
 
