@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,6 +16,8 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.datastore.profiles.Profile;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.Game;
@@ -77,6 +80,7 @@ public class GameOverGameState extends GameStateImpl {
 
 	private FutureProcessor<String> submitScoreProcessor;
 	private FutureProcessor<Profile> registerProfileProcessor;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -213,6 +217,14 @@ public class GameOverGameState extends GameStateImpl {
 
 		registerProfileProcessor = new FutureProcessor<Profile>(registerProfileFutureHandler);
 		registerProfileProcessor.setFuture(executorService.submit(registerProfileFutureHandler));
+		
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKeys("tryAgain", Keys.ENTER, Keys.SPACE);
+			}
+		};
 	}
 
 	private void tryAgain() {
@@ -249,6 +261,10 @@ public class GameOverGameState extends GameStateImpl {
 		registerProfileProcessor.update();
 		submitScoreProcessor.update();
 		guiContainer.update();
+		inputDevicesMonitor.update();
+		
+		if (inputDevicesMonitor.getButton("tryAgain").isReleased()) 
+			tryAgain();
 	}
 
 	@Override

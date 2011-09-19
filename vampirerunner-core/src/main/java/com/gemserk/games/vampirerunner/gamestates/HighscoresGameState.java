@@ -138,7 +138,7 @@ public class HighscoresGameState extends GameStateImpl {
 
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE, Keys.ENTER, Keys.SPACE);
 			}
 		};
 
@@ -241,7 +241,7 @@ public class HighscoresGameState extends GameStateImpl {
 				.build());
 		
 		previousScreen = getParameters().get("previousScreen");
-
+		
 		// tapScreenText = new Text("Tap the screen to return", viewportWidth * 0.5f, viewportHeight * 0.1f).setColor(yellowColor);
 
 	}
@@ -302,19 +302,7 @@ public class HighscoresGameState extends GameStateImpl {
 
 		BitmapFont font = resourceManager.getResourceValue("ScoresFont");
 
-		// float lineHeight = font.getCapHeight();
-		//
-		// float newScale = 20f / lineHeight;
-		// font.setScale(newScale);
-
-		// texts.add(new Text("HIGHSCORES", x, y, 0.5f, 0.5f).setColor(Color.RED));
-
 		y -= font.getLineHeight() * font.getScaleY();
-
-		// texts.add(new Text("Name", viewportWidth * 0.3f, y, 0f, 0.5f).setColor(Color.RED));
-		// texts.add(new Text("Score", viewportWidth * 0.7f, y, 1f, 0.5f).setColor(Color.RED));
-		//
-		// y -= font.getLineHeight() * font.getScaleY();
 
 		int index = 1;
 

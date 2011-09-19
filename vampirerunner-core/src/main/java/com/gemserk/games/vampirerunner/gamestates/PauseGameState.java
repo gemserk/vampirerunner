@@ -109,7 +109,7 @@ public class PauseGameState extends GameStateImpl {
 
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE, Keys.SPACE, Keys.ENTER);
 			}
 		};
 

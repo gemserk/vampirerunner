@@ -3,6 +3,7 @@ package com.gemserk.games.vampirerunner.scripts.controllers;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 
 public class VampireControllerScript extends ScriptJavaImpl {
@@ -15,7 +16,7 @@ public class VampireControllerScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(World world, Entity e) {
-		vampireController.usingSuperSkill = Gdx.input.isTouched();
+		vampireController.usingSuperSkill = Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.ENTER);
 	}
 
 }

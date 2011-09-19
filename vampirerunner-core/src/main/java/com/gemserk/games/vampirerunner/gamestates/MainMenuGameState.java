@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -16,6 +17,8 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.datastore.profiles.Profile;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.Game;
@@ -32,6 +35,8 @@ public class MainMenuGameState extends GameStateImpl {
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
+
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -83,11 +88,11 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
 				.notOverColor(1f, 1f, 0f, 1f) //
-				.boundsOffset(40f, 40f) //
+				.boundsOffset(40f, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						playScreen();
+						startGame();
 					}
 				}) //
 				.build());
@@ -100,7 +105,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
 				.notOverColor(1f, 1f, 0f, 1f) //
-				.boundsOffset(40f, 40f) //
+				.boundsOffset(40f, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
@@ -118,7 +123,7 @@ public class MainMenuGameState extends GameStateImpl {
 					.font(buttonFont) //
 					.overColor(1f, 0f, 0f, 1f) //
 					.notOverColor(1f, 1f, 0f, 1f) //
-					.boundsOffset(40f, 40f) //
+					.boundsOffset(40f, 20f) //
 					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased(Control control) {
@@ -144,7 +149,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
 				.notOverColor(1f, 1f, 1f, 1f) //
-				.boundsOffset(40f, 40f) //
+				.boundsOffset(40f, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
@@ -152,6 +157,15 @@ public class MainMenuGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
+		
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKeys("play", Keys.ENTER, Keys.SPACE);
+			}
+		};
+
 	}
 
 	private void changeProfileName() {
@@ -213,7 +227,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 	}
 
-	private void playScreen() {
+	private void startGame() {
 		game.transition(game.getInstructionsScreen())//
 				.disposeCurrent(true) //
 				.start();
@@ -240,6 +254,10 @@ public class MainMenuGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		guiContainer.update();
 		game.getBackgroundGameScene().update(getDeltaInMs());
+		inputDevicesMonitor.update();
+		
+		if (inputDevicesMonitor.getButton("play").isReleased()) 
+			startGame();
 	}
 
 	@Override
