@@ -48,6 +48,8 @@ import com.gemserk.scores.Scores;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
+	
+	public static final int maxProfileNameLen = 15; 
 
 	private static boolean showFps = false;
 	private static boolean showBox2dDebug = false;

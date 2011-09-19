@@ -172,12 +172,15 @@ public class MainMenuGameState extends GameStateImpl {
 		game.getScreen().pause();
 
 		Gdx.input.getTextInput(new TextInputListener() {
-
+			
 			@Override
 			public void input(String username) {
 				Profile profile = gamePreferences.getProfile();
 
 				if (!"".equals(username)) {
+					
+					if (username.length() > Game.maxProfileNameLen)
+						username = username.substring(0, Game.maxProfileNameLen);
 
 					Set<Profile> profileList = gamePreferences.getSavedProfiles();
 

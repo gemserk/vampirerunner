@@ -319,8 +319,9 @@ public class HighscoresGameState extends GameStateImpl {
 				scoreColor = Color.RED;
 
 			String name = score.getName();
-			if (name.length() > 15)
-				name = name.substring(0, 15);
+			
+			if (name.length() > Game.maxProfileNameLen)
+				name = name.substring(0, Game.maxProfileNameLen);
 
 			Text numberText = new Text("" + index + ". ", viewportWidth * 0.15f, y, 1f, 0.5f).setColor(scoreColor);
 			Text nameText = new Text(name, viewportWidth * 0.15f, y, 0f, 0.5f).setColor(scoreColor);
