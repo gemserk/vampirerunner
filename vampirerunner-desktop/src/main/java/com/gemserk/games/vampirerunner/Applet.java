@@ -11,6 +11,7 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
+import com.gemserk.commons.utils.gdx.LwjglLibgdxLibraryUtils;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.datastore.profiles.ProfilesHttpImpl;
 import com.gemserk.scores.ScoreSerializerJSONImpl;
