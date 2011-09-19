@@ -230,7 +230,7 @@ public class GameOverGameState extends GameStateImpl {
 
 	private void nextScreen() {
 		game.transition(game.getHighscoresScreen())//
-				.disposeCurrent(true) //
+				.parameter("previousScreen", game.getGameOverScreen()) //
 				.start();
 	}
 

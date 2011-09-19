@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
@@ -92,6 +93,8 @@ public class HighscoresGameState extends GameStateImpl {
 	private GamePreferences gamePreferences;
 
 	private Container guiContainer;
+
+	private Screen previousScreen;
 
 	public void setExecutorService(ExecutorService executorService) {
 		this.executorService = executorService;
@@ -232,17 +235,19 @@ public class HighscoresGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						mainMenu();
+						previousScreen();
 					}
 				}) //
 				.build());
+		
+		previousScreen = getParameters().get("previousScreen");
 
 		// tapScreenText = new Text("Tap the screen to return", viewportWidth * 0.5f, viewportHeight * 0.1f).setColor(yellowColor);
 
 	}
 
-	private void mainMenu() {
-		game.transition(game.getInstructionsScreen()) //
+	private void previousScreen() {
+		game.transition(previousScreen) //
 				.disposeCurrent() //
 				.start();
 	}
@@ -277,7 +282,7 @@ public class HighscoresGameState extends GameStateImpl {
 		guiContainer.update();
 		
 		if (inputDevicesMonitor.getButton("back").isReleased()) 
-			mainMenu();
+			previousScreen();
 	}
 
 	private void reloadScores(Range range) {

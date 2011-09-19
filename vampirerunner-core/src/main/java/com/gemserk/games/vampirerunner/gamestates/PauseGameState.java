@@ -47,7 +47,7 @@ public class PauseGameState extends GameStateImpl {
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
-		
+
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 
 		guiContainer.add(GuiControls.label("GAME PAUSED") //
@@ -64,11 +64,27 @@ public class PauseGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.notOverColor(1f, 1f, 0f, 1f) //
 				.overColor(1f, 0f, 0f, 1f) //
-				.position(width * 0.5f, height * 0.7f) //
+				.position(width * 0.5f, height * 0.6f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
 						resumeGame();
+					}
+				}) //
+				.build());
+
+		guiContainer.add(GuiControls.textButton() //
+				.id("HighscoresButton") //
+				.text("Highscores") //
+				.boundsOffset(30f, 30f) //
+				.font(buttonFont) //
+				.notOverColor(1f, 1f, 0f, 1f) //
+				.overColor(1f, 0f, 0f, 1f) //
+				.position(width * 0.5f, height * 0.45f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						highscoresScreen();
 					}
 				}) //
 				.build());
@@ -80,7 +96,7 @@ public class PauseGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.notOverColor(1f, 1f, 0f, 1f) //
 				.overColor(1f, 0f, 0f, 1f) //
-				.position(width * 0.5f, height * 0.5f) //
+				.position(width * 0.5f, height * 0.3f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
@@ -88,15 +104,24 @@ public class PauseGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		
+
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
-		
-		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {{
-			monitorKeys("back", Keys.BACK, Keys.ESCAPE);
-		}};
-		
+
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
+			}
+		};
+
 		scene = getParameters().get("scene");
 
+	}
+
+	private void highscoresScreen() {
+		game.transition(game.getHighscoresScreen())//
+				.disposeCurrent() //
+				.parameter("previousScreen", game.getPauseScreen()) //
+				.start();
 	}
 
 	private void resumeGame() {
@@ -115,14 +140,14 @@ public class PauseGameState extends GameStateImpl {
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		scene.render();
-		
+
 		whiteRectangle.setPosition(0, 0);
 		whiteRectangle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		whiteRectangle.setColor(0f, 0f, 0f, 0.5f);
-		
+
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
-		
+
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
 	}
@@ -132,8 +157,8 @@ public class PauseGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		guiContainer.update();
 		inputDevicesMonitor.update();
-		
-		if (inputDevicesMonitor.getButton("back").isReleased()) 
+
+		if (inputDevicesMonitor.getButton("back").isReleased())
 			resumeGame();
 	}
 
