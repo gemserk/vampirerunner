@@ -1,6 +1,7 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,8 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.resources.ResourceManager;
 
@@ -20,6 +23,7 @@ public class PauseGameState extends GameStateImpl {
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -58,7 +62,7 @@ public class PauseGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						tryAgain();
+						resumeGame();
 					}
 				}) //
 				.build());
@@ -74,20 +78,26 @@ public class PauseGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						nextScreen();
+						mainMenuScreen();
 					}
 				}) //
 				.build());
+		
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {{
+			monitorKeys("back", Keys.BACK, Keys.ESCAPE);
+		}};
 
 	}
 
-	private void tryAgain() {
+	private void resumeGame() {
 		game.transition(game.getPlayGameScreen())//
 				.disposeCurrent(true) //
 				.start();
 	}
 
-	private void nextScreen() {
+	private void mainMenuScreen() {
 		game.transition(game.getInstructionsScreen())//
 				.disposeCurrent(true) //
 				.start();
@@ -107,6 +117,10 @@ public class PauseGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		game.getBackgroundGameScene().update(getDeltaInMs());
 		guiContainer.update();
+		inputDevicesMonitor.update();
+		
+		if (inputDevicesMonitor.getButton("back").isReleased()) 
+			resumeGame();
 	}
 
 	@Override

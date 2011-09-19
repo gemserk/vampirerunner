@@ -181,7 +181,7 @@ public class PlayGameState extends GameStateImpl {
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {{
-			monitorKeys("back", Keys.BACK, Keys.ESCAPE);
+			monitorKeys("back", Keys.BACK, Keys.ESCAPE, Keys.MENU);
 		}};
 
 		refreshTodayBestScore();
