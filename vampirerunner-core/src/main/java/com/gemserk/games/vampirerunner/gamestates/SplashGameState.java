@@ -101,8 +101,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	}
 
 	private void mainMenu() {
-//		game.transition(game.getHighscoresScreen()) //
-		game.transition(game.getInstructionsScreen()) //
+		game.transition(game.getMainMenuScreen()) //
 				.leaveTime(1500) //
 				.disposeCurrent() //
 				.start();

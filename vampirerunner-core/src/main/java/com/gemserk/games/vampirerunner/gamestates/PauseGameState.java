@@ -131,7 +131,7 @@ public class PauseGameState extends GameStateImpl {
 	}
 
 	private void mainMenuScreen() {
-		game.transition(game.getInstructionsScreen())//
+		game.transition(game.getMainMenuScreen())//
 				.disposeCurrent(true) //
 				.start();
 	}

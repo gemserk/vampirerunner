@@ -37,10 +37,15 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 	@Override
 	public void init(World world, Entity e) {
 		floorColorTransition = Transitions.transitionBuilder(Color.WHITE).time(50f).end(new Color(0.4f, 0.4f, 0.4f, 1f)).build();
+		generateTerrain(world);
 	}
 
 	@Override
 	public void update(World world, Entity e) {
+		generateTerrain(world);
+	}
+
+	public void generateTerrain(World world) {
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
 		if (player == null)
 			return;
@@ -68,7 +73,6 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 			// Gdx.app.log("VampireRunner", "Generating new tile with color: " + color);
 
 		}
-
 	}
 
 }
