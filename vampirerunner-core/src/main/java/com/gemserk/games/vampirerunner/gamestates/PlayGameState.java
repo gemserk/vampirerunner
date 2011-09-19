@@ -261,6 +261,7 @@ public class PlayGameState extends GameStateImpl {
 	private void pauseScreen() {
 		game.transition(game.getPauseScreen())//
 				.disposeCurrent(false) //
+				.parameter("scene", worldWrapper)//
 				.start();
 	}
 

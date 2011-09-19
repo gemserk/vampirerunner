@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
@@ -24,6 +26,8 @@ public class PauseGameState extends GameStateImpl {
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private WorldWrapper scene;
+	private Sprite whiteRectangle;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -43,6 +47,8 @@ public class PauseGameState extends GameStateImpl {
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
+		
+		whiteRectangle = resourceManager.getResourceValue("WhiteRectangleSprite");
 
 		guiContainer.add(GuiControls.label("GAME PAUSED") //
 				.position(width * 0.5f, height * 0.95f) //
@@ -88,6 +94,8 @@ public class PauseGameState extends GameStateImpl {
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {{
 			monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 		}};
+		
+		scene = getParameters().get("scene");
 
 	}
 
@@ -106,8 +114,15 @@ public class PauseGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		game.getBackgroundGameScene().render();
+		scene.render();
+		
+		whiteRectangle.setPosition(0, 0);
+		whiteRectangle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		whiteRectangle.setColor(0f, 0f, 0f, 0.5f);
+		
 		spriteBatch.begin();
+		whiteRectangle.draw(spriteBatch);
+		
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
 	}
@@ -115,7 +130,6 @@ public class PauseGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		game.getBackgroundGameScene().update(getDeltaInMs());
 		guiContainer.update();
 		inputDevicesMonitor.update();
 		
