@@ -21,3 +21,6 @@ vampirerunner-desktop/.classpath
 vampirerunner-desktop/.project
 vampirerunner-desktop/.settings
 
+assets/generated/wall-tiles/
+assets/reference/
+
