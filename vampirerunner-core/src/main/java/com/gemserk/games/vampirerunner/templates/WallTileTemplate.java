@@ -34,11 +34,12 @@ public class WallTileTemplate extends EntityTemplateImpl {
 
 		Float x = parameters.get("x");
 		Float y = parameters.get("y");
+		Color color = parameters.get("color");
 
 		Sprite sprite = resourceManager.getResourceValue(spriteId);
 
 		SpriteUtils.resize(sprite, sprite.getWidth() / 32f);
-
+		
 		float width = sprite.getWidth();
 		float height = sprite.getHeight();
 
@@ -56,7 +57,7 @@ public class WallTileTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, sprite.getWidth(), sprite.getHeight())));
-		entity.addComponent(new SpriteComponent(sprite, 0f, 0f, Color.WHITE));
+		entity.addComponent(new SpriteComponent(sprite, 0f, 0f, color));
 		entity.addComponent(new RenderableComponent(2));
 	}
 

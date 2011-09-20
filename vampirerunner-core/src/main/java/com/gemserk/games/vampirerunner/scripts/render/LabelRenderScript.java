@@ -18,12 +18,13 @@ public class LabelRenderScript extends ScriptJavaImpl {
 
 	private final Libgdx2dCamera camera;
 	private SpriteBatch spriteBatch;
-	private BitmapFont font = new BitmapFont();
+	private BitmapFont font;
 
 	private final Vector2 labelPosition = new Vector2();
 
-	public LabelRenderScript(Libgdx2dCamera camera) {
+	public LabelRenderScript(Libgdx2dCamera camera, BitmapFont font) {
 		this.camera = camera;
+		this.font = font;
 	}
 
 	@Override
@@ -35,6 +36,9 @@ public class LabelRenderScript extends ScriptJavaImpl {
 	public void update(World world, Entity e) {
 		ImmutableBag<Entity> positionLabels = world.getGroupManager().getEntities(Groups.PositionLabel);
 
+		font.setScale(2f);
+		font.setColor(1f, 1f, 1f, 1f);
+		
 		spriteBatch.begin();
 
 		for (int i = 0; i < positionLabels.size(); i++) {
@@ -52,15 +56,16 @@ public class LabelRenderScript extends ScriptJavaImpl {
 			camera.project(labelPosition);
 			
 			// do not render labels outside the screen.
-			if (labelPosition.x > Gdx.graphics.getWidth() || labelPosition.x < 0)
+			if (labelPosition.x > Gdx.graphics.getWidth() + 100f || labelPosition.x < -100f)
 				continue;
 
-			font.setColor(1f, 1f, 1f, 1f);
 			font.draw(spriteBatch, scoreLabelComponent.getLabel(), labelPosition.x, labelPosition.y);
 
 		}
 
 		spriteBatch.end();
+		
+		font.setScale(1f);
 	}
 
 	@Override

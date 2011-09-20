@@ -4,6 +4,7 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -347,8 +348,9 @@ public class NormalModeSceneTemplate {
 				.build();
 		
 		//// ...
+		BitmapFont scoresFont = resourceManager.getResourceValue("ScoresFont");
 		
-		entityBuilder.component(new RenderScriptComponent(new LabelRenderScript(worldCamera))).build();
+		entityBuilder.component(new RenderScriptComponent(new LabelRenderScript(worldCamera, scoresFont))).build();
 
 	}
 

@@ -53,7 +53,7 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 	}
 
 	public void generateTerrain(World world) {
-		alpha += GlobalTime.getDelta() / 50f;
+		alpha += GlobalTime.getDelta() / 120f;
 		
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
 		if (player == null)

@@ -2,11 +2,16 @@ package com.gemserk.games.vampirerunner.scripts;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
+import com.gemserk.animation4j.gdx.converters.ColorConverter;
+import com.gemserk.animation4j.interpolator.GenericInterpolator;
+import com.gemserk.animation4j.interpolator.Interpolator;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
@@ -32,15 +37,29 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 	private float distanceTrigger;
 
 	private Parameters parameters = new ParametersWrapper();
+	
+	private final Color startColor = new Color(1f, 1f, 1f, 1f);
+	private final Color endColor = new Color(0.4f, 0.4f, 0.4f, 1f);
+	private float alpha;
+	
+	private Interpolator<Color> interpolator;
 
 	public ObstacleGeneratorScript(EntityFactory entityFactory, EntityTemplate tileTemplate, float distanceTrigger) {
 		this.entityFactory = entityFactory;
 		this.tileTemplate = tileTemplate;
 		this.distanceTrigger = distanceTrigger;
 	}
+	
+	@Override
+	public void init(World world, Entity e) {
+		alpha = 0f;
+		interpolator = new GenericInterpolator<Color>(new ColorConverter());		
+	}
 
 	@Override
 	public void update(World world, Entity e) {
+		alpha += GlobalTime.getDelta() / 120f;
+		
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
 
 		if (player == null)
@@ -48,6 +67,8 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
+		
+		Color color = interpolator.interpolate(startColor, endColor, alpha);
 
 		if (playerSpatial.getX() > distanceTrigger) {
 
@@ -87,6 +108,7 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 						.put("spriteId", spriteId) //
 						.put("x", x) //
 						.put("y", y) //
+						.put("color", color) //
 						);
 
 				SpatialComponent spatialComponent = wallTile.getComponent(SpatialComponent.class);
