@@ -223,6 +223,7 @@ public class GameOverGameState extends GameStateImpl {
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
 				monitorKeys("tryAgain", Keys.ENTER, Keys.SPACE);
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 			}
 		};
 	}
@@ -267,11 +268,14 @@ public class GameOverGameState extends GameStateImpl {
 
 		if (inputDevicesMonitor.getButton("tryAgain").isReleased())
 			tryAgain();
+		
+		if (inputDevicesMonitor.getButton("back").isReleased())
+			mainMenuScreen();
 	}
 
 	@Override
 	public void resume() {
-		Gdx.input.setCatchBackKey(false);
+		Gdx.input.setCatchBackKey(true);
 	}
 
 	@Override
