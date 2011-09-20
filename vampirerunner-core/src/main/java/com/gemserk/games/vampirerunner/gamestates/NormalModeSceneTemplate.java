@@ -1,5 +1,8 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -41,15 +44,19 @@ import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
+import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
+import com.gemserk.games.vampirerunner.scripts.render.LabelRenderScript;
+import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
+import com.gemserk.games.vampirerunner.templates.PositionLabelTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.TimedEventTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
@@ -59,12 +66,23 @@ import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.WallTileTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
+import com.gemserk.scores.Score;
+import com.gemserk.scores.Scores;
 
 public class NormalModeSceneTemplate {
 
 	private ResourceManager<String> resourceManager;
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
+	
+	/**
+	 * Should be removed....
+	 */
+	Scores scores;
+	
+	public void setScores(Scores scores) {
+		this.scores = scores;
+	}
 
 	public EntityBuilder getEntityBuilder() {
 		return entityBuilder;
@@ -122,6 +140,7 @@ public class NormalModeSceneTemplate {
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
+		worldWrapper.addRenderSystem(new RenderScriptSystem());
 
 		worldWrapper.init();
 
@@ -140,6 +159,8 @@ public class NormalModeSceneTemplate {
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
+		
+		EntityTemplate positionLabelTemplate = new PositionLabelTemplate();
 
 		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
 		final EntityTemplate timedEventTemplate = new TimedEventTemplate(eventManager);
@@ -328,6 +349,29 @@ public class NormalModeSceneTemplate {
 
 				})) //
 				.build();
+		
+		//// ...
+		
+		Collection<Score> orderedByPoints = scores.getOrderedByPoints(new HashSet<String>(), 50, false);
+		int position = 1;
+
+		for (Score score : orderedByPoints) {
+
+			entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
+					.put("score", score) //
+					.put("position", position++) //
+					.put("spatial", new SpatialImpl(score.getPoints(), 1f, 0f, 0f, 0f)) //
+					);
+
+		}
+
+		// entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
+		// .put("spatial", new SpatialImpl(2f, 1f, 0f, 0f, 0f)));
+		//
+		// entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
+		// .put("spatial", new SpatialImpl(5f, 1f, 0f, 0f, 0f)));
+
+		entityBuilder.component(new RenderScriptComponent(new LabelRenderScript(worldCamera))).build();
 
 	}
 

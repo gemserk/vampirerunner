@@ -33,6 +33,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
+import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
@@ -72,6 +73,7 @@ public class BackgroundSceneTemplate {
 	}
 
 	private ResourceManager<String> resourceManager;
+
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
 
@@ -135,8 +137,7 @@ public class BackgroundSceneTemplate {
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
-
-		// worldWrapper.addRenderSystem(new RenderScriptSystem());
+		worldWrapper.addRenderSystem(new RenderScriptSystem());
 
 		worldWrapper.init();
 
@@ -180,11 +181,6 @@ public class BackgroundSceneTemplate {
 		entityBuilder //
 				.component(new ScriptComponent(new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
 				.build();
-
-		// entityFactory.instantiate(box2dRendererTemplate, new ParametersWrapper() //
-		// .put("camera", worldCamera) //
-		// .put("physicsWorld", physicsWorld) //
-		// );
 
 	}
 

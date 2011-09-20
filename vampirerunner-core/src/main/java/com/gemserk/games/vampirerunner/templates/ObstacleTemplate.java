@@ -18,6 +18,7 @@ import com.gemserk.games.vampirerunner.Collisions;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.resources.ResourceManager;
 
+@Deprecated
 public class ObstacleTemplate extends EntityTemplateImpl {
 
 	private final BodyBuilder bodyBuilder;

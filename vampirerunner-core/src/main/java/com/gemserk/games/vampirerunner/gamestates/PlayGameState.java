@@ -85,11 +85,6 @@ public class PlayGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 		guiContainer = new Container();
-		
-//		String[] instructions = new String[] { "Hold left click to move through walls" };
-//
-//		if (Gdx.app.getType() == ApplicationType.Android)
-//			instructions = new String[] { "Touch and hold screen to move through walls" };
 
 		BitmapFont distanceFont = resourceManager.getResourceValue("DistanceFont");
 
@@ -109,19 +104,13 @@ public class PlayGameState extends GameStateImpl {
 				.font(distanceFont) //
 				.color(Color.RED) //
 				.build());
-		
-//		guiContainer.add(GuiControls.label(instructions[0]) //
-//				.id("InstructionsLabel") //
-//				.position(width * 0.5f, height * 0.75f) //
-//				.center(0.5f, 0.5f) //
-//				.font(distanceFont) //
-//				.color(Color.RED) //
-//				.build());
 
 		worldWrapper = new WorldWrapper(new World());
 
 		NormalModeSceneTemplate normalModeSceneTemplate = new NormalModeSceneTemplate();
 		normalModeSceneTemplate.setResourceManager(resourceManager);
+		
+		normalModeSceneTemplate.setScores(scores);
 
 		normalModeSceneTemplate.apply(worldWrapper);
 
@@ -186,12 +175,14 @@ public class PlayGameState extends GameStateImpl {
 				healthBar.setPercentage(superSkillComponent.energy);
 			}
 		})).build();
-		
+
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
-		
-		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {{
-			monitorKeys("back", Keys.BACK, Keys.ESCAPE, Keys.MENU);
-		}};
+
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE, Keys.MENU);
+			}
+		};
 
 		refreshTodayBestScore();
 
@@ -260,12 +251,11 @@ public class PlayGameState extends GameStateImpl {
 		// float volume = volumeTransition.get();
 		// music.setVolume(volume);
 		// }
-		
+
 		inputDevicesMonitor.update();
-		if (inputDevicesMonitor.getButton("back").isReleased()) 
+		if (inputDevicesMonitor.getButton("back").isReleased())
 			pauseScreen();
 	}
-	
 
 	private void pauseScreen() {
 		game.transition(game.getPauseScreen())//
