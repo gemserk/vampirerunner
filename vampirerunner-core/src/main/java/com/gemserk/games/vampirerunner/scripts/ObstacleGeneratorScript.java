@@ -41,6 +41,9 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
 
 		if (playerSpatial.getX() > distanceTrigger) {
+			
+			// send an event to generate walls
+			
 			// trigger, generate multiple obstacles ahead, move distance trigger
 			Gdx.app.log("VampireRunner", "Generate obstacles triggered");
 			

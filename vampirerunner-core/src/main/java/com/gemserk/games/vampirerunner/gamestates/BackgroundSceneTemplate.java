@@ -1,20 +1,20 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
 import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.MovementSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
@@ -31,36 +31,102 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
-import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
+import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireIdleTemplate;
+import com.gemserk.games.vampirerunner.templates.WallTileTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundSceneTemplate {
 
-	class WallTemplate extends EntityTemplateImpl {
+	static class Box2dRenderDebugScript extends ScriptJavaImpl {
+
+		private final Box2DDebugRenderer box2dDebugRenderer = new Box2DDebugRenderer();
+		private final Libgdx2dCamera camera;
+		private final com.badlogic.gdx.physics.box2d.World physicsWorld;
+
+		public Box2dRenderDebugScript(Libgdx2dCamera camera, com.badlogic.gdx.physics.box2d.World physicsWorld) {
+			this.camera = camera;
+			this.physicsWorld = physicsWorld;
+		}
+
+		@Override
+		public void update(World world, Entity e) {
+			box2dDebugRenderer.render(physicsWorld, camera.getCombinedMatrix());
+		}
+
+	}
+
+	class Box2dDebugRendererTemplate extends EntityTemplateImpl {
 
 		@Override
 		public void apply(Entity entity) {
-			String spriteId = parameters.get("spriteId");
+			Libgdx2dCamera camera = parameters.get("camera");
+			com.badlogic.gdx.physics.box2d.World physicsWorld = parameters.get("physicsWorld");
+			entity.addComponent(new RenderScriptComponent(new Box2dRenderDebugScript(camera, physicsWorld)));
+		}
+	}
 
-			Float x = parameters.get("x");
-			Float y = parameters.get("y");
+	class WallSpawnerScript extends ScriptJavaImpl {
 
-			Sprite sprite = resourceManager.getResourceValue(spriteId);
+		String[] wallSpriteIds = { "WallTileASprite", "WallTileBSprite", "WallTileCSprite", "WallTileDSprite" };
 
-			SpriteUtils.resize(sprite, sprite.getWidth() / 32f);
+		int[][] wallPatterns = { { 0, 1, 3 }, //
+				{ 0, 1, 2, 1, 3 }, //
+				{ 0, 1, 2, 1, 2, 1, 3 }, //
+				{ 0, 1, 2, 1, 2, 1, 2, 1, 3 }, //
+				{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, //
+		};
 
-			entity.addComponent(new SpatialComponent(new SpatialImpl(x, y, sprite.getWidth(), sprite.getHeight(), 0f)));
-			entity.addComponent(new SpriteComponent(sprite, 0f, 0f, Color.WHITE));
-			entity.addComponent(new RenderableComponent(5));
+		private final EntityTemplate wallTemplate;
+
+		public WallSpawnerScript(EntityTemplate wallTemplate) {
+			this.wallTemplate = wallTemplate;
+		}
+
+		@Override
+		public void init(World world, Entity e) {
+
+			// generate a random pattern
+			int[] wallPattern = wallPatterns[MathUtils.random(0, wallPatterns.length - 1)];
+
+			float x = 3f;
+			float y = 1.1f;
+
+			for (int i = 0; i < wallPattern.length; i++) {
+
+				int pattern = wallPattern[i];
+				String spriteId = wallSpriteIds[pattern];
+
+				Entity wallTile = entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
+						.put("spriteId", spriteId) //
+						.put("x", x) //
+						.put("y", y) //
+						);
+
+				SpatialComponent spatialComponent = wallTile.getComponent(SpatialComponent.class);
+				x += spatialComponent.getSpatial().getWidth();
+
+			}
+
+		}
+
+	}
+
+	class WallSpawnerTemplate extends EntityTemplateImpl {
+
+		@Override
+		public void apply(Entity entity) {
+			EntityTemplate wallTemplate = parameters.get("wallTemplate");
+			entity.addComponent(new ScriptComponent(new WallSpawnerScript(wallTemplate)));
 		}
 
 	}
@@ -69,7 +135,9 @@ public class BackgroundSceneTemplate {
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
 
-	private WallTemplate wallTemplate = new WallTemplate();
+	private EntityTemplate wallSpawnerTemplate = new WallSpawnerTemplate();
+	private EntityTemplate box2dRendererTemplate = new Box2dDebugRendererTemplate();
+	private BodyBuilder bodyBuilder;
 
 	public EntityBuilder getEntityBuilder() {
 		return entityBuilder;
@@ -104,7 +172,7 @@ public class BackgroundSceneTemplate {
 		final EventManager eventManager = new EventManagerImpl();
 
 		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(0f, 0f), false);
-		BodyBuilder bodyBuilder = new BodyBuilder(physicsWorld);
+		bodyBuilder = new BodyBuilder(physicsWorld);
 
 		RenderLayers renderLayers = new RenderLayers();
 
@@ -128,6 +196,7 @@ public class BackgroundSceneTemplate {
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
+		worldWrapper.addRenderSystem(new RenderScriptSystem());
 
 		worldWrapper.init();
 
@@ -142,6 +211,8 @@ public class BackgroundSceneTemplate {
 
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
+
+		EntityTemplate wallTemplate = new WallTileTemplate(resourceManager, bodyBuilder);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //
@@ -172,31 +243,11 @@ public class BackgroundSceneTemplate {
 				.component(new ScriptComponent(new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
 				.build();
 
-		float x = 3f;
-		float y = 1.1f;
+		entityFactory.instantiate(wallSpawnerTemplate, new ParametersWrapper().put("wallTemplate", wallTemplate));
 
-		Entity wallTile = entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
-				.put("spriteId", "WallTileASprite") //
-				.put("x", x) //
-				.put("y", y) //
-				);
-
-		SpatialComponent spatialComponent = wallTile.getComponent(SpatialComponent.class);
-		x += spatialComponent.getSpatial().getWidth();
-
-		wallTile = entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
-				.put("spriteId", "WallTileBSprite") //
-				.put("x", x) //
-				.put("y", y) //
-				);
-
-		spatialComponent = wallTile.getComponent(SpatialComponent.class);
-		x += spatialComponent.getSpatial().getWidth();
-
-		entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
-				.put("spriteId", "WallTileDSprite") //
-				.put("x", x) //
-				.put("y", y) //
+		entityFactory.instantiate(box2dRendererTemplate, new ParametersWrapper() //
+				.put("camera", worldCamera) //
+				.put("physicsWorld", physicsWorld) //
 				);
 
 	}
