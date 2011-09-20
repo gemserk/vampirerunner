@@ -5,12 +5,15 @@ import com.artemis.World;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.components.ScoreLabelComponent;
 
@@ -38,33 +41,36 @@ public class LabelRenderScript extends ScriptJavaImpl {
 
 		font.setScale(2f);
 		font.setColor(1f, 1f, 1f, 1f);
-		
-		spriteBatch.begin();
 
+		spriteBatch.begin();
 		for (int i = 0; i < positionLabels.size(); i++) {
 
 			// if position label inside screen...
-
 			Entity positionLabel = positionLabels.get(i);
 			SpatialComponent spatialComponent = positionLabel.getComponent(SpatialComponent.class);
-			ScoreLabelComponent scoreLabelComponent = positionLabel.getComponent(ScoreLabelComponent.class);
 
 			Spatial spatial = spatialComponent.getSpatial();
 
 			labelPosition.set(spatial.getX(), spatial.getY());
 
 			camera.project(labelPosition);
-			
+
 			// do not render labels outside the screen.
 			if (labelPosition.x > Gdx.graphics.getWidth() + 100f || labelPosition.x < -100f)
 				continue;
 
-			font.draw(spriteBatch, scoreLabelComponent.getLabel(), labelPosition.x, labelPosition.y);
+			ScoreLabelComponent scoreLabelComponent = positionLabel.getComponent(ScoreLabelComponent.class);
+			SpriteComponent spriteComponent = positionLabel.getComponent(SpriteComponent.class);
 
+			Sprite sprite = spriteComponent.getSprite();
+
+			SpriteBatchUtils.drawCentered(spriteBatch, sprite, labelPosition.x, labelPosition.y, sprite.getWidth(), sprite.getHeight(), 0f, 0.5f, 0.6f);
+			SpriteBatchUtils.drawCentered(spriteBatch, font, scoreLabelComponent.getLabel(), labelPosition.x, labelPosition.y);
+
+			// font.draw(spriteBatch, scoreLabelComponent.getLabel(), labelPosition.x, labelPosition.y);
 		}
-
 		spriteBatch.end();
-		
+
 		font.setScale(1f);
 	}
 

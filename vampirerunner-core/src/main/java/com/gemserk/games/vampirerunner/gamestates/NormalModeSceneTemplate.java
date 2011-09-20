@@ -54,7 +54,6 @@ import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
-import com.gemserk.games.vampirerunner.templates.PositionLabelTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.TimedEventTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
@@ -157,8 +156,6 @@ public class NormalModeSceneTemplate {
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
 		
-		EntityTemplate positionLabelTemplate = new PositionLabelTemplate();
-
 		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
 		final EntityTemplate timedEventTemplate = new TimedEventTemplate(eventManager);
 		final EntityTemplate vladimirPartExplosion = new VampirePartExplosionTemplate(resourceManager);

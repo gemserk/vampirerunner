@@ -24,7 +24,7 @@ public class ScoreLabelComponent extends Component {
 	public ScoreLabelComponent(int position, Score score) {
 		this.position = position;
 		this.score = score;
-		this.label = "#" + position;
+		this.label = "" + position;
 	}
 
 }

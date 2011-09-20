@@ -222,10 +222,14 @@ public class PlayGameState extends GameStateImpl {
 				
 				int position = 1;
 				for (Score score : scores) {
+					
+					Sprite bloodSprite = resourceManager.getResourceValue("BloodSprite");
+					
 					entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
 							.put("score", score) //
 							.put("position", position++) //
-							.put("spatial", new SpatialImpl(score.getPoints(), 1f, 0f, 0f, 0f)) //
+							.put("spatial", new SpatialImpl(score.getPoints(), 0.5f, bloodSprite.getWidth(), bloodSprite.getHeight(), 0f)) //
+							.put("sprite", bloodSprite) //
 							);
 				}
 			}
