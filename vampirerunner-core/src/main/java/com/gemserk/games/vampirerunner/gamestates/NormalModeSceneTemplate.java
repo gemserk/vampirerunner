@@ -1,8 +1,5 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -66,7 +63,6 @@ import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.WallTileTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.scores.Score;
 import com.gemserk.scores.Scores;
 
 public class NormalModeSceneTemplate {
@@ -352,18 +348,18 @@ public class NormalModeSceneTemplate {
 		
 		//// ...
 		
-		Collection<Score> orderedByPoints = scores.getOrderedByPoints(new HashSet<String>(), 50, false);
-		int position = 1;
-
-		for (Score score : orderedByPoints) {
-
-			entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
-					.put("score", score) //
-					.put("position", position++) //
-					.put("spatial", new SpatialImpl(score.getPoints(), 1f, 0f, 0f, 0f)) //
-					);
-
-		}
+//		Collection<Score> orderedByPoints = scores.getOrderedByPoints(new HashSet<String>(), 50, false);
+//		int position = 1;
+//
+//		for (Score score : orderedByPoints) {
+//
+//			entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
+//					.put("score", score) //
+//					.put("position", position++) //
+//					.put("spatial", new SpatialImpl(score.getPoints(), 1f, 0f, 0f, 0f)) //
+//					);
+//
+//		}
 
 		// entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
 		// .put("spatial", new SpatialImpl(2f, 1f, 0f, 0f, 0f)));

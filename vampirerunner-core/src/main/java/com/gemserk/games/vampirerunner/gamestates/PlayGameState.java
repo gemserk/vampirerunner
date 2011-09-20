@@ -22,12 +22,17 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.datastore.profiles.Profile;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.Tags;
@@ -35,6 +40,7 @@ import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.gui.EnergyBarControl;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
+import com.gemserk.games.vampirerunner.templates.PositionLabelTemplate;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.scores.Score;
 import com.gemserk.scores.Scores;
@@ -51,7 +57,7 @@ public class PlayGameState extends GameStateImpl {
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
 	// private Resource<Music> musicResource;
-	private FutureProcessor<Score> bestDailyScoreFutureProcessor;
+	private FutureProcessor<Collection<Score>> bestDailyScoreFutureProcessor;
 
 	private Scores scores;
 	private ExecutorService executorService;
@@ -109,7 +115,7 @@ public class PlayGameState extends GameStateImpl {
 
 		NormalModeSceneTemplate normalModeSceneTemplate = new NormalModeSceneTemplate();
 		normalModeSceneTemplate.setResourceManager(resourceManager);
-		
+
 		normalModeSceneTemplate.setScores(scores);
 
 		normalModeSceneTemplate.apply(worldWrapper);
@@ -192,7 +198,7 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private void refreshTodayBestScore() {
-		FutureHandleCallable<Score> bestDailyScoreFutureHandler = new FutureHandleCallable<Score>() {
+		FutureHandleCallable<Collection<Score>> bestDailyScoreFutureHandler = new FutureHandleCallable<Collection<Score>>() {
 
 			@Override
 			public void failed(Exception e) {
@@ -200,28 +206,40 @@ public class PlayGameState extends GameStateImpl {
 			}
 
 			@Override
-			public void done(Score score) {
+			public void done(Collection<Score> scores) {
 				Text bestScoreLabel = guiContainer.findControl("BestScoreLabel");
 				if (bestScoreLabel == null)
 					return;
-				if (score != null)
+
+				if (!scores.isEmpty()) {
+					Score score = scores.iterator().next();
 					bestScoreLabel.setText("Today Highscore: " + score.getPoints());
-				else
+				} else
 					bestScoreLabel.setText("No scores today, yet");
+				
+				EntityFactory entityFactory = new EntityFactoryImpl(worldWrapper.getWorld());
+				EntityTemplate positionLabelTemplate = new PositionLabelTemplate();
+				
+				int position = 1;
+				for (Score score : scores) {
+					entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
+							.put("score", score) //
+							.put("position", position++) //
+							.put("spatial", new SpatialImpl(score.getPoints(), 1f, 0f, 0f, 0f)) //
+							);
+				}
 			}
 
 			@Override
-			public Score call() throws Exception {
-				Collection<Score> scoreList = scores.getOrderedByPoints(new HashSet<String>(), 1, false, Range.Day);
-				if (scoreList.isEmpty())
-					return null;
-				return scoreList.iterator().next();
+			public Collection<Score> call() throws Exception {
+				Collection<Score> scoreList = scores.getOrderedByPoints(new HashSet<String>(), 25, false, Range.Day);
+				return scoreList;
 			}
 
 		};
 
-		Future<Score> future = executorService.submit(bestDailyScoreFutureHandler);
-		bestDailyScoreFutureProcessor = new FutureProcessor<Score>(bestDailyScoreFutureHandler, future);
+		Future<Collection<Score>> future = executorService.submit(bestDailyScoreFutureHandler);
+		bestDailyScoreFutureProcessor = new FutureProcessor<Collection<Score>>(bestDailyScoreFutureHandler, future);
 	}
 
 	@Override
