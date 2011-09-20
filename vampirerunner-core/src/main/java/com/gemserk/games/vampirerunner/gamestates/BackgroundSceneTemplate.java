@@ -3,14 +3,12 @@ package com.gemserk.games.vampirerunner.gamestates;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
@@ -35,14 +33,12 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
-import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireIdleTemplate;
-import com.gemserk.games.vampirerunner.templates.WallTileTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundSceneTemplate {
@@ -75,71 +71,11 @@ public class BackgroundSceneTemplate {
 		}
 	}
 
-	public static class WallSpawnerScript extends ScriptJavaImpl {
-
-		String[] wallSpriteIds = { "WallTileASprite", "WallTileBSprite", "WallTileCSprite", "WallTileDSprite" };
-
-		int[][] wallPatterns = { { 0, 1, 3 }, //
-				{ 0, 1, 2, 1, 3 }, //
-				{ 0, 1, 2, 1, 2, 1, 3 }, //
-				{ 0, 1, 2, 1, 2, 1, 2, 1, 3 }, //
-				{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, //
-		};
-
-		private final EntityTemplate wallTemplate;
-
-		private final EntityFactory entityFactory;
-
-		public WallSpawnerScript(EntityFactory entityFactory, EntityTemplate wallTemplate) {
-			this.entityFactory = entityFactory;
-			this.wallTemplate = wallTemplate;
-		}
-
-		@Override
-		public void init(World world, Entity e) {
-
-			// generate a random pattern
-			int[] wallPattern = wallPatterns[MathUtils.random(0, wallPatterns.length - 1)];
-
-			float x = 3f;
-			float y = 1.1f;
-
-			for (int i = 0; i < wallPattern.length; i++) {
-
-				int pattern = wallPattern[i];
-				String spriteId = wallSpriteIds[pattern];
-
-				Entity wallTile = entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
-						.put("spriteId", spriteId) //
-						.put("x", x) //
-						.put("y", y) //
-						);
-
-				SpatialComponent spatialComponent = wallTile.getComponent(SpatialComponent.class);
-				x += spatialComponent.getSpatial().getWidth();
-
-			}
-
-		}
-
-	}
-
-	class WallSpawnerTemplate extends EntityTemplateImpl {
-
-		@Override
-		public void apply(Entity entity) {
-			EntityTemplate wallTemplate = parameters.get("wallTemplate");
-			entity.addComponent(new ScriptComponent(new WallSpawnerScript(entityFactory, wallTemplate)));
-		}
-
-	}
-
 	private ResourceManager<String> resourceManager;
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
 
-	private EntityTemplate wallSpawnerTemplate = new WallSpawnerTemplate();
-	private EntityTemplate box2dRendererTemplate = new Box2dDebugRendererTemplate();
+	// private EntityTemplate box2dRendererTemplate = new Box2dDebugRendererTemplate();
 	private BodyBuilder bodyBuilder;
 
 	public EntityBuilder getEntityBuilder() {
@@ -199,7 +135,8 @@ public class BackgroundSceneTemplate {
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
-		worldWrapper.addRenderSystem(new RenderScriptSystem());
+
+		// worldWrapper.addRenderSystem(new RenderScriptSystem());
 
 		worldWrapper.init();
 
@@ -214,8 +151,6 @@ public class BackgroundSceneTemplate {
 
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
-
-		EntityTemplate wallTemplate = new WallTileTemplate(resourceManager, bodyBuilder);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //
@@ -246,8 +181,6 @@ public class BackgroundSceneTemplate {
 				.component(new ScriptComponent(new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
 				.build();
 
-		// entityFactory.instantiate(wallSpawnerTemplate, new ParametersWrapper().put("wallTemplate", wallTemplate));
-		//
 		// entityFactory.instantiate(box2dRendererTemplate, new ParametersWrapper() //
 		// .put("camera", worldCamera) //
 		// .put("physicsWorld", physicsWorld) //

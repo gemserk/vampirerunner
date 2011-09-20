@@ -23,6 +23,7 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 			{ 0, 1, 2, 1, 2, 1, 3 }, //
 			{ 0, 1, 2, 1, 2, 1, 2, 1, 3 }, //
 			{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, //
+			{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, //
 	};
 
 	private final EntityFactory entityFactory;
