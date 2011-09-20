@@ -77,6 +77,13 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		// music("GameMusic", "data/audio/music.ogg");
 		sound("VampireDeathSound", "data/audio/vampiredeath.ogg");
+		
+		textureAtlas("WallTextureAtlas", "data/images/wall/pack");
+		
+		spriteAtlas("WallTileASprite", "WallTextureAtlas", "wall-tile-01");
+		spriteAtlas("WallTileBSprite", "WallTextureAtlas", "wall-tile-02");
+		spriteAtlas("WallTileCSprite", "WallTextureAtlas", "wall-tile-03");
+		spriteAtlas("WallTileDSprite", "WallTextureAtlas", "wall-tile-04");
 
 	}
 }

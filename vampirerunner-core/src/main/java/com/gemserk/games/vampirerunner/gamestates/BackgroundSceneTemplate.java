@@ -1,11 +1,17 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
@@ -20,10 +26,12 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
@@ -37,9 +45,31 @@ import com.gemserk.resources.ResourceManager;
 
 public class BackgroundSceneTemplate {
 
+	class WallTemplate extends EntityTemplateImpl {
+
+		@Override
+		public void apply(Entity entity) {
+			String spriteId = parameters.get("spriteId");
+
+			Float x = parameters.get("x");
+			Float y = parameters.get("y");
+
+			Sprite sprite = resourceManager.getResourceValue(spriteId);
+
+			SpriteUtils.resize(sprite, sprite.getWidth() / 32f);
+
+			entity.addComponent(new SpatialComponent(new SpatialImpl(x, y, sprite.getWidth(), sprite.getHeight(), 0f)));
+			entity.addComponent(new SpriteComponent(sprite, 0f, 0f, Color.WHITE));
+			entity.addComponent(new RenderableComponent(5));
+		}
+
+	}
+
 	private ResourceManager<String> resourceManager;
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
+
+	private WallTemplate wallTemplate = new WallTemplate();
 
 	public EntityBuilder getEntityBuilder() {
 		return entityBuilder;
@@ -84,7 +114,7 @@ public class BackgroundSceneTemplate {
 
 		worldCamera.zoom(64f * gameZoom);
 		backgroundCamera.zoom(2 * gameZoom);
-		secondBackgroundCamera.zoom(64 *gameZoom);
+		secondBackgroundCamera.zoom(64 * gameZoom);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -500, backgroundCamera));
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
@@ -141,6 +171,33 @@ public class BackgroundSceneTemplate {
 		entityBuilder //
 				.component(new ScriptComponent(new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
 				.build();
+
+		float x = 3f;
+		float y = 1.1f;
+
+		Entity wallTile = entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
+				.put("spriteId", "WallTileASprite") //
+				.put("x", x) //
+				.put("y", y) //
+				);
+
+		SpatialComponent spatialComponent = wallTile.getComponent(SpatialComponent.class);
+		x += spatialComponent.getSpatial().getWidth();
+
+		wallTile = entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
+				.put("spriteId", "WallTileBSprite") //
+				.put("x", x) //
+				.put("y", y) //
+				);
+
+		spatialComponent = wallTile.getComponent(SpatialComponent.class);
+		x += spatialComponent.getSpatial().getWidth();
+
+		entityFactory.instantiate(wallTemplate, new ParametersWrapper() //
+				.put("spriteId", "WallTileDSprite") //
+				.put("x", x) //
+				.put("y", y) //
+				);
 
 	}
 

@@ -1,0 +1,33 @@
+
+wall-tiles1.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+wall-tile-02
+  rotate: false
+  xy: 0, 0
+  size: 23, 102
+  orig: 23, 102
+  offset: 0, 0
+  index: -1
+wall-tile-03
+  rotate: false
+  xy: 0, 104
+  size: 9, 102
+  orig: 9, 102
+  offset: 0, 0
+  index: -1
+wall-tile-04
+  rotate: false
+  xy: 11, 104
+  size: 9, 102
+  orig: 9, 102
+  offset: 0, 0
+  index: -1
+wall-tile-01
+  rotate: false
+  xy: 22, 104
+  size: 8, 102
+  orig: 8, 102
+  offset: 0, 0
+  index: -1
