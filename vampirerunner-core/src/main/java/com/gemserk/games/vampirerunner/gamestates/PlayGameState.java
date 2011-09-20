@@ -103,7 +103,7 @@ public class PlayGameState extends GameStateImpl {
 
 		guiContainer.add(distanceLabel);
 
-		guiContainer.add(GuiControls.label("Refreshing best score...") //
+		guiContainer.add(GuiControls.label("") //
 				.id("BestScoreLabel") //
 				.position(width * 0.95f, height * 0.95f) //
 				.center(1f, 0.5f) //
