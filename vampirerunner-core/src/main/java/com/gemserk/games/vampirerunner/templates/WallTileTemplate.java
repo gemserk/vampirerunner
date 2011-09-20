@@ -57,7 +57,7 @@ public class WallTileTemplate extends EntityTemplateImpl {
 		entity.addComponent(new PhysicsComponent(body));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, sprite.getWidth(), sprite.getHeight())));
 		entity.addComponent(new SpriteComponent(sprite, 0f, 0f, Color.WHITE));
-		entity.addComponent(new RenderableComponent(5));
+		entity.addComponent(new RenderableComponent(2));
 	}
 
 }

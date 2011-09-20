@@ -50,13 +50,13 @@ import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
 import com.gemserk.games.vampirerunner.templates.FloorTileTemplate;
-import com.gemserk.games.vampirerunner.templates.ObstacleTemplate;
 import com.gemserk.games.vampirerunner.templates.StaticSpriteEntityTemplate;
 import com.gemserk.games.vampirerunner.templates.TimedEventTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireControllerTemplate;
 import com.gemserk.games.vampirerunner.templates.VampirePartExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.VampireTemplate;
 import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
+import com.gemserk.games.vampirerunner.templates.WallTileTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
@@ -134,7 +134,9 @@ public class NormalModeSceneTemplate {
 		EntityTemplate floorTileTemplate = new FloorTileTemplate(resourceManager, bodyBuilder);
 		EntityTemplate cameraTemplate = new CameraTemplate();
 
-		EntityTemplate obstacleTemplate = new ObstacleTemplate(resourceManager, bodyBuilder);
+		// EntityTemplate obstacleTemplate = new ObstacleTemplate(resourceManager, bodyBuilder);
+		EntityTemplate obstacleTemplate = new WallTileTemplate(resourceManager, bodyBuilder);
+
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);

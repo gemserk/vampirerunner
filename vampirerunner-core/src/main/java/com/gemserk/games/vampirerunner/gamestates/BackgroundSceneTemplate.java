@@ -75,7 +75,7 @@ public class BackgroundSceneTemplate {
 		}
 	}
 
-	class WallSpawnerScript extends ScriptJavaImpl {
+	public static class WallSpawnerScript extends ScriptJavaImpl {
 
 		String[] wallSpriteIds = { "WallTileASprite", "WallTileBSprite", "WallTileCSprite", "WallTileDSprite" };
 
@@ -88,7 +88,10 @@ public class BackgroundSceneTemplate {
 
 		private final EntityTemplate wallTemplate;
 
-		public WallSpawnerScript(EntityTemplate wallTemplate) {
+		private final EntityFactory entityFactory;
+
+		public WallSpawnerScript(EntityFactory entityFactory, EntityTemplate wallTemplate) {
+			this.entityFactory = entityFactory;
 			this.wallTemplate = wallTemplate;
 		}
 
@@ -126,7 +129,7 @@ public class BackgroundSceneTemplate {
 		@Override
 		public void apply(Entity entity) {
 			EntityTemplate wallTemplate = parameters.get("wallTemplate");
-			entity.addComponent(new ScriptComponent(new WallSpawnerScript(wallTemplate)));
+			entity.addComponent(new ScriptComponent(new WallSpawnerScript(entityFactory, wallTemplate)));
 		}
 
 	}
@@ -243,12 +246,12 @@ public class BackgroundSceneTemplate {
 				.component(new ScriptComponent(new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
 				.build();
 
-		entityFactory.instantiate(wallSpawnerTemplate, new ParametersWrapper().put("wallTemplate", wallTemplate));
-
-		entityFactory.instantiate(box2dRendererTemplate, new ParametersWrapper() //
-				.put("camera", worldCamera) //
-				.put("physicsWorld", physicsWorld) //
-				);
+		// entityFactory.instantiate(wallSpawnerTemplate, new ParametersWrapper().put("wallTemplate", wallTemplate));
+		//
+		// entityFactory.instantiate(box2dRendererTemplate, new ParametersWrapper() //
+		// .put("camera", worldCamera) //
+		// .put("physicsWorld", physicsWorld) //
+		// );
 
 	}
 
