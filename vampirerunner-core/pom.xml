@@ -51,6 +51,11 @@
 			<version>${commons.gdx.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-resources</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.gemserk.datastore</groupId>
 			<artifactId>datastore-core</artifactId>
 			<version>${datastore.version}</version>
