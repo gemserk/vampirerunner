@@ -1,14 +1,23 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.artemis.Entity;
+import com.artemis.EntityProcessingSystem;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
@@ -19,15 +28,16 @@ import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
-import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
@@ -129,13 +139,60 @@ public class BackgroundSceneTemplate {
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
 
+		
+		final Map<Long, Vector2> previousPositions = new HashMap<Long, Vector2>();
+
+		worldWrapper.addUpdateSystem(new EntityProcessingSystem(SpatialComponent.class) {
+
+			@Override
+			protected void begin() {
+				super.begin();
+				previousPositions.clear();
+			}
+
+			@Override
+			protected void process(Entity e) {
+				SpatialComponent spatialComponent = Components.spatialComponent(e);
+				Vector2 position = spatialComponent.getPosition();
+				previousPositions.put(e.getUniqueId(), new Vector2(position));
+			}
+		});
+		
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
+		
+		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, SpriteComponent.class) {
+			@Override
+			protected void process(Entity e) {
+				SpatialComponent spatialComponent = Components.spatialComponent(e);
+				SpriteComponent spriteComponent = Components.spriteComponent(e);
 
-		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
+				Spatial spatial = spatialComponent.getSpatial();
+
+				Vector2 previousPosition = previousPositions.get(e.getUniqueId());
+
+				if (previousPosition == null)
+					previousPosition = spatial.getPosition();
+
+				float newX = FloatInterpolator.interpolate(previousPosition.x, spatial.getX(), GlobalTime.getAlpha());
+				float newY = FloatInterpolator.interpolate(previousPosition.y, spatial.getY(), GlobalTime.getAlpha());
+
+				Sprite sprite = spriteComponent.getSprite();
+				Vector2 center = spriteComponent.getCenter();
+
+				if (spriteComponent.isUpdateRotation())
+					sprite.setRotation(spatial.getAngle());
+				sprite.setOrigin(spatial.getWidth() * center.x, spatial.getHeight() * center.y);
+
+				sprite.setSize(spatial.getWidth(), spatial.getHeight());
+				sprite.setPosition(newX - sprite.getOriginX(), newY - sprite.getOriginY());
+			}
+		});
+
+//		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new RenderScriptSystem());
 

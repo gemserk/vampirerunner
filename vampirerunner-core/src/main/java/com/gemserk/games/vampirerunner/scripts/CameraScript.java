@@ -2,6 +2,7 @@ package com.gemserk.games.vampirerunner.scripts;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -29,7 +30,10 @@ public class CameraScript extends ScriptJavaImpl {
 		SpatialComponent spatialComponent = target.getComponent(spatialComponentClass);
 		Spatial spatial = spatialComponent.getSpatial();
 
-		libgdx2dCamera.move(spatial.getX(), spatial.getY());
+		SpatialComponent cameraSpatial = Components.spatialComponent(e);
+		cameraSpatial.getSpatial().setPosition(spatial.getX(), spatial.getY());
+
+		// libgdx2dCamera.move(spatial.getX(), spatial.getY());
 	}
 
 }

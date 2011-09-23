@@ -1,17 +1,22 @@
 package com.gemserk.games.vampirerunner.gamestates;
 
 import com.artemis.Entity;
+import com.artemis.EntityProcessingSystem;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
@@ -25,7 +30,6 @@ import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
-import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
@@ -36,12 +40,16 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
+import com.gemserk.games.vampirerunner.components.CameraComponent;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
+import com.gemserk.games.vampirerunner.components.GameComponents;
+import com.gemserk.games.vampirerunner.components.PreviousSpatialStateComponent;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
@@ -70,12 +78,12 @@ public class NormalModeSceneTemplate {
 	private ResourceManager<String> resourceManager;
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
-	
+
 	/**
 	 * Should be removed....
 	 */
 	Scores scores;
-	
+
 	public void setScores(Scores scores) {
 		this.scores = scores;
 	}
@@ -97,6 +105,7 @@ public class NormalModeSceneTemplate {
 	 * 
 	 * @param worldWrapper
 	 */
+	@SuppressWarnings("unchecked")
 	public void apply(WorldWrapper worldWrapper) {
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
@@ -119,7 +128,7 @@ public class NormalModeSceneTemplate {
 
 		final Libgdx2dCamera backgroundCamera = new Libgdx2dCameraTransformImpl(centerX, centerY);
 		final Libgdx2dCamera secondBackgroundCamera = new Libgdx2dCameraTransformImpl(0, 0);
-		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
+		final Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
 
 		worldCamera.zoom(64f * gameZoom);
 		secondBackgroundCamera.zoom(64 * gameZoom);
@@ -128,13 +137,88 @@ public class NormalModeSceneTemplate {
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
 
+		
+		worldWrapper.addUpdateSystem(new EntityProcessingSystem(Components.spatialComponentClass, GameComponents.spatialStateComponentClass) {
+			@Override
+			protected void process(Entity e) {
+				SpatialComponent spatialComponent = Components.spatialComponent(e);
+				PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.previousSpatialStateComponent(e);
+				previousSpatialStateComponent.getSpatial().set(spatialComponent.getSpatial());
+			}
+		});
+		
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
+		
+		worldWrapper.addRenderSystem(new EntityProcessingSystem(GameComponents.cameraComponentClass, Components.spatialComponentClass) {
+			@Override
+			protected void process(Entity e) {
+				CameraComponent cameraComponent = GameComponents.getCameraComponent(e);
+				SpatialComponent spatialComponent = Components.spatialComponent(e);
+				
+				Spatial spatial = spatialComponent.getSpatial();
+				Libgdx2dCamera libgdx2dCamera = cameraComponent.getLibgdx2dCamera();
+				
+				float newX = spatial.getX();
+				float newY = spatial.getY();
+				
+				PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.previousSpatialStateComponent(e);
+				
+				if (previousSpatialStateComponent != null) {
+					float interpolationAlpha = GlobalTime.getAlpha();
+					Spatial previousSpatial = previousSpatialStateComponent.getSpatial();
+					newX = FloatInterpolator.interpolate(previousSpatial.getX(), spatial.getX(), interpolationAlpha);
+					newY = FloatInterpolator.interpolate(previousSpatial.getY(), spatial.getY(), interpolationAlpha);
+				}
+				
+				libgdx2dCamera.move(newX, newY);
+			}
+		});
 
-		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
+		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, SpriteComponent.class) {
+			
+			@Override
+			protected void process(Entity e) {
+				SpatialComponent spatialComponent = Components.spatialComponent(e);
+				SpriteComponent spriteComponent = Components.spriteComponent(e);
+
+				PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.previousSpatialStateComponent(e);
+
+				Spatial spatial = spatialComponent.getSpatial();
+
+				float newX = spatial.getX();
+				float newY = spatial.getY();
+
+				float angle = spatial.getAngle();
+
+				if (previousSpatialStateComponent != null) {
+					float interpolationAlpha = GlobalTime.getAlpha();
+					
+					Spatial previousSpatial = previousSpatialStateComponent.getSpatial();
+					newX = FloatInterpolator.interpolate(previousSpatial.getX(), spatial.getX(), interpolationAlpha);
+					newY = FloatInterpolator.interpolate(previousSpatial.getY(), spatial.getY(), interpolationAlpha);
+					angle = FloatInterpolator.interpolate(previousSpatial.getAngle(), spatial.getAngle(), interpolationAlpha);
+//					 System.out.println(MessageFormat.format("previous.x = {0}, next.x = {1}, alpha = {2}", previousSpatial.getX(), spatial.getX(), interpolationAlpha));
+				}
+
+				Sprite sprite = spriteComponent.getSprite();
+				Vector2 center = spriteComponent.getCenter();
+
+				if (spriteComponent.isUpdateRotation()) 
+					sprite.setRotation(angle);
+				
+				sprite.setOrigin(spatial.getWidth() * center.x, spatial.getHeight() * center.y);
+
+				sprite.setSize(spatial.getWidth(), spatial.getHeight());
+				sprite.setPosition(newX - sprite.getOriginX(), newY - sprite.getOriginY());
+			}
+		});
+
+		// worldWrapper.addRenderSystem(new SpriteUpdateSystem());
+
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new RenderScriptSystem());
 
@@ -155,7 +239,7 @@ public class NormalModeSceneTemplate {
 		EntityTemplate vampireControllerTemplate = new VampireControllerTemplate();
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
-		
+
 		final EntityTemplate vladimirBloodExplosion = new VladimirBloodExplosionTemplate(resourceManager);
 		final EntityTemplate timedEventTemplate = new TimedEventTemplate(eventManager);
 		final EntityTemplate vladimirPartExplosion = new VampirePartExplosionTemplate(resourceManager);
@@ -343,10 +427,10 @@ public class NormalModeSceneTemplate {
 
 				})) //
 				.build();
-		
-		//// ...
+
+		// // ...
 		BitmapFont scoresFont = resourceManager.getResourceValue("ScoresFont");
-		
+
 		entityBuilder.component(new RenderScriptComponent(new LabelRenderScript(worldCamera, scoresFont))).build();
 
 	}

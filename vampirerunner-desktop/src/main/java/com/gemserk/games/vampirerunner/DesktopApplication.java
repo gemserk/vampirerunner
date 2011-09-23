@@ -35,7 +35,7 @@ public class DesktopApplication {
 
 			String displayString = argv[0];
 			String[] displayValues = displayString.split("x");
-			
+
 			if (displayValues.length < 2)
 				return;
 
@@ -55,7 +55,7 @@ public class DesktopApplication {
 		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-5");
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
-		
+
 		Arguments arguments = new Arguments();
 		arguments.parse(argv);
 
@@ -68,7 +68,7 @@ public class DesktopApplication {
 		config.useGL20 = false;
 		config.useCPUSynch = true;
 		config.forceExit = true;
-		config.vSyncEnabled = true;
+		// config.vSyncEnabled = true;
 
 		Game game = new Game();
 

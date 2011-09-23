@@ -25,6 +25,7 @@ import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
+import com.gemserk.games.vampirerunner.components.PreviousSpatialStateComponent;
 import com.gemserk.games.vampirerunner.scripts.ApplyLinearForceScript;
 import com.gemserk.games.vampirerunner.scripts.IncrementLinearSpeedOverTimeScript;
 import com.gemserk.games.vampirerunner.scripts.LimitLinearSpeedScript;
@@ -89,5 +90,6 @@ public class VampireTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
+		entity.addComponent(new PreviousSpatialStateComponent());
 	}
 }
