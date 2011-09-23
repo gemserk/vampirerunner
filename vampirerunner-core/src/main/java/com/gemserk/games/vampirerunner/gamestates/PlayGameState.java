@@ -27,6 +27,7 @@ import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
@@ -224,6 +225,8 @@ public class PlayGameState extends GameStateImpl {
 				for (Score score : scores) {
 					
 					Sprite bloodSprite = resourceManager.getResourceValue("BloodSprite");
+					
+					SpriteUtils.resize(bloodSprite, bloodSprite.getWidth() * Gdx.graphics.getWidth() / 800f);
 					
 					entityFactory.instantiate(positionLabelTemplate, new ParametersWrapper() //
 							.put("score", score) //

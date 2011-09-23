@@ -140,7 +140,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		guiContainer.add(GuiControls.textButton() //
 				.id("TryAgainButton") //
-				.text("Try Again") //
+				.text("Play Again") //
 				.boundsOffset(30f, 30f) //
 				.font(buttonFont) //
 				.notOverColor(1f, 1f, 0f, 1f) //
