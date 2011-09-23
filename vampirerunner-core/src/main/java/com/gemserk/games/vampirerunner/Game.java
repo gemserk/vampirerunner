@@ -268,7 +268,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		if (inputDevicesMonitor.getButton("grabScreenshot").isReleased()) {
 			try {
-				ScreenshotSaver.saveScreenshot("superflyingthing");
+				ScreenshotSaver.saveScreenshot("vampirerunner");
 			} catch (IOException e) {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
