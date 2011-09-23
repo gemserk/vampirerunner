@@ -2,6 +2,7 @@ package com.gemserk.games.vampirerunner.gamestates;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
@@ -34,7 +35,10 @@ public class InstructionsGameState extends GameStateImpl {
 	private InputProcessor inputProcessor = new InputAdapter() {
 
 		public boolean keyUp(int keycode) {
-			startGame();
+			if (keycode == Keys.BACK || keycode == Keys.ESCAPE)
+				mainMenu();
+			else
+				startGame();
 			return super.keyUp(keycode);
 		}
 
@@ -94,6 +98,12 @@ public class InstructionsGameState extends GameStateImpl {
 				.start();
 	}
 
+	private void mainMenu() {
+		game.transition(game.getMainMenuScreen())//
+				.disposeCurrent(true) //
+				.start();
+	}
+
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -113,7 +123,7 @@ public class InstructionsGameState extends GameStateImpl {
 
 	@Override
 	public void resume() {
-		Gdx.input.setCatchBackKey(false);
+		Gdx.input.setCatchBackKey(true);
 		Gdx.input.setInputProcessor(inputProcessor);
 	}
 
