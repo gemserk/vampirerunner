@@ -83,7 +83,7 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.add(GuiControls.textButton() //
 				.id("PlayButton") //
 				.text("Play") //
-				.position(width * 0.5f, height * 0.75f) //
+				.position(width * 0.5f, height * 0.78f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -100,7 +100,7 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.add(GuiControls.textButton() //
 				.id("HighscoresButton") //
 				.text("Highscores") //
-				.position(width * 0.5f, height * 0.6f) //
+				.position(width * 0.5f, height * 0.66f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -114,11 +114,28 @@ public class MainMenuGameState extends GameStateImpl {
 				}) //
 				.build());
 
+		guiContainer.add(GuiControls.textButton() //
+				.id("AboutButton") //
+				.text("About us") //
+				.position(width * 0.5f, height * 0.54f) //
+				.center(0.5f, 0.5f) //
+				.font(buttonFont) //
+				.overColor(1f, 0f, 0f, 1f) //
+				.notOverColor(1f, 1f, 0f, 1f) //
+				.boundsOffset(40f, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						aboutUsScreen();
+					}
+				}) //
+				.build());
+
 		if (Gdx.app.getType() != ApplicationType.Applet) {
 			guiContainer.add(GuiControls.textButton() //
 					.id("ExitButton") //
 					.text("Exit") //
-					.position(width * 0.5f, height * 0.45f) //
+					.position(width * 0.5f, height * 0.42f) //
 					.center(0.5f, 0.5f) //
 					.font(buttonFont) //
 					.overColor(1f, 0f, 0f, 1f) //
@@ -157,7 +174,7 @@ public class MainMenuGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		
+
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -172,13 +189,13 @@ public class MainMenuGameState extends GameStateImpl {
 		game.getScreen().pause();
 
 		Gdx.input.getTextInput(new TextInputListener() {
-			
+
 			@Override
 			public void input(String username) {
 				Profile profile = gamePreferences.getProfile();
 
 				if (!"".equals(username)) {
-					
+
 					if (username.length() > Game.maxProfileNameLen)
 						username = username.substring(0, Game.maxProfileNameLen);
 
@@ -242,6 +259,11 @@ public class MainMenuGameState extends GameStateImpl {
 				.start();
 	}
 
+	private void aboutUsScreen() {
+		game.transition(game.getAboutScreen())//
+				.start();
+	}
+
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -258,8 +280,8 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.update();
 		game.getBackgroundGameScene().update(getDeltaInMs());
 		inputDevicesMonitor.update();
-		
-		if (inputDevicesMonitor.getButton("play").isReleased()) 
+
+		if (inputDevicesMonitor.getButton("play").isReleased())
 			startGame();
 	}
 

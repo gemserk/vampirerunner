@@ -30,6 +30,7 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.datastore.profiles.Profiles;
+import com.gemserk.games.vampirerunner.gamestates.AboutGameState;
 import com.gemserk.games.vampirerunner.gamestates.BackgroundSceneTemplate;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
 import com.gemserk.games.vampirerunner.gamestates.HighscoresGameState;
@@ -86,7 +87,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen highscoresScreen;
 	private Screen pauseScreen;
 	private Screen mainMenuScreen;
+	private Screen aboutScreen;
 
+	private WorldWrapper backgroundGameScene;
+	
 	public Scores scores;
 	public Profiles profiles;
 
@@ -116,6 +120,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public Screen getPauseScreen() {
 		return pauseScreen;
+	}
+	
+	public Screen getAboutScreen() {
+		return aboutScreen;
 	}
 
 	public Parameters getGameData() {
@@ -207,6 +215,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		mainMenuGameState.setGamePreferences(gamePreferences);
 		mainMenuGameState.setResourceManager(resourceManager);
 		mainMenuGameState.setProfiles(profiles);
+		
+		AboutGameState aboutGameState = new AboutGameState(this);
+		aboutGameState.setResourceManager(resourceManager);
 
 		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);
@@ -215,6 +226,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		highscoresScreen = new ScreenImpl(highscoresGameState);
 		pauseScreen = new ScreenImpl(pauseGameState);
 		mainMenuScreen = new ScreenImpl(mainMenuGameState);
+		aboutScreen = new ScreenImpl(aboutGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
@@ -291,8 +303,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		eventManager.process();
 	}
-
-	private WorldWrapper backgroundGameScene;
 
 	public TransitionBuilder transition(Screen screen) {
 		return new TransitionBuilder(this, screen);
