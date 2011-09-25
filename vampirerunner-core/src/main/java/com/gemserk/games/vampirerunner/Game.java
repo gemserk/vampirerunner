@@ -27,6 +27,8 @@ import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.commons.gdx.screens.transitions.FadeInTransition;
+import com.gemserk.commons.gdx.screens.transitions.FadeOutTransition;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -42,8 +44,6 @@ import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.games.vampirerunner.resources.GameResources;
-import com.gemserk.games.vampirerunner.transitions.FadeInTransition;
-import com.gemserk.games.vampirerunner.transitions.FadeOutTransition;
 import com.gemserk.scores.Scores;
 import com.gemserk.util.ScreenshotSaver;
 
@@ -373,8 +373,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			final Screen currentScreen = game.getScreen();
 			game.setScreen(new TransitionScreen(new ScreenTransition( //
-					new FadeOutTransition(resourceManager, currentScreen, leaveTime, leaveTransitionHandler), //
-					new FadeInTransition(resourceManager, screen, enterTime, new TransitionHandler() {
+					new FadeOutTransition(currentScreen, leaveTime, leaveTransitionHandler), //
+					new FadeInTransition(screen, enterTime, new TransitionHandler() {
 						public void onEnd() {
 							withTransition = false;
 							// disposes current transition screen, not previous screen.
