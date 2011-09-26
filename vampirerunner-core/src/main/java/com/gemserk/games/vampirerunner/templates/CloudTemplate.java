@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.components.MovementComponent;
+import com.gemserk.commons.artemis.components.PreviousStateSpatialComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
@@ -12,7 +13,6 @@ import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.components.Components.BoundsComponent;
-import com.gemserk.games.vampirerunner.components.PreviousStateSpatialComponent;
 import com.gemserk.resources.ResourceManager;
 
 public class CloudTemplate extends EntityTemplateImpl {

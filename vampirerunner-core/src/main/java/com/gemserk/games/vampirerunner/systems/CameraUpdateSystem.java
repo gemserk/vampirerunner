@@ -5,11 +5,11 @@ import com.artemis.EntityProcessingSystem;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.commons.gdx.time.TimeStepProvider;
+import com.gemserk.commons.gdx.time.TimeStepProviderGlobalImpl;
 import com.gemserk.games.vampirerunner.components.CameraComponent;
 import com.gemserk.games.vampirerunner.components.GameComponents;
 import com.gemserk.games.vampirerunner.components.PreviousStateCameraComponent;
-import com.gemserk.games.vampirerunner.gamestates.TimeStepProvider;
-import com.gemserk.games.vampirerunner.gamestates.TimeStepProviderGlobalImpl;
 
 public class CameraUpdateSystem extends EntityProcessingSystem {
 	

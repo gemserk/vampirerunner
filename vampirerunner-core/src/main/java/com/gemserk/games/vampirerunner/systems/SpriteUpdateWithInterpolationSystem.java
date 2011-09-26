@@ -6,13 +6,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.components.Components;
+import com.gemserk.commons.artemis.components.PreviousStateSpatialComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.vampirerunner.components.GameComponents;
-import com.gemserk.games.vampirerunner.components.PreviousStateSpatialComponent;
-import com.gemserk.games.vampirerunner.gamestates.TimeStepProvider;
-import com.gemserk.games.vampirerunner.gamestates.TimeStepProviderGlobalImpl;
+import com.gemserk.commons.gdx.time.TimeStepProvider;
+import com.gemserk.commons.gdx.time.TimeStepProviderGlobalImpl;
 
 /**
  * Updates Sprites from SpriteComponent to the location of the Spatial from the SpatialComponent, if the entity has a PreviousSpatialStateComponent, then it performs an interpolation between both spatial information using the GlobalTime.getAlpha().
@@ -36,7 +35,7 @@ public class SpriteUpdateWithInterpolationSystem extends EntityProcessingSystem 
 		SpatialComponent spatialComponent = Components.spatialComponent(e);
 		SpriteComponent spriteComponent = Components.spriteComponent(e);
 
-		PreviousStateSpatialComponent previousStateSpatialComponent = GameComponents.getPreviousStateSpatialComponent(e);
+		PreviousStateSpatialComponent previousStateSpatialComponent = Components.getPreviousStateSpatialComponent(e);
 
 		Spatial spatial = spatialComponent.getSpatial();
 

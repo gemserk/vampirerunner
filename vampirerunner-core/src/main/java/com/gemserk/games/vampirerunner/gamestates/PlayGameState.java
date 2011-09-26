@@ -31,6 +31,7 @@ import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
