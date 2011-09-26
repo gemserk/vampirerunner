@@ -165,6 +165,7 @@ public class PauseGameState extends GameStateImpl {
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
+		game.getAdWhirlViewHandler().show();
 	}
 
 	@Override

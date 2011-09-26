@@ -139,6 +139,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(false);
+		game.getAdWhirlViewHandler().hide();
 	}
 
 	@Override

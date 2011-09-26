@@ -162,6 +162,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		this.browserUtils = browserUtils;
 	}
 	
+	public AdWhirlViewHandler getAdWhirlViewHandler() {
+		return adWhirlViewHandler;
+	}
+	
 	public void setAdWhirlViewHandler(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
@@ -319,6 +323,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public TransitionBuilder transition(Screen screen) {
 		return new TransitionBuilder(this, screen);
+	}
+	
+	@Override
+	public void pause() {
+		super.pause();
+		adWhirlViewHandler.hide();		
 	}
 
 	@Override
