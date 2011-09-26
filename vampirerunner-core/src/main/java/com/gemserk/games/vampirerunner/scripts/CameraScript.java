@@ -5,19 +5,18 @@ import com.artemis.World;
 import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
-import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.games.vampirerunner.components.CameraComponent;
+import com.gemserk.games.vampirerunner.components.GameComponents;
+import com.gemserk.games.vampirerunner.components.PreviousStateCameraComponent;
 
 public class CameraScript extends ScriptJavaImpl {
 
-	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
-
-	private final Libgdx2dCamera libgdx2dCamera;
 	private final String targetId;
 
-	public CameraScript(String targetId, Libgdx2dCamera libgdx2dCamera) {
+	public CameraScript(String targetId) {
 		this.targetId = targetId;
-		this.libgdx2dCamera = libgdx2dCamera;
 	}
 
 	@Override
@@ -27,13 +26,23 @@ public class CameraScript extends ScriptJavaImpl {
 		if (target == null)
 			return;
 
-		SpatialComponent spatialComponent = target.getComponent(spatialComponentClass);
+		SpatialComponent spatialComponent = Components.spatialComponent(target);
 		Spatial spatial = spatialComponent.getSpatial();
 
-		SpatialComponent cameraSpatial = Components.spatialComponent(e);
-		cameraSpatial.getSpatial().setPosition(spatial.getX(), spatial.getY());
+		CameraComponent cameraComponent = GameComponents.getCameraComponent(e);
+		Camera camera = cameraComponent.getCamera();
 
-		// libgdx2dCamera.move(spatial.getX(), spatial.getY());
+		// store previous camera state, to be used for interpolation
+		PreviousStateCameraComponent previousStateCameraComponent = GameComponents.getPreviousStateCameraComponent(e);
+		Camera previousCamera = previousStateCameraComponent.getCamera();
+		previousCamera.setPosition(camera.getX(), camera.getY());
+		previousCamera.setAngle(camera.getAngle());
+		previousCamera.setZoom(camera.getZoom());
+
+		camera.setPosition(spatial.getX(), spatial.getY());
+
+		// SpatialComponent cameraSpatial = Components.spatialComponent(e);
+		// cameraSpatial.getSpatial().setPosition(spatial.getX(), spatial.getY());
 	}
 
 }

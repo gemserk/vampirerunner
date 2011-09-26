@@ -14,13 +14,13 @@ public class PreviousSpatialStateSystem extends EntityProcessingSystem {
 
 	@SuppressWarnings("unchecked")
 	public PreviousSpatialStateSystem() {
-		super(Components.spatialComponentClass, GameComponents.spatialStateComponentClass);
+		super(Components.spatialComponentClass, GameComponents.previousSpatialStateComponentClass);
 	}
 
 	@Override
 	protected void process(Entity e) {
 		SpatialComponent spatialComponent = Components.spatialComponent(e);
-		PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.previousSpatialStateComponent(e);
+		PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.getPreviousSpatialStateComponent(e);
 		previousSpatialStateComponent.getSpatial().set(spatialComponent.getSpatial());
 	}
 

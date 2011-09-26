@@ -1,22 +1,17 @@
 package com.gemserk.games.vampirerunner.scenes;
 
 import com.artemis.Entity;
-import com.artemis.EntityProcessingSystem;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
@@ -37,19 +32,16 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
-import com.gemserk.games.vampirerunner.components.CameraComponent;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
-import com.gemserk.games.vampirerunner.components.GameComponents;
-import com.gemserk.games.vampirerunner.components.PreviousSpatialStateComponent;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
@@ -57,8 +49,10 @@ import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.scripts.render.LabelRenderScript;
+import com.gemserk.games.vampirerunner.systems.CameraUpdateSystem;
 import com.gemserk.games.vampirerunner.systems.PreviousSpatialStateSystem;
 import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
+import com.gemserk.games.vampirerunner.systems.SpriteUpdateWithInterpolationSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
@@ -138,79 +132,16 @@ public class NormalModeSceneTemplate {
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
 
-		
 		worldWrapper.addUpdateSystem(new PreviousSpatialStateSystem());
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
-		
-		worldWrapper.addRenderSystem(new EntityProcessingSystem(GameComponents.cameraComponentClass, Components.spatialComponentClass) {
-			@Override
-			protected void process(Entity e) {
-				CameraComponent cameraComponent = GameComponents.getCameraComponent(e);
-				SpatialComponent spatialComponent = Components.spatialComponent(e);
-				
-				Spatial spatial = spatialComponent.getSpatial();
-				Libgdx2dCamera libgdx2dCamera = cameraComponent.getLibgdx2dCamera();
-				
-				float newX = spatial.getX();
-				float newY = spatial.getY();
-				
-				PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.previousSpatialStateComponent(e);
-				
-				if (previousSpatialStateComponent != null) {
-					float interpolationAlpha = GlobalTime.getAlpha();
-					Spatial previousSpatial = previousSpatialStateComponent.getSpatial();
-					newX = FloatInterpolator.interpolate(previousSpatial.getX(), spatial.getX(), interpolationAlpha);
-					newY = FloatInterpolator.interpolate(previousSpatial.getY(), spatial.getY(), interpolationAlpha);
-				}
-				
-				libgdx2dCamera.move(newX, newY);
-			}
-		});
 
-		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, SpriteComponent.class) {
-			
-			@Override
-			protected void process(Entity e) {
-				SpatialComponent spatialComponent = Components.spatialComponent(e);
-				SpriteComponent spriteComponent = Components.spriteComponent(e);
+		worldWrapper.addRenderSystem(new CameraUpdateSystem());
 
-				PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.previousSpatialStateComponent(e);
-
-				Spatial spatial = spatialComponent.getSpatial();
-
-				float newX = spatial.getX();
-				float newY = spatial.getY();
-
-				float angle = spatial.getAngle();
-
-				if (previousSpatialStateComponent != null) {
-					float interpolationAlpha = GlobalTime.getAlpha();
-					
-					Spatial previousSpatial = previousSpatialStateComponent.getSpatial();
-					newX = FloatInterpolator.interpolate(previousSpatial.getX(), spatial.getX(), interpolationAlpha);
-					newY = FloatInterpolator.interpolate(previousSpatial.getY(), spatial.getY(), interpolationAlpha);
-					angle = FloatInterpolator.interpolate(previousSpatial.getAngle(), spatial.getAngle(), interpolationAlpha);
-//					 System.out.println(MessageFormat.format("previous.x = {0}, next.x = {1}, alpha = {2}", previousSpatial.getX(), spatial.getX(), interpolationAlpha));
-				}
-
-				Sprite sprite = spriteComponent.getSprite();
-				Vector2 center = spriteComponent.getCenter();
-
-				if (spriteComponent.isUpdateRotation()) 
-					sprite.setRotation(angle);
-				
-				sprite.setOrigin(spatial.getWidth() * center.x, spatial.getHeight() * center.y);
-
-				sprite.setSize(spatial.getWidth(), spatial.getHeight());
-				sprite.setPosition(newX - sprite.getOriginX(), newY - sprite.getOriginY());
-			}
-		});
-
-		// worldWrapper.addRenderSystem(new SpriteUpdateSystem());
+		worldWrapper.addRenderSystem(new SpriteUpdateWithInterpolationSystem());
 
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new RenderScriptSystem());
@@ -240,6 +171,8 @@ public class NormalModeSceneTemplate {
 		VampireController vampireController = new VampireController();
 
 		final Camera backgroundRestrictedCamera = new CameraRestrictedImpl(-256, 0, 2 * gameZoom, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
+
+		Camera worldCameraData = new CameraImpl(0f, 0f, gameZoom, 0f);
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -325,6 +258,7 @@ public class NormalModeSceneTemplate {
 
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("libgdxCamera", worldCamera) //
+				.put("camera", worldCameraData) //
 				);
 
 		entityFactory.instantiate(vampireControllerTemplate, new ParametersWrapper() //

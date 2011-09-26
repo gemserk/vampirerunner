@@ -35,6 +35,8 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
+import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -209,6 +211,8 @@ public class BackgroundSceneTemplate {
 
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
+		
+		Camera worldCameraData = new CameraImpl(0f, 0f, gameZoom, 0f);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //
@@ -231,6 +235,7 @@ public class BackgroundSceneTemplate {
 
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("libgdxCamera", worldCamera) //
+				.put("camera", worldCameraData) //
 				);
 
 		// an entity which removes old tiles
