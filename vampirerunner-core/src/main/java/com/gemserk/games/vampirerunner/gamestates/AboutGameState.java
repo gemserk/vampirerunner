@@ -66,9 +66,9 @@ public class AboutGameState extends GameStateImpl {
 				.color(1f, 0f, 0f, 1f) //
 				.build());
 
-		guiContainer.add(GuiControls.label("Gemserk Studios is a game development\n" + //
-				"company which makes games for PC and\n" + //
-				"Android devices.") //
+		guiContainer.add(GuiControls.label("Gemserk Studios is an independent game \n" + //
+				"development company. We makes games\n" + //
+				"since 2010, want more information?") //
 				.position(width * 0.5f, height * 0.70f) //
 				.center(0.5f, 0.5f) //
 				.font(instructionsFont) //

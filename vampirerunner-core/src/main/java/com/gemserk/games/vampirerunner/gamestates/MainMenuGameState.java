@@ -83,7 +83,7 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.add(GuiControls.textButton() //
 				.id("PlayButton") //
 				.text("Play") //
-				.position(width * 0.5f, height * 0.78f) //
+				.position(width * 0.5f, height * 0.75f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -100,7 +100,7 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.add(GuiControls.textButton() //
 				.id("HighscoresButton") //
 				.text("Highscores") //
-				.position(width * 0.5f, height * 0.66f) //
+				.position(width * 0.5f, height * 0.6f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -117,7 +117,7 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.add(GuiControls.textButton() //
 				.id("AboutButton") //
 				.text("About us") //
-				.position(width * 0.5f, height * 0.54f) //
+				.position(width * 0.5f, height * 0.45f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -131,24 +131,24 @@ public class MainMenuGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		if (Gdx.app.getType() != ApplicationType.Applet) {
-			guiContainer.add(GuiControls.textButton() //
-					.id("ExitButton") //
-					.text("Exit") //
-					.position(width * 0.5f, height * 0.42f) //
-					.center(0.5f, 0.5f) //
-					.font(buttonFont) //
-					.overColor(1f, 0f, 0f, 1f) //
-					.notOverColor(1f, 1f, 0f, 1f) //
-					.boundsOffset(40f, 20f) //
-					.handler(new ButtonHandler() {
-						@Override
-						public void onReleased(Control control) {
-							Gdx.app.exit();
-						}
-					}) //
-					.build());
-		}
+//		if (Gdx.app.getType() != ApplicationType.Applet) {
+//			guiContainer.add(GuiControls.textButton() //
+//					.id("ExitButton") //
+//					.text("Exit") //
+//					.position(width * 0.5f, height * 0.42f) //
+//					.center(0.5f, 0.5f) //
+//					.font(buttonFont) //
+//					.overColor(1f, 0f, 0f, 1f) //
+//					.notOverColor(1f, 1f, 0f, 1f) //
+//					.boundsOffset(40f, 20f) //
+//					.handler(new ButtonHandler() {
+//						@Override
+//						public void onReleased(Control control) {
+//							Gdx.app.exit();
+//						}
+//					}) //
+//					.build());
+//		}
 
 		guiContainer.add(GuiControls.label("Playing as " + profile.getName()) //
 				.id("ProfileLabel") //
