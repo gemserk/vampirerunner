@@ -14,6 +14,7 @@ import com.dmurph.tracking.VisitorData;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.android.AnalyticsStoredConfig;
 import com.gemserk.analytics.googleanalytics.android.BasicConfig;
+import com.gemserk.commons.utils.BrowserUtilsAndroidImpl;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.datastore.profiles.ProfilesHttpImpl;
 import com.gemserk.scores.ScoreSerializerJSONImpl;
@@ -55,6 +56,8 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 
 		game.setScores(scores);
 		game.setProfiles(profiles);
+		
+		game.setBrowserUtils(new BrowserUtilsAndroidImpl(this));
 
 		View gameView = initializeForView(game, config);
 

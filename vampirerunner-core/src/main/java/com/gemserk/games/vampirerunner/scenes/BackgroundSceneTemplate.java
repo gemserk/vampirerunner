@@ -1,4 +1,4 @@
-package com.gemserk.games.vampirerunner.gamestates;
+package com.gemserk.games.vampirerunner.scenes;
 
 import java.util.HashMap;
 import java.util.Map;

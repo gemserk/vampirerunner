@@ -16,6 +16,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -73,6 +74,8 @@ public class MainMenuGameState extends GameStateImpl {
 		if (Gdx.app.getType() == ApplicationType.Android)
 			instructions = new String[] { "Touch and hold screen to move through walls", "<< tap here to start >>", "<< tap here to change it >>" };
 
+		Panel menuPanel = new Panel(0f, height * 0.5f);
+
 		guiContainer.add(GuiControls.label("VAMPIRE RUNNER") //
 				.position(width * 0.5f, height * 0.95f) //
 				.center(0.5f, 0.5f) //
@@ -80,10 +83,10 @@ public class MainMenuGameState extends GameStateImpl {
 				.color(1f, 0f, 0f, 1f) //
 				.build());
 
-		guiContainer.add(GuiControls.textButton() //
+		menuPanel.add(GuiControls.textButton() //
 				.id("PlayButton") //
 				.text("Play") //
-				.position(width * 0.5f, height * 0.75f) //
+				.position(width * 0.5f, height * 0.30f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -97,10 +100,10 @@ public class MainMenuGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		guiContainer.add(GuiControls.textButton() //
+		menuPanel.add(GuiControls.textButton() //
 				.id("HighscoresButton") //
 				.text("Highscores") //
-				.position(width * 0.5f, height * 0.6f) //
+				.position(width * 0.5f, height * 0.15f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -114,37 +117,41 @@ public class MainMenuGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		if (Gdx.app.getType() != ApplicationType.Applet) {
-			guiContainer.add(GuiControls.textButton() //
-					.id("ExitButton") //
-					.text("Exit") //
-					.position(width * 0.5f, height * 0.45f) //
-					.center(0.5f, 0.5f) //
-					.font(buttonFont) //
-					.overColor(1f, 0f, 0f, 1f) //
-					.notOverColor(1f, 1f, 0f, 1f) //
-					.boundsOffset(40f, 20f) //
-					.handler(new ButtonHandler() {
-						@Override
-						public void onReleased(Control control) {
-							Gdx.app.exit();
-						}
-					}) //
-					.build());
-		}
+		menuPanel.add(GuiControls.textButton() //
+				.id("AboutButton") //
+				.text("About us") //
+				.position(width * 0.5f, height * 0f) //
+				.center(0.5f, 0.5f) //
+				.font(buttonFont) //
+				.overColor(1f, 0f, 0f, 1f) //
+				.notOverColor(1f, 1f, 0f, 1f) //
+				.boundsOffset(40f, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						aboutUsScreen();
+					}
+				}) //
+				.build());
 
-		guiContainer.add(GuiControls.label("Playing as " + profile.getName()) //
+		Panel profilePanel = new Panel(0f, height * 0.27f);
+
+		profilePanel.setWidth(width);
+		profilePanel.setHeight(height);
+
+		profilePanel.add(GuiControls.label("Playing as " + profile.getName()) //
 				.id("ProfileLabel") //
-				.position(width * 0.5f, height * 0.3f) //
+				.position(profilePanel.getWidth() * 0.5f, profilePanel.getHeight() * 0.1f) //
 				.center(0.5f, 0.5f) //
 				.font(instructionsFont) //
 				.color(Color.RED) //
 				.build());
 
-		guiContainer.add(GuiControls.textButton() //
+		profilePanel.add(GuiControls.textButton() //
 				.id("ChangeProfileButton") //
 				.text(instructions[2]) //
-				.position(width * 0.5f, height * 0.2f) //
+				// this stuff should be dynamic like telling relative to container position instead (50%, etc)
+				.position(profilePanel.getWidth() * 0.5f, profilePanel.getHeight() * 0f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(1f, 0f, 0f, 1f) //
@@ -157,7 +164,10 @@ public class MainMenuGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		
+
+		guiContainer.add(menuPanel);
+		guiContainer.add(profilePanel);
+
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -172,13 +182,13 @@ public class MainMenuGameState extends GameStateImpl {
 		game.getScreen().pause();
 
 		Gdx.input.getTextInput(new TextInputListener() {
-			
+
 			@Override
 			public void input(String username) {
 				Profile profile = gamePreferences.getProfile();
 
 				if (!"".equals(username)) {
-					
+
 					if (username.length() > Game.maxProfileNameLen)
 						username = username.substring(0, Game.maxProfileNameLen);
 
@@ -242,6 +252,11 @@ public class MainMenuGameState extends GameStateImpl {
 				.start();
 	}
 
+	private void aboutUsScreen() {
+		game.transition(game.getAboutScreen())//
+				.start();
+	}
+
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -258,8 +273,8 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.update();
 		game.getBackgroundGameScene().update(getDeltaInMs());
 		inputDevicesMonitor.update();
-		
-		if (inputDevicesMonitor.getButton("play").isReleased()) 
+
+		if (inputDevicesMonitor.getButton("play").isReleased())
 			startGame();
 	}
 

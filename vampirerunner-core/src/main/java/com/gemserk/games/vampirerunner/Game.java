@@ -20,19 +20,19 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
-import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
-import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
-import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.commons.gdx.screens.transitions.TransitionBuilder;
+import com.gemserk.commons.utils.BrowserUtils;
+import com.gemserk.commons.utils.BrowserUtilsNullImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.datastore.profiles.Profiles;
-import com.gemserk.games.vampirerunner.gamestates.BackgroundSceneTemplate;
+import com.gemserk.games.vampirerunner.gamestates.AboutGameState;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
 import com.gemserk.games.vampirerunner.gamestates.HighscoresGameState;
 import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
@@ -42,14 +42,13 @@ import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.games.vampirerunner.resources.GameResources;
-import com.gemserk.games.vampirerunner.transitions.FadeInTransition;
-import com.gemserk.games.vampirerunner.transitions.FadeOutTransition;
+import com.gemserk.games.vampirerunner.scenes.BackgroundSceneTemplate;
 import com.gemserk.scores.Scores;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
-	
-	public static final int maxProfileNameLen = 15; 
+
+	public static final int maxProfileNameLen = 15;
 
 	private static boolean showFps = false;
 	private static boolean showBox2dDebug = false;
@@ -78,6 +77,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private EventManager eventManager;
+	private BrowserUtils browserUtils = new BrowserUtilsNullImpl();
 
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
@@ -90,6 +90,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen highscoresScreen;
 	private Screen pauseScreen;
 	private Screen mainMenuScreen;
+	private Screen aboutScreen;
+
+	private WorldWrapper backgroundGameScene;
 
 	public Scores scores;
 	public Profiles profiles;
@@ -122,6 +125,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return pauseScreen;
 	}
 
+	public Screen getAboutScreen() {
+		return aboutScreen;
+	}
+
 	public Parameters getGameData() {
 		return gameData;
 	}
@@ -147,6 +154,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public void setProfiles(Profiles profiles) {
 		this.profiles = profiles;
+	}
+
+	public void setBrowserUtils(BrowserUtils browserUtils) {
+		this.browserUtils = browserUtils;
 	}
 
 	@Override
@@ -212,6 +223,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		mainMenuGameState.setResourceManager(resourceManager);
 		mainMenuGameState.setProfiles(profiles);
 
+		AboutGameState aboutGameState = new AboutGameState(this);
+		aboutGameState.setResourceManager(resourceManager);
+		aboutGameState.setBrowserUtils(browserUtils);
+
 		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
@@ -219,13 +234,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		highscoresScreen = new ScreenImpl(highscoresGameState);
 		pauseScreen = new ScreenImpl(pauseGameState);
 		mainMenuScreen = new ScreenImpl(mainMenuGameState);
+		aboutScreen = new ScreenImpl(aboutGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
 		registrator.registerEventListeners(this);
 
 		setScreen(splashScreen);
-		// setScreen(highscoresScreen);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -294,103 +309,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			setShowBox2dDebug(!isShowBox2dDebug());
 
 		eventManager.process();
-	}
-
-	private boolean withTransition = false;
-	private WorldWrapper backgroundGameScene;
-
-	public class TransitionBuilder {
-
-		private final Screen screen;
-		private final Game game;
-
-		float leaveTime;
-		float enterTime;
-
-		boolean shouldDisposeCurrentScreen;
-		boolean shouldRestartNextScreen;
-
-		TransitionHandler leaveTransitionHandler = new TransitionHandler();
-
-		public TransitionBuilder leaveTime(float leaveTime) {
-			this.leaveTime = leaveTime;
-			return this;
-		}
-
-		public TransitionBuilder enterTime(float enterTime) {
-			this.enterTime = enterTime;
-			return this;
-		}
-
-		public TransitionBuilder leaveTime(int leaveTime) {
-			return leaveTime((float) leaveTime * 0.001f);
-		}
-
-		public TransitionBuilder enterTime(int enterTime) {
-			return enterTime((float) enterTime * 0.001f);
-		}
-
-		public TransitionBuilder disposeCurrent() {
-			this.shouldDisposeCurrentScreen = true;
-			return this;
-		}
-
-		public TransitionBuilder disposeCurrent(boolean disposeCurrent) {
-			this.shouldDisposeCurrentScreen = disposeCurrent;
-			return this;
-		}
-
-		public TransitionBuilder restartScreen() {
-			this.shouldRestartNextScreen = true;
-			return this;
-		}
-
-		public TransitionBuilder leaveTransitionHandler(TransitionHandler transitionHandler) {
-			this.leaveTransitionHandler = transitionHandler;
-			return this;
-		}
-
-		public TransitionBuilder parameter(String key, Object value) {
-			screen.getParameters().put(key, value);
-			return this;
-		}
-
-		public TransitionBuilder(final Game game, final Screen screen) {
-			this.game = game;
-			this.screen = screen;
-			this.leaveTransitionHandler = new TransitionHandler();
-			this.leaveTime = 0.25f;
-			this.enterTime = 0.25f;
-		}
-
-		public void start() {
-			if (withTransition)
-				return;
-			withTransition = true;
-
-			if (shouldRestartNextScreen)
-				screen.dispose();
-
-			final Screen currentScreen = game.getScreen();
-			game.setScreen(new TransitionScreen(new ScreenTransition( //
-					new FadeOutTransition(resourceManager, currentScreen, leaveTime, leaveTransitionHandler), //
-					new FadeInTransition(resourceManager, screen, enterTime, new TransitionHandler() {
-						public void onEnd() {
-							withTransition = false;
-							// disposes current transition screen, not previous screen.
-							game.setScreen(screen, true);
-							if (shouldDisposeCurrentScreen)
-								currentScreen.dispose();
-						};
-					}))) {
-				@Override
-				public void resume() {
-					super.resume();
-					Gdx.input.setCatchBackKey(true);
-				}
-			});
-		}
-
 	}
 
 	public TransitionBuilder transition(Screen screen) {
