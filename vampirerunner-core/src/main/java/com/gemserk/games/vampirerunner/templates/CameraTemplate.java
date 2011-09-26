@@ -1,6 +1,8 @@
 package com.gemserk.games.vampirerunner.templates;
 
 import com.artemis.Entity;
+import com.gemserk.commons.artemis.components.CameraComponent;
+import com.gemserk.commons.artemis.components.PreviousStateCameraComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
@@ -8,8 +10,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.games.vampirerunner.Tags;
-import com.gemserk.games.vampirerunner.components.CameraComponent;
-import com.gemserk.games.vampirerunner.components.PreviousStateCameraComponent;
 import com.gemserk.games.vampirerunner.scripts.CameraScript;
 
 public class CameraTemplate extends EntityTemplateImpl {
