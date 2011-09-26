@@ -33,7 +33,6 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.gamestates.AboutGameState;
-import com.gemserk.games.vampirerunner.gamestates.BackgroundSceneTemplate;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
 import com.gemserk.games.vampirerunner.gamestates.HighscoresGameState;
 import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
@@ -43,6 +42,7 @@ import com.gemserk.games.vampirerunner.gamestates.PlayGameState;
 import com.gemserk.games.vampirerunner.gamestates.SplashGameState;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
 import com.gemserk.games.vampirerunner.resources.GameResources;
+import com.gemserk.games.vampirerunner.scenes.BackgroundSceneTemplate;
 import com.gemserk.scores.Scores;
 import com.gemserk.util.ScreenshotSaver;
 

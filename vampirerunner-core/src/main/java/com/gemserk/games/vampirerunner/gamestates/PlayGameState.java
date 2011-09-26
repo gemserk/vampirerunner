@@ -41,6 +41,7 @@ import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.gui.EnergyBarControl;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
+import com.gemserk.games.vampirerunner.scenes.NormalModeSceneTemplate;
 import com.gemserk.games.vampirerunner.templates.PositionLabelTemplate;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.scores.Score;
