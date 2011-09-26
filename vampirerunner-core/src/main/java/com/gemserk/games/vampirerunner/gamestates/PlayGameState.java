@@ -293,6 +293,7 @@ public class PlayGameState extends GameStateImpl {
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(true);
+		game.getAdWhirlViewHandler().hide();
 		// Music music = musicResource.get();
 		// if (!music.isPlaying()) {
 		// music.setLooping(true);

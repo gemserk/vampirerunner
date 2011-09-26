@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
+import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
@@ -78,6 +79,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private EventManager eventManager;
 	private BrowserUtils browserUtils = new BrowserUtilsNullImpl();
+	private AdWhirlViewHandler adWhirlViewHandler = new AdWhirlViewHandler();
 
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
@@ -158,6 +160,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public void setBrowserUtils(BrowserUtils browserUtils) {
 		this.browserUtils = browserUtils;
+	}
+	
+	public AdWhirlViewHandler getAdWhirlViewHandler() {
+		return adWhirlViewHandler;
+	}
+	
+	public void setAdWhirlViewHandler(AdWhirlViewHandler adWhirlViewHandler) {
+		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
 
 	@Override
@@ -313,6 +323,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public TransitionBuilder transition(Screen screen) {
 		return new TransitionBuilder(this, screen);
+	}
+	
+	@Override
+	public void pause() {
+		super.pause();
+		adWhirlViewHandler.hide();		
 	}
 
 	@Override
