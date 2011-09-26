@@ -7,7 +7,7 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 /**
  * Used to store previous state of the SpatialComponent, to be used to interpolate states when rendering.
  */
-public class PreviousSpatialStateComponent extends Component {
+public class PreviousStateSpatialComponent extends Component {
 
 	private Spatial spatial;
 
@@ -19,7 +19,7 @@ public class PreviousSpatialStateComponent extends Component {
 		this.spatial = spatial;
 	}
 
-	public PreviousSpatialStateComponent() {
+	public PreviousStateSpatialComponent() {
 		this.spatial = new SpatialImpl(0, 0);
 	}
 

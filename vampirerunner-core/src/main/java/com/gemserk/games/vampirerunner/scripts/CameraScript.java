@@ -34,15 +34,15 @@ public class CameraScript extends ScriptJavaImpl {
 
 		// store previous camera state, to be used for interpolation
 		PreviousStateCameraComponent previousStateCameraComponent = GameComponents.getPreviousStateCameraComponent(e);
-		Camera previousCamera = previousStateCameraComponent.getCamera();
-		previousCamera.setPosition(camera.getX(), camera.getY());
-		previousCamera.setAngle(camera.getAngle());
-		previousCamera.setZoom(camera.getZoom());
+
+		if (previousStateCameraComponent != null) {
+			Camera previousCamera = previousStateCameraComponent.getCamera();
+			previousCamera.setPosition(camera.getX(), camera.getY());
+			previousCamera.setAngle(camera.getAngle());
+			previousCamera.setZoom(camera.getZoom());
+		}
 
 		camera.setPosition(spatial.getX(), spatial.getY());
-
-		// SpatialComponent cameraSpatial = Components.spatialComponent(e);
-		// cameraSpatial.getSpatial().setPosition(spatial.getX(), spatial.getY());
 	}
 
 }

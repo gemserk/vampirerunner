@@ -11,7 +11,7 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.vampirerunner.components.GameComponents;
-import com.gemserk.games.vampirerunner.components.PreviousSpatialStateComponent;
+import com.gemserk.games.vampirerunner.components.PreviousStateSpatialComponent;
 
 /**
  * Updates Sprites from SpriteComponent to the location of the Spatial from the SpatialComponent, 
@@ -30,7 +30,7 @@ public class SpriteUpdateWithInterpolationSystem extends EntityProcessingSystem 
 		SpatialComponent spatialComponent = Components.spatialComponent(e);
 		SpriteComponent spriteComponent = Components.spriteComponent(e);
 
-		PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.getPreviousSpatialStateComponent(e);
+		PreviousStateSpatialComponent previousStateSpatialComponent = GameComponents.getPreviousStateSpatialComponent(e);
 
 		Spatial spatial = spatialComponent.getSpatial();
 
@@ -39,9 +39,9 @@ public class SpriteUpdateWithInterpolationSystem extends EntityProcessingSystem 
 
 		float angle = spatial.getAngle();
 
-		if (previousSpatialStateComponent != null) {
+		if (previousStateSpatialComponent != null) {
 			float interpolationAlpha = GlobalTime.getAlpha();
-			Spatial previousSpatial = previousSpatialStateComponent.getSpatial();
+			Spatial previousSpatial = previousStateSpatialComponent.getSpatial();
 			newX = FloatInterpolator.interpolate(previousSpatial.getX(), spatial.getX(), interpolationAlpha);
 			newY = FloatInterpolator.interpolate(previousSpatial.getY(), spatial.getY(), interpolationAlpha);
 			angle = FloatInterpolator.interpolate(previousSpatial.getAngle(), spatial.getAngle(), interpolationAlpha);

@@ -12,7 +12,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.components.Components.BoundsComponent;
-import com.gemserk.games.vampirerunner.components.PreviousSpatialStateComponent;
+import com.gemserk.games.vampirerunner.components.PreviousStateSpatialComponent;
 import com.gemserk.resources.ResourceManager;
 
 public class CloudTemplate extends EntityTemplateImpl {
@@ -51,7 +51,7 @@ public class CloudTemplate extends EntityTemplateImpl {
 		float height = sprite.getHeight() * worldScale * cloudSize;
 		
 		entity.addComponent(new SpatialComponent(new SpatialImpl(x, y, width, height, 0f)));
-		entity.addComponent(new PreviousSpatialStateComponent());
+		entity.addComponent(new PreviousStateSpatialComponent());
 		entity.addComponent(new SpriteComponent(sprite));
 		entity.addComponent(new RenderableComponent(layer));
 
