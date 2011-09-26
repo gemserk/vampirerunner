@@ -140,7 +140,6 @@ public class NormalModeSceneTemplate {
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem());
-
 		worldWrapper.addRenderSystem(new SpriteUpdateWithInterpolationSystem());
 
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));

@@ -23,12 +23,6 @@ public class CameraScript extends ScriptJavaImpl {
 	public void update(World world, Entity e) {
 		Entity target = world.getTagManager().getEntity(targetId);
 
-		if (target == null)
-			return;
-
-		SpatialComponent spatialComponent = Components.spatialComponent(target);
-		Spatial spatial = spatialComponent.getSpatial();
-
 		CameraComponent cameraComponent = GameComponents.getCameraComponent(e);
 		Camera camera = cameraComponent.getCamera();
 
@@ -41,6 +35,12 @@ public class CameraScript extends ScriptJavaImpl {
 			previousCamera.setAngle(camera.getAngle());
 			previousCamera.setZoom(camera.getZoom());
 		}
+		
+		if (target == null)
+			return;
+
+		SpatialComponent spatialComponent = Components.spatialComponent(target);
+		Spatial spatial = spatialComponent.getSpatial();
 
 		camera.setPosition(spatial.getX(), spatial.getY());
 	}

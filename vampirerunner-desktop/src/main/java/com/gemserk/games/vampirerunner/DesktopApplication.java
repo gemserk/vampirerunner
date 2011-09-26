@@ -69,7 +69,7 @@ public class DesktopApplication {
 		config.useGL20 = false;
 		config.useCPUSynch = true;
 		config.forceExit = true;
-		// config.vSyncEnabled = true;
+		config.vSyncEnabled = true;
 
 		Game game = new Game();
 
