@@ -11,6 +11,7 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
+import com.gemserk.commons.utils.BrowserUtilsDesktopImpl;
 import com.gemserk.commons.utils.gdx.LwjglLibgdxLibraryUtils;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.datastore.profiles.ProfilesHttpImpl;
@@ -70,6 +71,7 @@ public class Applet extends java.applet.Applet {
 
 					game.setScores(scores);
 					game.setProfiles(profiles);
+					game.setBrowserUtils(new BrowserUtilsDesktopImpl());
 
 					application = new LwjglApplication(game, false, this) {
 						public com.badlogic.gdx.Application.ApplicationType getType() {
