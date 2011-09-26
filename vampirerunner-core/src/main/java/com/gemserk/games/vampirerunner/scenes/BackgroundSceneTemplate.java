@@ -41,7 +41,7 @@ import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.systems.CameraUpdateSystem;
-import com.gemserk.games.vampirerunner.systems.PreviousSpatialStateSystem;
+import com.gemserk.games.vampirerunner.systems.PreviousStateSpatialSystem;
 import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.systems.SpriteUpdateWithInterpolationSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
@@ -157,7 +157,7 @@ public class BackgroundSceneTemplate {
 			}
 		});
 
-		worldWrapper.addUpdateSystem(new PreviousSpatialStateSystem());
+		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));

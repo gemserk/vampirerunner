@@ -4,12 +4,12 @@ import com.artemis.Entity;
 
 public class GameComponents {
 	
-	public static final Class<PreviousStateSpatialComponent> previousSpatialStateComponentClass = PreviousStateSpatialComponent.class;
+	public static final Class<PreviousStateSpatialComponent> previousStateSpatialComponentClass = PreviousStateSpatialComponent.class;
 	public static final Class<CameraComponent> cameraComponentClass = CameraComponent.class;
 	public static final Class<PreviousStateCameraComponent> previousStateCameraComponentClass = PreviousStateCameraComponent.class;
 	
 	public static PreviousStateSpatialComponent getPreviousStateSpatialComponent(Entity e) {
-		return e.getComponent(previousSpatialStateComponentClass);
+		return e.getComponent(previousStateSpatialComponentClass);
 	}
 	
 	public static CameraComponent getCameraComponent(Entity e) {

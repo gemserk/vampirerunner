@@ -50,7 +50,7 @@ import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.scripts.render.LabelRenderScript;
 import com.gemserk.games.vampirerunner.systems.CameraUpdateSystem;
-import com.gemserk.games.vampirerunner.systems.PreviousSpatialStateSystem;
+import com.gemserk.games.vampirerunner.systems.PreviousStateSpatialSystem;
 import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.systems.SpriteUpdateWithInterpolationSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
@@ -132,7 +132,7 @@ public class NormalModeSceneTemplate {
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
 
-		worldWrapper.addUpdateSystem(new PreviousSpatialStateSystem());
+		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));

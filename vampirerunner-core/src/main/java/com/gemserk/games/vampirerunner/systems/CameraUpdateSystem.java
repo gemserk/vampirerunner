@@ -12,6 +12,7 @@ import com.gemserk.games.vampirerunner.components.PreviousStateCameraComponent;
 
 public class CameraUpdateSystem extends EntityProcessingSystem {
 	
+	@SuppressWarnings("unchecked")
 	public CameraUpdateSystem() {
 		super(GameComponents.cameraComponentClass, GameComponents.previousStateCameraComponentClass);
 	}

@@ -10,11 +10,11 @@ import com.gemserk.games.vampirerunner.components.PreviousStateSpatialComponent;
 /**
  * Stores spatial state on the PreviousSpatialStateComponent (name could be changed) to be used when interpolating render stuff.
  */
-public class PreviousSpatialStateSystem extends EntityProcessingSystem {
+public class PreviousStateSpatialSystem extends EntityProcessingSystem {
 
 	@SuppressWarnings("unchecked")
-	public PreviousSpatialStateSystem() {
-		super(Components.spatialComponentClass, GameComponents.previousSpatialStateComponentClass);
+	public PreviousStateSpatialSystem() {
+		super(Components.spatialComponentClass, GameComponents.previousStateSpatialComponentClass);
 	}
 
 	@Override
