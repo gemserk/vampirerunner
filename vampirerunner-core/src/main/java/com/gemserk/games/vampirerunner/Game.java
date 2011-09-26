@@ -35,6 +35,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.gamestates.AboutGameState;
 import com.gemserk.games.vampirerunner.gamestates.GameOverGameState;
+import com.gemserk.games.vampirerunner.gamestates.TimeStepProviderGlobalImpl;
 import com.gemserk.games.vampirerunner.gamestates.HighscoresGameState;
 import com.gemserk.games.vampirerunner.gamestates.InstructionsGameState;
 import com.gemserk.games.vampirerunner.gamestates.MainMenuGameState;
@@ -269,6 +270,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		backgroundGameScene = new WorldWrapper(new World());
 
+		backgroundSceneTemplate.setTimeStepProvider(new TimeStepProviderGlobalImpl());
 		backgroundSceneTemplate.apply(backgroundGameScene);
 
 		String version = getGameData().get("version");
@@ -309,6 +311,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			backgroundGameScene = new WorldWrapper(new World());
 
+			backgroundSceneTemplate.setTimeStepProvider(new TimeStepProviderGlobalImpl());
 			backgroundSceneTemplate.apply(backgroundGameScene);
 		}
 

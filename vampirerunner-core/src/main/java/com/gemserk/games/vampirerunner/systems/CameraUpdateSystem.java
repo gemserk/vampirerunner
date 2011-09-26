@@ -3,18 +3,26 @@ package com.gemserk.games.vampirerunner.systems;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
-import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.games.vampirerunner.components.CameraComponent;
 import com.gemserk.games.vampirerunner.components.GameComponents;
 import com.gemserk.games.vampirerunner.components.PreviousStateCameraComponent;
+import com.gemserk.games.vampirerunner.gamestates.TimeStepProvider;
+import com.gemserk.games.vampirerunner.gamestates.TimeStepProviderGlobalImpl;
 
 public class CameraUpdateSystem extends EntityProcessingSystem {
 	
-	@SuppressWarnings("unchecked")
+	private final TimeStepProvider timeStepProvider;
+	
 	public CameraUpdateSystem() {
+		this(new TimeStepProviderGlobalImpl());
+	}
+
+	@SuppressWarnings("unchecked")
+	public CameraUpdateSystem(TimeStepProvider timeStepProvider) {
 		super(GameComponents.cameraComponentClass, GameComponents.previousStateCameraComponentClass);
+		this.timeStepProvider = timeStepProvider;
 	}
 	
 	@Override
@@ -30,7 +38,7 @@ public class CameraUpdateSystem extends EntityProcessingSystem {
 		PreviousStateCameraComponent previousStateCameraComponent = GameComponents.getPreviousStateCameraComponent(e);
 
 		if (previousStateCameraComponent != null) {
-			float interpolationAlpha = GlobalTime.getAlpha();
+			float interpolationAlpha = timeStepProvider.getAlpha();
 			Camera previousCamera = previousStateCameraComponent.getCamera();
 			newX = FloatInterpolator.interpolate(previousCamera.getX(), camera.getX(), interpolationAlpha);
 			newY = FloatInterpolator.interpolate(previousCamera.getY(), camera.getY(), interpolationAlpha);

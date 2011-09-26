@@ -38,6 +38,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
+import com.gemserk.games.vampirerunner.gamestates.TimeStepProvider;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.systems.CameraUpdateSystem;
@@ -83,9 +84,9 @@ public class BackgroundSceneTemplate {
 	}
 
 	private ResourceManager<String> resourceManager;
-
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
+	private TimeStepProvider timeStepProvider;
 
 	// private EntityTemplate box2dRendererTemplate = new Box2dDebugRendererTemplate();
 	private BodyBuilder bodyBuilder;
@@ -100,6 +101,10 @@ public class BackgroundSceneTemplate {
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
+	}
+	
+	public void setTimeStepProvider(TimeStepProvider timeStepProvider) {
+		this.timeStepProvider = timeStepProvider;
 	}
 
 	/**
@@ -164,8 +169,8 @@ public class BackgroundSceneTemplate {
 		worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
-		worldWrapper.addRenderSystem(new CameraUpdateSystem());
-		worldWrapper.addRenderSystem(new SpriteUpdateWithInterpolationSystem());
+		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
+		worldWrapper.addRenderSystem(new SpriteUpdateWithInterpolationSystem(timeStepProvider));
 
 		// worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));

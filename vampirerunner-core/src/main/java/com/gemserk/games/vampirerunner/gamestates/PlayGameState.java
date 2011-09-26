@@ -117,8 +117,9 @@ public class PlayGameState extends GameStateImpl {
 
 		NormalModeSceneTemplate normalModeSceneTemplate = new NormalModeSceneTemplate();
 		normalModeSceneTemplate.setResourceManager(resourceManager);
-
 		normalModeSceneTemplate.setScores(scores);
+		
+		normalModeSceneTemplate.setTimeStepProvider(new TimeStepProviderGameStateImpl(this));
 
 		normalModeSceneTemplate.apply(worldWrapper);
 

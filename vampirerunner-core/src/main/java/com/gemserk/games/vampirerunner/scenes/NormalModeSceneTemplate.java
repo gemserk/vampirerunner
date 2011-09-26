@@ -43,6 +43,7 @@ import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
+import com.gemserk.games.vampirerunner.gamestates.TimeStepProvider;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
@@ -73,6 +74,7 @@ public class NormalModeSceneTemplate {
 	private ResourceManager<String> resourceManager;
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
+	private TimeStepProvider timeStepProvider;
 
 	/**
 	 * Should be removed....
@@ -94,13 +96,16 @@ public class NormalModeSceneTemplate {
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
+	
+	public void setTimeStepProvider(TimeStepProvider timeStepProvider) {
+		this.timeStepProvider = timeStepProvider;
+	}
 
 	/**
 	 * Applies a world template for the specified worldwrapper.
 	 * 
 	 * @param worldWrapper
 	 */
-	@SuppressWarnings("unchecked")
 	public void apply(WorldWrapper worldWrapper) {
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
@@ -139,8 +144,8 @@ public class NormalModeSceneTemplate {
 		worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
-		worldWrapper.addRenderSystem(new CameraUpdateSystem());
-		worldWrapper.addRenderSystem(new SpriteUpdateWithInterpolationSystem());
+		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
+		worldWrapper.addRenderSystem(new SpriteUpdateWithInterpolationSystem(timeStepProvider));
 
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new RenderScriptSystem());

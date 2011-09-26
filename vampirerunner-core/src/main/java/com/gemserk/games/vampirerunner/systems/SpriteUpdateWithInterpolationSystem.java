@@ -8,21 +8,27 @@ import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
-import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.vampirerunner.components.GameComponents;
 import com.gemserk.games.vampirerunner.components.PreviousStateSpatialComponent;
+import com.gemserk.games.vampirerunner.gamestates.TimeStepProvider;
+import com.gemserk.games.vampirerunner.gamestates.TimeStepProviderGlobalImpl;
 
 /**
- * Updates Sprites from SpriteComponent to the location of the Spatial from the SpatialComponent, 
- * if the entity has a PreviousSpatialStateComponent, then it performs an interpolation between both 
- * spatial information using the GlobalTime.getAlpha().
+ * Updates Sprites from SpriteComponent to the location of the Spatial from the SpatialComponent, if the entity has a PreviousSpatialStateComponent, then it performs an interpolation between both spatial information using the GlobalTime.getAlpha().
  */
 public class SpriteUpdateWithInterpolationSystem extends EntityProcessingSystem {
 
-	@SuppressWarnings("unchecked")
+	private final TimeStepProvider timeStepProvider;
+	
 	public SpriteUpdateWithInterpolationSystem() {
+		this(new TimeStepProviderGlobalImpl());
+	}
+
+	@SuppressWarnings("unchecked")
+	public SpriteUpdateWithInterpolationSystem(TimeStepProvider timeStepProvider) {
 		super(SpatialComponent.class, SpriteComponent.class);
+		this.timeStepProvider = timeStepProvider;
 	}
 
 	@Override
@@ -40,7 +46,7 @@ public class SpriteUpdateWithInterpolationSystem extends EntityProcessingSystem 
 		float angle = spatial.getAngle();
 
 		if (previousStateSpatialComponent != null) {
-			float interpolationAlpha = GlobalTime.getAlpha();
+			float interpolationAlpha = timeStepProvider.getAlpha();
 			Spatial previousSpatial = previousStateSpatialComponent.getSpatial();
 			newX = FloatInterpolator.interpolate(previousSpatial.getX(), spatial.getX(), interpolationAlpha);
 			newY = FloatInterpolator.interpolate(previousSpatial.getY(), spatial.getY(), interpolationAlpha);
