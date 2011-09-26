@@ -25,6 +25,8 @@ import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.screens.transitions.TransitionBuilder;
+import com.gemserk.commons.utils.BrowserUtils;
+import com.gemserk.commons.utils.BrowserUtilsNullImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -75,6 +77,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private EventManager eventManager;
+	private BrowserUtils browserUtils = new BrowserUtilsNullImpl();
 
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
@@ -152,6 +155,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public void setProfiles(Profiles profiles) {
 		this.profiles = profiles;
 	}
+	
+	public void setBrowserUtils(BrowserUtils browserUtils) {
+		this.browserUtils = browserUtils;
+	}
 
 	@Override
 	public void create() {
@@ -218,6 +225,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		
 		AboutGameState aboutGameState = new AboutGameState(this);
 		aboutGameState.setResourceManager(resourceManager);
+		aboutGameState.setBrowserUtils(browserUtils);
 
 		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);

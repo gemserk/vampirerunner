@@ -12,16 +12,23 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.utils.BrowserUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
+	
+	private static final String blogUrl = "http://blog.gemserk.com/";
+	
+	private static final String desktopMoreGamesUrl = "http://blog.gemserk.com/games";
+	private static final String androidMoreGamesUrl = "market://search?q=pub:Gemserk Studios";
 
 	private final Game game;
 
 	private ResourceManager<String> resourceManager;
+	private BrowserUtils browserUtils;
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
@@ -30,6 +37,10 @@ public class AboutGameState extends GameStateImpl {
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
+	}
+	
+	public void setBrowserUtils(BrowserUtils browserUtils) {
+		this.browserUtils = browserUtils;
 	}
 
 	public AboutGameState(Game game) {
@@ -55,10 +66,10 @@ public class AboutGameState extends GameStateImpl {
 				.color(1f, 0f, 0f, 1f) //
 				.build());
 
-		guiContainer.add(GuiControls.label("Gemserk Studios is a game company which makes\n" + //
-				"games for PC and Android devices.\n" + //
-				"") //
-				.position(width * 0.5f, height * 0.75f) //
+		guiContainer.add(GuiControls.label("Gemserk Studios is a game development\n" + //
+				"company which makes games for PC and\n" + //
+				"Android devices.") //
+				.position(width * 0.5f, height * 0.70f) //
 				.center(0.5f, 0.5f) //
 				.font(instructionsFont) //
 				.color(1f, 0f, 0f, 1f) //
@@ -76,6 +87,7 @@ public class AboutGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
+						browserUtils.open(blogUrl);
 					}
 				}) //
 				.build());
@@ -83,7 +95,7 @@ public class AboutGameState extends GameStateImpl {
 		guiContainer.add(GuiControls.textButton() //
 				.id("MoreGamesButton") //
 				.text("More games") //
-				.position(width * 0.5f, height * 0.35f) //
+				.position(width * 0.5f, height * 0.32f) //
 				.center(0.5f, 0.5f) //
 				.font(buttonFont) //
 				.overColor(0f, 0f, 1f, 1f) //
@@ -92,6 +104,10 @@ public class AboutGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
+						if (Gdx.app.getType() == ApplicationType.Android)
+							browserUtils.open(androidMoreGamesUrl);
+						else
+							browserUtils.open(desktopMoreGamesUrl);
 					}
 				}) //
 				.build());

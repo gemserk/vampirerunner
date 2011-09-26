@@ -12,6 +12,7 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
+import com.gemserk.commons.utils.BrowserUtilsDesktopImpl;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.datastore.profiles.ProfilesFileImpl;
 import com.gemserk.datastore.profiles.ProfilesHttpImpl;
@@ -86,6 +87,8 @@ public class DesktopApplication {
 
 		game.setScores(scores);
 		game.setProfiles(profiles);
+		
+		game.setBrowserUtils(new BrowserUtilsDesktopImpl());
 
 		new LwjglApplication(game, config);
 	}
