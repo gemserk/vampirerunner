@@ -67,7 +67,6 @@ import com.gemserk.games.vampirerunner.templates.VladimirBloodExplosionTemplate;
 import com.gemserk.games.vampirerunner.templates.WallTileTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.scores.Scores;
 
 public class NormalModeSceneTemplate {
 
@@ -75,15 +74,6 @@ public class NormalModeSceneTemplate {
 	private EntityFactory entityFactory;
 	private EntityBuilder entityBuilder;
 	private TimeStepProvider timeStepProvider;
-
-	/**
-	 * Should be removed....
-	 */
-	Scores scores;
-
-	public void setScores(Scores scores) {
-		this.scores = scores;
-	}
 
 	public EntityBuilder getEntityBuilder() {
 		return entityBuilder;
