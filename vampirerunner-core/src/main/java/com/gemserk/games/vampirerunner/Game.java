@@ -93,7 +93,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen aboutScreen;
 
 	private WorldWrapper backgroundGameScene;
-	
+
 	public Scores scores;
 	public Profiles profiles;
 
@@ -124,7 +124,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getPauseScreen() {
 		return pauseScreen;
 	}
-	
+
 	public Screen getAboutScreen() {
 		return aboutScreen;
 	}
@@ -155,7 +155,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public void setProfiles(Profiles profiles) {
 		this.profiles = profiles;
 	}
-	
+
 	public void setBrowserUtils(BrowserUtils browserUtils) {
 		this.browserUtils = browserUtils;
 	}
@@ -222,7 +222,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		mainMenuGameState.setGamePreferences(gamePreferences);
 		mainMenuGameState.setResourceManager(resourceManager);
 		mainMenuGameState.setProfiles(profiles);
-		
+
 		AboutGameState aboutGameState = new AboutGameState(this);
 		aboutGameState.setResourceManager(resourceManager);
 		aboutGameState.setBrowserUtils(browserUtils);
@@ -241,7 +241,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		registrator.registerEventListeners(this);
 
 		setScreen(splashScreen);
-		// setScreen(highscoresScreen);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
