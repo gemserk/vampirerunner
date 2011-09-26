@@ -57,6 +57,7 @@ import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.scripts.render.LabelRenderScript;
+import com.gemserk.games.vampirerunner.systems.PreviousSpatialStateSystem;
 import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
@@ -138,15 +139,7 @@ public class NormalModeSceneTemplate {
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-100, 100, worldCamera));
 
 		
-		worldWrapper.addUpdateSystem(new EntityProcessingSystem(Components.spatialComponentClass, GameComponents.spatialStateComponentClass) {
-			@Override
-			protected void process(Entity e) {
-				SpatialComponent spatialComponent = Components.spatialComponent(e);
-				PreviousSpatialStateComponent previousSpatialStateComponent = GameComponents.previousSpatialStateComponent(e);
-				previousSpatialStateComponent.getSpatial().set(spatialComponent.getSpatial());
-			}
-		});
-		
+		worldWrapper.addUpdateSystem(new PreviousSpatialStateSystem());
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
