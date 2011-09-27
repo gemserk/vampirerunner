@@ -166,7 +166,7 @@ public class NormalModeSceneTemplate {
 
 		final Camera backgroundRestrictedCamera = new CameraRestrictedImpl(-256, 0, 2 * gameZoom, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-768, -256, 2048, 1024));
 
-		Camera worldCameraData = new CameraImpl(0f, 0f, gameZoom, 0f);
+		Camera worldCameraData = new CameraImpl(0f, 0f, 64f * gameZoom, 0f);
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {

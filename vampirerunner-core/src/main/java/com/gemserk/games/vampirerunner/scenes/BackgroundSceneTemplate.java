@@ -189,7 +189,7 @@ public class BackgroundSceneTemplate {
 		EntityTemplate cloudTemplate = new CloudTemplate(resourceManager);
 		EntityTemplate cloudSpawnerTemplate = new CloudSpawnerTemplate(cloudTemplate, entityFactory);
 
-		Camera worldCameraData = new CameraImpl(0f, 0f, gameZoom, 0f);
+		Camera worldCameraData = new CameraImpl(0f, 0f, 64f * gameZoom, 0f);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //
