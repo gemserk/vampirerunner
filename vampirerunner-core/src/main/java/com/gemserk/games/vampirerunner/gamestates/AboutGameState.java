@@ -89,6 +89,7 @@ public class AboutGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						browserUtils.open(blogUrl);
+						Analytics.traker.trackPageView("/about/blog", "/about/blog", null);
 					}
 				}) //
 				.build());
@@ -109,6 +110,7 @@ public class AboutGameState extends GameStateImpl {
 							browserUtils.open(androidMoreGamesUrl);
 						else
 							browserUtils.open(desktopMoreGamesUrl);
+						Analytics.traker.trackPageView("/about/moreGames", "/about/moreGames", null);
 					}
 				}) //
 				.build());
