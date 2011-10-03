@@ -194,12 +194,12 @@ public class BackgroundSceneTemplate {
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile03Sprite") //
 				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(-512, 0, 512, 512, 0f)) //
+				.put("spatial", new SpatialImpl(-256, 0, 512, 512, 0f)) //
 				);
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("spriteId", "BackgroundTile04Sprite") //
 				.put("layer", -999) //
-				.put("spatial", new SpatialImpl(0, 0, 512, 512, 0f)) //
+				.put("spatial", new SpatialImpl(256, 0, 512, 512, 0f)) //
 				);
 
 		entityFactory.instantiate(cloudSpawnerTemplate, new ParametersWrapper() //
