@@ -1,9 +1,12 @@
 package com.gemserk.games.vampirerunner.templates;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.animation4j.transitions.Transitions;
+import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.components.MovementComponent;
 import com.gemserk.commons.artemis.components.PreviousStateSpatialComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
@@ -49,10 +52,15 @@ public class CloudTemplate extends EntityTemplateImpl {
 		
 		float width = sprite.getWidth() * worldScale * cloudSize;
 		float height = sprite.getHeight() * worldScale * cloudSize;
+
+		SpriteComponent spriteComponent = new SpriteComponent(sprite);
+		
+		spriteComponent.getColor().set(1f, 1f, 1f, 0f);
+		Synchronizers.transition(spriteComponent.getColor(), Transitions.transitionBuilder().start(new Color(1f, 1f, 1f, 0f)).end(Color.WHITE).time(1f));
 		
 		entity.addComponent(new SpatialComponent(new SpatialImpl(x, y, width, height, 0f)));
 		entity.addComponent(new PreviousStateSpatialComponent());
-		entity.addComponent(new SpriteComponent(sprite));
+		entity.addComponent(spriteComponent);
 		entity.addComponent(new RenderableComponent(layer));
 
 		entity.addComponent(new BoundsComponent(new Rectangle(0f, 0f, width, height)));
