@@ -86,7 +86,7 @@ public class NormalModeSceneTemplate {
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
-	
+
 	public void setTimeStepProvider(TimeStepProvider timeStepProvider) {
 		this.timeStepProvider = timeStepProvider;
 	}
@@ -120,8 +120,10 @@ public class NormalModeSceneTemplate {
 		final Libgdx2dCamera secondBackgroundCamera = new Libgdx2dCameraTransformImpl(0, 0);
 		final Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
 
+		float secondBackgroundZoom = 64f * gameZoom;
+
 		worldCamera.zoom(64f * gameZoom);
-		secondBackgroundCamera.zoom(64 * gameZoom);
+		secondBackgroundCamera.zoom(secondBackgroundZoom);
 
 		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-1000, -500, backgroundCamera));
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundCamera));
@@ -226,7 +228,7 @@ public class NormalModeSceneTemplate {
 				);
 
 		entityFactory.instantiate(cloudSpawnerTemplate, new ParametersWrapper() //
-				.put("bounds", new Rectangle(0f, 3.25f, 12.5f, 3.25f)) //
+				.put("bounds", new Rectangle(0f, 3.25f, Gdx.graphics.getWidth() / secondBackgroundZoom, 3.25f)) //
 				);
 
 		entityBuilder //
