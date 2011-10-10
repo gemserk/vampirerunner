@@ -3,12 +3,9 @@ package com.gemserk.games.vampirerunner.gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.gemserk.commons.gdx.gui.Control;
+import com.gemserk.commons.gdx.gui.ControlImpl;
 
-public class EnergyBarControl implements Control {
-
-	private final String id;
-	private float x, y;
+public class EnergyBarControl extends ControlImpl {
 
 	private float widthPercentage;
 	private float height;
@@ -19,30 +16,9 @@ public class EnergyBarControl implements Control {
 	private float percentage;
 
 	public EnergyBarControl(String id, Sprite whiteRectangleSprite) {
-		this.id = id;
+		setId(id);
 		this.barBackgroundSprite = whiteRectangleSprite;
 		this.barForegroundSprite = new Sprite(whiteRectangleSprite);
-	}
-
-	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
-	public float getX() {
-		return x;
-	}
-
-	@Override
-	public float getY() {
-		return y;
-	}
-
-	@Override
-	public void setPosition(float x, float y) {
-		this.x = x;
-		this.y = y;
 	}
 
 	public void setWidthPercentage(float widthPercentage) {
@@ -63,11 +39,11 @@ public class EnergyBarControl implements Control {
 
 		float width = containerWidth * this.widthPercentage;
 
-		barBackgroundSprite.setPosition(x, y);
+		barBackgroundSprite.setPosition(getX(), getY());
 		barBackgroundSprite.setColor(1f, 0f, 0f, 1f);
 		barBackgroundSprite.setSize(width, height);
 
-		barForegroundSprite.setPosition(x, y);
+		barForegroundSprite.setPosition(getX(), getY());
 		barForegroundSprite.setColor(0f, 0f, 1f, 1f);
 
 		barForegroundSprite.setSize(width * percentage, height);
@@ -80,5 +56,4 @@ public class EnergyBarControl implements Control {
 		barForegroundSprite.draw(spriteBatch);
 
 	}
-
 }
