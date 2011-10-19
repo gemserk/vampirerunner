@@ -68,7 +68,7 @@ public class AboutGameState extends GameStateImpl {
 				.build());
 
 		guiContainer.add(GuiControls.label("Gemserk Studios is an independent game \n" + //
-				"development company. We makes games\n" + //
+				"development company. We make games\n" + //
 				"since 2010, want more information?") //
 				.position(width * 0.5f, height * 0.70f) //
 				.center(0.5f, 0.5f) //
