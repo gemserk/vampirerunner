@@ -39,7 +39,7 @@ public class CameraScript extends ScriptJavaImpl {
 		if (target == null)
 			return;
 
-		SpatialComponent spatialComponent = Components.spatialComponent(target);
+		SpatialComponent spatialComponent = Components.getSpatialComponent(target);
 		Spatial spatial = spatialComponent.getSpatial();
 
 		camera.setPosition(spatial.getX(), spatial.getY());

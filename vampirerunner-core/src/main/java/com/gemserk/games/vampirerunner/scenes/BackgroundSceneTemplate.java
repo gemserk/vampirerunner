@@ -158,7 +158,7 @@ public class BackgroundSceneTemplate {
 
 			@Override
 			protected void process(Entity e) {
-				SpatialComponent spatialComponent = Components.spatialComponent(e);
+				SpatialComponent spatialComponent = Components.getSpatialComponent(e);
 				Vector2 position = spatialComponent.getPosition();
 				previousPositions.put(e.getUniqueId(), new Vector2(position));
 			}
