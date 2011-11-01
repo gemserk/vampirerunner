@@ -34,7 +34,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	private Sprite gemserkLogoBlur;
 
 	private Color blurColor = new Color();
-	
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -84,7 +84,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 					Resource resource = resourceManager.get(resourceId);
 					resource.load();
 				}
-			}, "Loading assets");
+			}, "Loading - " + resourceId);
 		}
 
 		taskQueue.add(new Runnable() {
@@ -115,10 +115,14 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 		float percentage = getTaskQueue().getProgress().getPercentage();
 		String currentTaskName = getTaskQueue().getCurrentTaskName();
-		if ("".equals(currentTaskName))
-			currentTaskName = "Loading ";
-		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, currentTaskName + " - " + (int) (percentage) + "%...", //
+
+		if (percentage >= 100f)
+			currentTaskName = "Loading complete";
+
+		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, currentTaskName, //
 				Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.25f);
+		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, "" + (int) (percentage) + "%", //
+				Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.20f);
 
 		spriteBatch.end();
 
