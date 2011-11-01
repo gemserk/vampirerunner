@@ -246,6 +246,24 @@ public class NormalModeSceneTemplate {
 					}
 				})) //
 				.build();
+		
+		entityBuilder //
+		.component(new ScriptComponent(new ScriptJavaImpl() {
+			
+			float gameTime = 0f;
+			int lastTimeInSeconds = 0;
+			
+			@Override
+			public void update(World world, Entity e) {
+				gameTime += GlobalTime.getDelta();
+				int timeInSeconds = (int) (gameTime);
+				if (lastTimeInSeconds != timeInSeconds) {
+					System.out.println(timeInSeconds);
+					lastTimeInSeconds = timeInSeconds;
+				}
+			}
+		})) //
+		.build();
 
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
 				.put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //

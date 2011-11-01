@@ -6,16 +6,6 @@ import com.gemserk.componentsengine.utils.Container;
 
 public class Components {
 
-	public static class MaxSpeedComponent extends Component {
-
-		public float maxSpeed;
-
-		public MaxSpeedComponent(float maxSpeed) {
-			this.maxSpeed = maxSpeed;
-		}
-
-	}
-	
 	public static class DistanceComponent extends Component {
 
 		public float distance;

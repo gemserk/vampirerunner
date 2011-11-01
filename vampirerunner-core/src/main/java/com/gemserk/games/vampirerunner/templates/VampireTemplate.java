@@ -23,12 +23,10 @@ import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.games.vampirerunner.Collisions;
 import com.gemserk.games.vampirerunner.Tags;
-import com.gemserk.games.vampirerunner.components.Components;
 import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
-import com.gemserk.games.vampirerunner.scripts.ApplyLinearForceScript;
-import com.gemserk.games.vampirerunner.scripts.IncrementLinearSpeedOverTimeScript;
-import com.gemserk.games.vampirerunner.scripts.LimitLinearSpeedScript;
+import com.gemserk.games.vampirerunner.components.RunningComponent;
+import com.gemserk.games.vampirerunner.scripts.RunningScript;
 import com.gemserk.games.vampirerunner.scripts.SuperSkillScript;
 import com.gemserk.games.vampirerunner.scripts.UpdateDistanceScript;
 import com.gemserk.games.vampirerunner.scripts.VladimirAnimationScript;
@@ -56,24 +54,6 @@ public class VampireTemplate extends EntityTemplateImpl {
 		Animation runningAnimation = resourceManager.getResourceValue("VampireRunningAnimation");
 		Animation flyingAnimation = resourceManager.getResourceValue("VampireFlyingAnimation");
 
-		entity.addComponent(new TagComponent(Tags.Vampire));
-		entity.addComponent(new SpriteComponent(runningAnimation.getCurrentFrame(), new Vector2(0.5f, 0.5f), Color.WHITE));
-		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation, flyingAnimation }));
-		entity.addComponent(new RenderableComponent(3));
-
-		entity.addComponent(new SuperSkillComponent(new Container(50f, 50f), 75f, 25f));
-
-		entity.addComponent(new DistanceComponent());
-		entity.addComponent(new Components.MaxSpeedComponent(5f));
-		entity.addComponent(new ScriptComponent(new LimitLinearSpeedScript(), //
-				new VladimirAnimationScript(), //
-				new SuperSkillScript(vampireController), //
-				new ApplyLinearForceScript(new Vector2(500f, 0f)), //
-				new IncrementLinearSpeedOverTimeScript(),//
-				new UpdateDistanceScript(), //
-				new VladimirHealthScript(eventManager) //
-		));
-
 		Body body = bodyBuilder //
 				.fixedRotation() //
 				.userData(entity) //
@@ -87,6 +67,31 @@ public class VampireTemplate extends EntityTemplateImpl {
 						.categoryBits(Collisions.Vladimir) //
 						.maskBits(Collisions.All).build()) //
 				.build();
+
+		entity.addComponent(new TagComponent(Tags.Vampire));
+		entity.addComponent(new SpriteComponent(runningAnimation.getCurrentFrame(), new Vector2(0.5f, 0.5f), Color.WHITE));
+		entity.addComponent(new AnimationComponent(new Animation[] { runningAnimation, flyingAnimation }));
+		entity.addComponent(new RenderableComponent(3));
+
+		entity.addComponent(new SuperSkillComponent(new Container(50f, 50f), 75f, 25f));
+
+		entity.addComponent(new DistanceComponent());
+		
+		float maxSpeed = 20f;
+		float minSpeed = 5f;
+		float timeToMaxSpeed = 40f;
+		
+		float forceToMaxSpeed = ((maxSpeed - minSpeed) / timeToMaxSpeed) * body.getMass();
+		
+		entity.addComponent(new RunningComponent(new Vector2(forceToMaxSpeed, 0f), maxSpeed, minSpeed));
+
+		entity.addComponent(new ScriptComponent(
+				new VladimirAnimationScript(), //
+				new SuperSkillScript(vampireController), //
+				new RunningScript(), //
+				new UpdateDistanceScript(), //
+				new VladimirHealthScript(eventManager) //
+		));
 
 		entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
