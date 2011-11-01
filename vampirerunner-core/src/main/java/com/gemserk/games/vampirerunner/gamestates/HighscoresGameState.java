@@ -53,21 +53,16 @@ public class HighscoresGameState extends GameStateImpl {
 		}
 	}
 
-	private final Game game;
+	Game game;
+	ResourceManager<String> resourceManager;
+	Scores scores;
+	ExecutorService executorService;
 
 	private SpriteBatch spriteBatch;
-
 	private BitmapFont font;
-
-	private Scores scores;
-
 	private ArrayList<Text> texts;
-
 	private int viewportWidth;
-
 	private int viewportHeight;
-
-	private ExecutorService executorService;
 
 	private FutureHandler<Collection<Score>> scoresRefreshHandler = new FutureHandler<Collection<Score>>() {
 		@Override
@@ -85,8 +80,6 @@ public class HighscoresGameState extends GameStateImpl {
 	};
 
 	private FutureProcessor<Collection<Score>> scoresRefreshProcessor;
-
-	private ResourceManager<String> resourceManager;
 
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
@@ -110,10 +103,6 @@ public class HighscoresGameState extends GameStateImpl {
 
 	public void setGamePreferences(GamePreferences gamePreferences) {
 		this.gamePreferences = gamePreferences;
-	}
-
-	public HighscoresGameState(Game game) {
-		this.game = game;
 	}
 
 	@Override

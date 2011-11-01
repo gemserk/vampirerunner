@@ -20,8 +20,8 @@ import com.gemserk.resources.ResourceManager;
 
 public class PauseGameState extends GameStateImpl {
 
-	private final Game game;
-	private ResourceManager<String> resourceManager;
+	Game game;
+	ResourceManager<String> resourceManager;
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
@@ -31,10 +31,6 @@ public class PauseGameState extends GameStateImpl {
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
-	}
-
-	public PauseGameState(Game game) {
-		this.game = game;
 	}
 
 	@Override

@@ -53,18 +53,18 @@ import com.gemserk.util.concurrent.FutureProcessor;
 
 public class PlayGameState extends GameStateImpl {
 
-	private final Game game;
-	private ResourceManager<String> resourceManager;
+	Game game;
+	ResourceManager<String> resourceManager;
+	Scores scores;
+	ExecutorService executorService;
+	GamePreferences gamePreferences;
+	
 	private WorldWrapper worldWrapper;
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
-	// private Resource<Music> musicResource;
-	private FutureProcessor<Collection<Score>> bestDailyScoreFutureProcessor;
 
-	private Scores scores;
-	private ExecutorService executorService;
-	private GamePreferences gamePreferences;
+	private FutureProcessor<Collection<Score>> bestDailyScoreFutureProcessor;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public void setGamePreferences(GamePreferences gamePreferences) {
@@ -81,10 +81,6 @@ public class PlayGameState extends GameStateImpl {
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
-	}
-
-	public PlayGameState(Game game) {
-		this.game = game;
 	}
 
 	@Override

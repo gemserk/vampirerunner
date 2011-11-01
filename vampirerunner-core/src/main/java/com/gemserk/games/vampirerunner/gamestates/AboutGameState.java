@@ -17,19 +17,14 @@ import com.gemserk.commons.utils.BrowserUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.vampirerunner.Game;
+import com.gemserk.games.vampirerunner.GameInformation;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
 	
-	private static final String blogUrl = "http://blog.gemserk.com/";
-	
-	private static final String desktopMoreGamesUrl = "http://blog.gemserk.com/games";
-	private static final String androidMoreGamesUrl = "market://search?q=pub:Gemserk Studios";
-
-	private final Game game;
-
-	private ResourceManager<String> resourceManager;
-	private BrowserUtils browserUtils;
+	Game game;
+	ResourceManager<String> resourceManager;
+	BrowserUtils browserUtils;
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
@@ -42,10 +37,6 @@ public class AboutGameState extends GameStateImpl {
 	
 	public void setBrowserUtils(BrowserUtils browserUtils) {
 		this.browserUtils = browserUtils;
-	}
-
-	public AboutGameState(Game game) {
-		this.game = game;
 	}
 
 	@Override
@@ -88,7 +79,7 @@ public class AboutGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						browserUtils.open(blogUrl);
+						browserUtils.open(GameInformation.blogUrl);
 						Analytics.traker.trackPageView("/about/blog", "/about/blog", null);
 					}
 				}) //
@@ -107,9 +98,9 @@ public class AboutGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						if (Gdx.app.getType() == ApplicationType.Android)
-							browserUtils.open(androidMoreGamesUrl);
+							browserUtils.open(GameInformation.androidMoreGamesUrl);
 						else
-							browserUtils.open(desktopMoreGamesUrl);
+							browserUtils.open(GameInformation.desktopMoreGamesUrl);
 						Analytics.traker.trackPageView("/about/moreGames", "/about/moreGames", null);
 					}
 				}) //

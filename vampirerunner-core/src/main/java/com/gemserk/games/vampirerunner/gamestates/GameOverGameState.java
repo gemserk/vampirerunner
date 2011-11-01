@@ -64,16 +64,15 @@ public class GameOverGameState extends GameStateImpl {
 
 	}
 
-	private final Game game;
-	private ResourceManager<String> resourceManager;
+	Game game;
+	ResourceManager<String> resourceManager;
+	Scores scores;
+	Profiles profiles;
+	GamePreferences gamePreferences;
+	ExecutorService executorService;
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
-
-	private Scores scores;
-	private Profiles profiles;
-	private GamePreferences gamePreferences;
-	private ExecutorService executorService;
 
 	private Score score;
 	private Profile profile;
@@ -100,10 +99,6 @@ public class GameOverGameState extends GameStateImpl {
 
 	public void setGamePreferences(GamePreferences gamePreferences) {
 		this.gamePreferences = gamePreferences;
-	}
-
-	public GameOverGameState(Game game) {
-		this.game = game;
 	}
 
 	@Override

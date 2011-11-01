@@ -17,19 +17,14 @@ import com.gemserk.resources.ResourceManager;
 
 public class InstructionsGameState extends GameStateImpl {
 
-	private final Game game;
+	Game game;
+	ResourceManager<String> resourceManager;
 
-	private ResourceManager<String> resourceManager;
-
-	private Container guiContainer;
+	private Container screen;
 	private SpriteBatch spriteBatch;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
-	}
-
-	public InstructionsGameState(Game game) {
-		this.game = game;
 	}
 
 	private InputProcessor inputProcessor = new InputAdapter() {
@@ -55,7 +50,7 @@ public class InstructionsGameState extends GameStateImpl {
 		int height = Gdx.graphics.getHeight();
 
 		spriteBatch = new SpriteBatch();
-		guiContainer = new Container();
+		screen = new Container();
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont instructionsFont = resourceManager.getResourceValue("InstructionsFont");
@@ -66,21 +61,21 @@ public class InstructionsGameState extends GameStateImpl {
 		if (Gdx.app.getType() == ApplicationType.Android)
 			instructions = new String[] { "Touch and hold screen to move through walls,\nrelease it to recover energy.\n\n\nObjective: Run as far as you can.", "<< tap to start >>" };
 
-		guiContainer.add(GuiControls.label("HOW TO PLAY") //
+		screen.add(GuiControls.label("HOW TO PLAY") //
 				.position(width * 0.5f, height * 0.95f) //
 				.center(0.5f, 0.5f) //
 				.font(titleFont) //
 				.color(1f, 0f, 0f, 1f) //
 				.build());
 
-		guiContainer.add(GuiControls.label(instructions[0]).id("Instructions") //
+		screen.add(GuiControls.label(instructions[0]).id("Instructions") //
 				.position(width * 0.5f, height * 0.65f) //
 				.center(0.5f, 0.5f) //
 				.font(instructionsFont) //
 				.color(1f, 0f, 0f, 1f) //
 				.build());
 
-		guiContainer.add(GuiControls.label(instructions[1]) //
+		screen.add(GuiControls.label(instructions[1]) //
 				.id("ClickToStart") //
 				.position(width * 0.5f, height * 0.1f) //
 				.center(0.5f, 0.5f) //
@@ -110,14 +105,14 @@ public class InstructionsGameState extends GameStateImpl {
 		game.getBackgroundGameScene().render();
 
 		spriteBatch.begin();
-		guiContainer.draw(spriteBatch);
+		screen.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		guiContainer.update();
+		screen.update();
 		game.getBackgroundGameScene().update(getDeltaInMs());
 	}
 

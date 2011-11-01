@@ -22,12 +22,11 @@ import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
 public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingGameState {
 
-	private final Game game;
+	Game game;
+	ResourceManager<String> resourceManager;
 
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
-
-	private ResourceManager<String> resourceManager;
 
 	private Sprite gemserkLogo;
 	private Sprite lwjglLogo;
@@ -38,10 +37,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
-	}
-
-	public SplashGameState(Game game) {
-		this.game = game;
 	}
 
 	@Override
@@ -109,7 +104,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 	@Override
 	public void render() {
-
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		gemserkLogoBlur.setColor(blurColor);

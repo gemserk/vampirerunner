@@ -28,11 +28,10 @@ import com.gemserk.resources.ResourceManager;
 
 public class MainMenuGameState extends GameStateImpl {
 
-	private final Game game;
-
-	private ResourceManager<String> resourceManager;
-	private Profiles profiles;
-	private GamePreferences gamePreferences;
+	Game game;
+	ResourceManager<String> resourceManager;
+	Profiles profiles;
+	GamePreferences gamePreferences;
 
 	private Container guiContainer;
 	private SpriteBatch spriteBatch;
@@ -49,10 +48,6 @@ public class MainMenuGameState extends GameStateImpl {
 
 	public void setProfiles(Profiles profiles) {
 		this.profiles = profiles;
-	}
-
-	public MainMenuGameState(Game game) {
-		this.game = game;
 	}
 
 	@Override

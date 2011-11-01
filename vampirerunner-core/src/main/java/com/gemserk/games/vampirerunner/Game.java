@@ -21,12 +21,15 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
+import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.screens.transitions.TransitionBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProviderGlobalImpl;
+import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.commons.utils.BrowserUtils;
 import com.gemserk.commons.utils.BrowserUtilsNullImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
@@ -162,11 +165,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public void setBrowserUtils(BrowserUtils browserUtils) {
 		this.browserUtils = browserUtils;
 	}
-	
+
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
 	}
-	
+
 	public void setAdWhirlViewHandler(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
@@ -201,42 +204,61 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		fpsFont = new BitmapFont();
 		spriteBatch = new SpriteBatch();
 
-		PlayGameState playGameState = new PlayGameState(this);
-		playGameState.setResourceManager(resourceManager);
-		playGameState.setGamePreferences(gamePreferences);
-		playGameState.setExecutorService(executorService);
-		playGameState.setScores(scores);
+		Injector injector = new InjectorImpl();
 
-		GameOverGameState gameOverGameState = new GameOverGameState(this);
-		gameOverGameState.setResourceManager(resourceManager);
-		gameOverGameState.setGamePreferences(gamePreferences);
-		gameOverGameState.setExecutorService(executorService);
-		gameOverGameState.setProfiles(profiles);
-		gameOverGameState.setScores(scores);
+		injector.bind("game", this);
+		injector.bind("resourceManager", resourceManager);
+		injector.bind("gamePreferences", gamePreferences);
+		injector.bind("executorService", executorService);
+		injector.bind("scores", scores);
+		injector.bind("profiles", profiles);
+		injector.bind("browserUtils", browserUtils);
 
-		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
-		instructionsGameState.setResourceManager(resourceManager);
+		GameState playGameState = injector.getInstance(PlayGameState.class);
+		GameState gameOverGameState = injector.getInstance(GameOverGameState.class);
+		GameState instructionsGameState = injector.getInstance(InstructionsGameState.class);
+		GameState highscoresGameState = injector.getInstance(HighscoresGameState.class);
+		GameState splashGameState = injector.getInstance(SplashGameState.class);
+		GameState pauseGameState = injector.getInstance(PauseGameState.class);
+		GameState mainMenuGameState = injector.getInstance(MainMenuGameState.class);
+		GameState aboutGameState = injector.getInstance(AboutGameState.class);
 
-		HighscoresGameState highscoresGameState = new HighscoresGameState(this);
-		highscoresGameState.setResourceManager(resourceManager);
-		highscoresGameState.setExecutorService(executorService);
-		highscoresGameState.setGamePreferences(gamePreferences);
-		highscoresGameState.setScores(scores);
+		// PlayGameState playGameState = new PlayGameState(this);
+		// playGameState.setResourceManager(resourceManager);
+		// playGameState.setGamePreferences(gamePreferences);
+		// playGameState.setExecutorService(executorService);
+		// playGameState.setScores(scores);
 
-		SplashGameState splashGameState = new SplashGameState(this);
-		splashGameState.setResourceManager(resourceManager);
+		// GameOverGameState gameOverGameState = new GameOverGameState(this);
+		// gameOverGameState.setResourceManager(resourceManager);
+		// gameOverGameState.setGamePreferences(gamePreferences);
+		// gameOverGameState.setExecutorService(executorService);
+		// gameOverGameState.setProfiles(profiles);
+		// gameOverGameState.setScores(scores);
 
-		PauseGameState pauseGameState = new PauseGameState(this);
-		pauseGameState.setResourceManager(resourceManager);
+		// InstructionsGameState instructionsGameState = new InstructionsGameState(this);
+		// instructionsGameState.setResourceManager(resourceManager);
+		//
+		// HighscoresGameState highscoresGameState = new HighscoresGameState(this);
+		// highscoresGameState.setResourceManager(resourceManager);
+		// highscoresGameState.setExecutorService(executorService);
+		// highscoresGameState.setGamePreferences(gamePreferences);
+		// highscoresGameState.setScores(scores);
 
-		MainMenuGameState mainMenuGameState = new MainMenuGameState(this);
-		mainMenuGameState.setGamePreferences(gamePreferences);
-		mainMenuGameState.setResourceManager(resourceManager);
-		mainMenuGameState.setProfiles(profiles);
-
-		AboutGameState aboutGameState = new AboutGameState(this);
-		aboutGameState.setResourceManager(resourceManager);
-		aboutGameState.setBrowserUtils(browserUtils);
+		// SplashGameState splashGameState = new SplashGameState(this);
+		// splashGameState.setResourceManager(resourceManager);
+		//
+		// PauseGameState pauseGameState = new PauseGameState(this);
+		// pauseGameState.setResourceManager(resourceManager);
+		//
+		// MainMenuGameState mainMenuGameState = new MainMenuGameState(this);
+		// mainMenuGameState.setGamePreferences(gamePreferences);
+		// mainMenuGameState.setResourceManager(resourceManager);
+		// mainMenuGameState.setProfiles(profiles);
+		//
+		// AboutGameState aboutGameState = new AboutGameState(this);
+		// aboutGameState.setResourceManager(resourceManager);
+		// aboutGameState.setBrowserUtils(browserUtils);
 
 		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);
@@ -327,11 +349,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public TransitionBuilder transition(Screen screen) {
 		return new TransitionBuilder(this, screen);
 	}
-	
+
 	@Override
 	public void pause() {
 		super.pause();
-		adWhirlViewHandler.hide();		
+		adWhirlViewHandler.hide();
 	}
 
 	@Override
