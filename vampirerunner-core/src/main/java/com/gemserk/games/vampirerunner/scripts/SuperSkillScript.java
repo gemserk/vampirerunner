@@ -5,11 +5,10 @@ import com.artemis.World;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
+import com.gemserk.games.vampirerunner.components.GameComponents;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 
 public class SuperSkillScript extends ScriptJavaImpl {
-
-	private static final Class<SuperSkillComponent> superSkillComponentClass = SuperSkillComponent.class;
 
 	private final VampireController vampireController;
 
@@ -19,7 +18,7 @@ public class SuperSkillScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(World world, Entity e) {
-		SuperSkillComponent superSkillComponent = e.getComponent(superSkillComponentClass);
+		SuperSkillComponent superSkillComponent = GameComponents.getSuperSkillComponent(e);
 		if (!superSkillComponent.enabled) {
 			superSkillComponent.energy.add(superSkillComponent.regenerationRate * GlobalTime.getDelta());
 			if (vampireController.usingSuperSkill) 

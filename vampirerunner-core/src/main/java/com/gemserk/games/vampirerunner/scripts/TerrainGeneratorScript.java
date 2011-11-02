@@ -55,16 +55,16 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 	public void generateTerrain(World world) {
 		alpha += GlobalTime.getDelta() / 120f;
 		
-		Entity player = world.getTagManager().getEntity(Tags.Vampire);
-		if (player == null)
+		Entity character = world.getTagManager().getEntity(Tags.Vampire);
+		if (character == null)
 			return;
 
-		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
-		Spatial playerSpatial = playerSpatialComponent.getSpatial();
+		SpatialComponent characterSpatialComponent = character.getComponent(spatialComponentClass);
+		Spatial characterSpatial = characterSpatialComponent.getSpatial();
 
 		Color color = interpolator.interpolate(startColor, endColor, alpha);
 
-		while (lastGeneratedPositionX - playerSpatial.getX() < distanceToGenerate) {
+		while (lastGeneratedPositionX - characterSpatial.getX() < distanceToGenerate) {
 
 			parameters.clear();
 			Entity obstacle = entityFactory.instantiate(tileTemplate, parameters //

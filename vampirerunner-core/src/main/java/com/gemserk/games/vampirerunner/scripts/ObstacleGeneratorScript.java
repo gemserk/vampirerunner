@@ -23,7 +23,8 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 
 	private final String[] wallSpriteIds = { "WallTileASprite", "WallTileBSprite", "WallTileCSprite", "WallTileDSprite" };
 
-	private final int[][] wallPatterns = { { 0, 1, 3 }, //
+	private final int[][] wallPatterns = { //
+			{ 0, 1, 3 }, //
 			{ 0, 1, 2, 1, 3 }, //
 			{ 0, 1, 2, 1, 2, 1, 3 }, //
 			{ 0, 1, 2, 1, 2, 1, 2, 1, 3 }, //
@@ -37,29 +38,31 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 	private float distanceTrigger;
 
 	private Parameters parameters = new ParametersWrapper();
-	
+
 	private final Color startColor = new Color(1f, 1f, 1f, 1f);
 	private final Color endColor = new Color(0.4f, 0.4f, 0.4f, 1f);
 	private float alpha;
-	
+
 	private Interpolator<Color> interpolator;
+
+	private float distanceBetweenObstacles = 10f;
 
 	public ObstacleGeneratorScript(EntityFactory entityFactory, EntityTemplate tileTemplate, float distanceTrigger) {
 		this.entityFactory = entityFactory;
 		this.tileTemplate = tileTemplate;
 		this.distanceTrigger = distanceTrigger;
 	}
-	
+
 	@Override
 	public void init(World world, Entity e) {
 		alpha = 0f;
-		interpolator = new GenericInterpolator<Color>(new ColorConverter());		
+		interpolator = new GenericInterpolator<Color>(new ColorConverter());
 	}
 
 	@Override
 	public void update(World world, Entity e) {
 		alpha += GlobalTime.getDelta() / 120f;
-		
+
 		Entity player = world.getTagManager().getEntity(Tags.Vampire);
 
 		if (player == null)
@@ -67,36 +70,17 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 
 		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
 		Spatial playerSpatial = playerSpatialComponent.getSpatial();
-		
+
 		Color color = interpolator.interpolate(startColor, endColor, alpha);
 
 		if (playerSpatial.getX() > distanceTrigger) {
-
-			// send an event to generate walls
-
-			// trigger, generate multiple obstacles ahead, move distance trigger
-			// Gdx.app.log("VampireRunner", "Generate obstacles triggered");
-			//
-			// float width = MathUtils.random(1f, 10f);
-			//
-			// parameters.clear();
-			// Entity obstacle = entityFactory.instantiate(tileTemplate, parameters //
-			// .put("x", distanceTrigger + 20f) //
-			// .put("y", 1f) //
-			// .put("width", width)
-			// );
-
-			// SpatialComponent obstacleSpatialComponent = obstacle.getComponent(spatialComponentClass);
-			// float width = obstacleSpatialComponent.getSpatial().getWidth();
-
-			// width = sumatoria de todos los obstaculos mas espacios en blanco
 
 			// generate a random pattern
 			int[] wallPattern = wallPatterns[MathUtils.random(0, wallPatterns.length - 1)];
 
 			float x = distanceTrigger + 20f;
 			float y = 1.1f;
-			
+
 			float width = 0f;
 
 			for (int i = 0; i < wallPattern.length; i++) {
@@ -113,12 +97,12 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 
 				SpatialComponent spatialComponent = wallTile.getComponent(SpatialComponent.class);
 				x += spatialComponent.getSpatial().getWidth();
-				
+
 				width += spatialComponent.getSpatial().getWidth();
 
 			}
 
-			distanceTrigger += 10f + width;
+			distanceTrigger += distanceBetweenObstacles + width;
 		}
 
 	}

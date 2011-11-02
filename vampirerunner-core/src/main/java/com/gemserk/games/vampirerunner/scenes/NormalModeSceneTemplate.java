@@ -141,6 +141,7 @@ public class NormalModeSceneTemplate {
 
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new RenderScriptSystem());
+		// worldWrapper.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
 
 		worldWrapper.init();
 
