@@ -77,9 +77,9 @@ public class VampireTemplate extends EntityTemplateImpl {
 
 		entity.addComponent(new DistanceComponent());
 		
-		float maxSpeed = 20f;
-		float minSpeed = 5f;
-		float timeToMaxSpeed = 40f;
+		float maxSpeed = 25f;
+		float minSpeed = 7f;
+		float timeToMaxSpeed = 60f;
 		
 		float forceToMaxSpeed = ((maxSpeed - minSpeed) / timeToMaxSpeed) * body.getMass();
 		

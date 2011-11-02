@@ -9,9 +9,11 @@ public class Components {
 	public static class DistanceComponent extends Component {
 
 		public float distance;
+		public float lastPosition;
 
 		public DistanceComponent() {
 			this.distance = 0f;
+			this.lastPosition = 0f;
 		}
 
 	}

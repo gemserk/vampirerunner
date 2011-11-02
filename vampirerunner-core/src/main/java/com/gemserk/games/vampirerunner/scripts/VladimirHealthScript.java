@@ -38,6 +38,9 @@ public class VladimirHealthScript extends ScriptJavaImpl {
 		if (!contacts.isInContact())
 			return;
 		eventManager.registerEvent(Events.playerDeath, e);
+		
+		System.out.println("death speed: " + physics.getBody().getLinearVelocity());
+		
 		enabled = false;
 		return;
 	}
