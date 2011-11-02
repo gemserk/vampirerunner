@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.gemserk.animation4j.gdx.converters.ColorConverter;
 import com.gemserk.animation4j.interpolator.GenericInterpolator;
 import com.gemserk.animation4j.interpolator.Interpolator;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -18,8 +19,6 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Tags;
 
 public class ObstacleGeneratorScript extends ScriptJavaImpl {
-
-	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
 
 	private final String[] wallSpriteIds = { "WallTileASprite", "WallTileBSprite", "WallTileCSprite", "WallTileDSprite" };
 
@@ -63,17 +62,17 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 	public void update(World world, Entity e) {
 		alpha += GlobalTime.getDelta() / 120f;
 
-		Entity player = world.getTagManager().getEntity(Tags.Vampire);
+		Entity character = world.getTagManager().getEntity(Tags.Vampire);
 
-		if (player == null)
+		if (character == null)
 			return;
 
-		SpatialComponent playerSpatialComponent = player.getComponent(spatialComponentClass);
-		Spatial playerSpatial = playerSpatialComponent.getSpatial();
+		SpatialComponent characterSpatialComponent = Components.getSpatialComponent(character);
+		Spatial characterSpatial = characterSpatialComponent.getSpatial();
 
 		Color color = interpolator.interpolate(startColor, endColor, alpha);
 
-		if (playerSpatial.getX() > distanceTrigger) {
+		if (characterSpatial.getX() > distanceTrigger) {
 
 			// generate a random pattern
 			int[] wallPattern = wallPatterns[MathUtils.random(0, wallPatterns.length - 1)];
@@ -95,7 +94,7 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 						.put("color", color) //
 						);
 
-				SpatialComponent spatialComponent = wallTile.getComponent(SpatialComponent.class);
+				SpatialComponent spatialComponent = Components.getSpatialComponent(wallTile);
 				x += spatialComponent.getSpatial().getWidth();
 
 				width += spatialComponent.getSpatial().getWidth();

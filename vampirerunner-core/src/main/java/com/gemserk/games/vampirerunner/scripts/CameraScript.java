@@ -9,7 +9,6 @@ import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.vampirerunner.components.GameComponents;
 
 public class CameraScript extends ScriptJavaImpl {
 
@@ -35,7 +34,7 @@ public class CameraScript extends ScriptJavaImpl {
 			previousCamera.setAngle(camera.getAngle());
 			previousCamera.setZoom(camera.getZoom());
 		}
-		
+
 		if (target == null)
 			return;
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.gemserk.animation4j.gdx.converters.ColorConverter;
 import com.gemserk.animation4j.interpolator.GenericInterpolator;
 import com.gemserk.animation4j.interpolator.Interpolator;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -17,8 +18,6 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Tags;
 
 public class TerrainGeneratorScript extends ScriptJavaImpl {
-
-	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
 
 	private final EntityFactory entityFactory;
 	private final EntityTemplate tileTemplate;
@@ -59,13 +58,12 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 		if (character == null)
 			return;
 
-		SpatialComponent characterSpatialComponent = character.getComponent(spatialComponentClass);
+		SpatialComponent characterSpatialComponent = Components.getSpatialComponent(character);
 		Spatial characterSpatial = characterSpatialComponent.getSpatial();
 
 		Color color = interpolator.interpolate(startColor, endColor, alpha);
 
 		while (lastGeneratedPositionX - characterSpatial.getX() < distanceToGenerate) {
-
 			parameters.clear();
 			Entity obstacle = entityFactory.instantiate(tileTemplate, parameters //
 					.put("x", lastGeneratedPositionX) //
@@ -73,14 +71,10 @@ public class TerrainGeneratorScript extends ScriptJavaImpl {
 					.put("color", color) //
 					);
 
-			SpatialComponent obstacleSpatialComponent = obstacle.getComponent(spatialComponentClass);
+			SpatialComponent obstacleSpatialComponent = Components.getSpatialComponent(obstacle);
 			float width = obstacleSpatialComponent.getSpatial().getWidth();
 
 			lastGeneratedPositionX += width;
-			// generate new tile
-
-			// Gdx.app.log("VampireRunner", "Generating new tile with color: " + color);
-
 		}
 	}
 
