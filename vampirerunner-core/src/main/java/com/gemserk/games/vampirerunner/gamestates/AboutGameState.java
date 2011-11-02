@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -19,7 +18,6 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.GameInformation;
-import com.gemserk.games.vampirerunner.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
@@ -32,7 +30,6 @@ public class AboutGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	private ParticleEmitter batmanEmitter1;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -136,9 +133,6 @@ public class AboutGameState extends GameStateImpl {
 		};
 
 		Analytics.traker.trackPageView("/about", "/about", null);
-		
-		batmanEmitter1 = resourceManager.getResourceValue(GameResources.Emitters.BatmanEmitter);
-		batmanEmitter1.setPosition(width * 0.5f, height * 0.95f);
 	}
 
 	private void mainMenu() {
@@ -154,7 +148,6 @@ public class AboutGameState extends GameStateImpl {
 		
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
-		batmanEmitter1.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
@@ -165,9 +158,6 @@ public class AboutGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		game.getBackgroundGameScene().update(getDeltaInMs());
 
-		batmanEmitter1.update(getDelta());
-		batmanEmitter1.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-		
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			mainMenu();
 	}

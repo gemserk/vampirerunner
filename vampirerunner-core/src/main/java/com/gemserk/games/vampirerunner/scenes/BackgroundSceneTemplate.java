@@ -21,6 +21,7 @@ import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.MovementSystem;
+import com.gemserk.commons.artemis.systems.ParticleEmitterSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.PreviousStateSpatialSystem;
 import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
@@ -40,11 +41,14 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
+import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
+import com.gemserk.games.vampirerunner.templates.BatmanParticleTemplate;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudTemplate;
@@ -102,7 +106,7 @@ public class BackgroundSceneTemplate {
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
-	
+
 	public void setTimeStepProvider(TimeStepProvider timeStepProvider) {
 		this.timeStepProvider = timeStepProvider;
 	}
@@ -137,7 +141,7 @@ public class BackgroundSceneTemplate {
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(width / 10, height / 4);
 
 		float secondBackgroundZoom = 64f * gameZoom;
-		
+
 		worldCamera.zoom(64f * gameZoom);
 		backgroundCamera.zoom(2 * gameZoom);
 		secondBackgroundCamera.zoom(secondBackgroundZoom);
@@ -171,9 +175,11 @@ public class BackgroundSceneTemplate {
 		worldWrapper.addUpdateSystem(new MovementSystem());
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
+		worldWrapper.addUpdateSystem(new ParticleEmitterSystem());
+
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
-		
+
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new RenderScriptSystem());
 
@@ -207,7 +213,7 @@ public class BackgroundSceneTemplate {
 		entityFactory.instantiate(cloudSpawnerTemplate, new ParametersWrapper() //
 				.put("bounds", new Rectangle(0f, 3.25f, Gdx.graphics.getWidth() / secondBackgroundZoom, 3.25f)) //
 				);
-		
+
 		entityFactory.instantiate(vampireTemplate, new ParametersWrapper() //
 				.put("spatial", new SpatialImpl(1f, 1.75f, 1f, 1f, 0f)) //
 				);
@@ -222,6 +228,16 @@ public class BackgroundSceneTemplate {
 		entityBuilder //
 				.component(new ScriptComponent(new TerrainGeneratorScript(entityFactory, floorTileTemplate, -10f))) //
 				.build();
+
+		Injector injector = new InjectorImpl();
+		injector.bind("resourceManager", resourceManager);
+
+		EntityTemplate batmanParticleTemplate = injector.getInstance(BatmanParticleTemplate.class);
+
+		entityFactory.instantiate(batmanParticleTemplate, new ParametersWrapper() //
+				.put("libgdxCamera", worldCamera) //
+				.put("camera", worldCameraData) //
+				);
 
 	}
 

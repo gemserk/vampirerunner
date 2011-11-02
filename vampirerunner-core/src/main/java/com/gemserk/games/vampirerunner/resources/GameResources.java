@@ -94,7 +94,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("WallTileDSprite", "WallTextureAtlas", "wall-tile-04");
 		
 		particleEffect("BatmanEffect", "data/particles/BatmanEffect", "data/particles");
-		particleEmitter(Emitters.BatmanEmitter, "BatmanEffect", "BatmanEmitter");
+		particleEmitter(Emitters.BatmanEmitter, "BatmanEffect", "BatmanEmitter", 1f / 64f);
 
 	}
 }
