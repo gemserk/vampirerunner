@@ -12,6 +12,7 @@ import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.games.vampirerunner.Collisions;
@@ -35,28 +36,33 @@ public class WallTileTemplate extends EntityTemplateImpl {
 		Float x = parameters.get("x");
 		Float y = parameters.get("y");
 		Color color = parameters.get("color");
+		Boolean generateBounding = parameters.get("generateBounding", true);
 
 		Sprite sprite = resourceManager.getResourceValue(spriteId);
 
 		SpriteUtils.resize(sprite, sprite.getWidth() / 32f);
-		
+
 		float width = sprite.getWidth();
 		float height = sprite.getHeight();
 
 		entity.setGroup(Groups.Obstacles);
 
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.boxShape(width * 0.5f, height * 0.5f, new Vector2(width * 0.5f, height * 0.5f), 0f) //
-						.categoryBits(Collisions.Obstacle) //
-				) //
-				.type(BodyType.StaticBody) //
-				.position(x, y) //
-				.userData(entity) //
-				.build();
+		if (generateBounding) {
+			Body body = bodyBuilder //
+					.fixture(bodyBuilder.fixtureDefBuilder() //
+							.boxShape(width * 0.5f, height * 0.5f, new Vector2(width * 0.5f, height * 0.5f), 0f) //
+							.categoryBits(Collisions.Obstacle) //
+					) //
+					.type(BodyType.StaticBody) //
+					.position(x, y) //
+					.userData(entity) //
+					.build();
+			entity.addComponent(new PhysicsComponent(body));
+			entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, sprite.getWidth(), sprite.getHeight())));
+		} else  {
+			entity.addComponent(new SpatialComponent(new SpatialImpl(x, y, sprite.getWidth(), sprite.getHeight(), 0f)));
+		}
 
-		entity.addComponent(new PhysicsComponent(body));
-		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, sprite.getWidth(), sprite.getHeight())));
 		entity.addComponent(new SpriteComponent(sprite, 0f, 0f, color));
 		entity.addComponent(new RenderableComponent(2));
 	}

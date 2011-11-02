@@ -1,5 +1,7 @@
 package com.gemserk.games.vampirerunner.scripts;
 
+import java.text.MessageFormat;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -9,6 +11,7 @@ import com.gemserk.animation4j.gdx.converters.ColorConverter;
 import com.gemserk.animation4j.interpolator.GenericInterpolator;
 import com.gemserk.animation4j.interpolator.Interpolator;
 import com.gemserk.commons.artemis.components.Components;
+import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -79,15 +82,19 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 		if (characterSpatial.getX() > distanceTrigger) {
 
 			SuperSkillComponent superSkillComponent = GameComponents.getSuperSkillComponent(character);
+			PhysicsComponent physicsComponent = Components.getPhysicsComponent(character);
 
 			// generate a random pattern
 			int[] wallPattern = wallPatterns[MathUtils.random(0, wallPatterns.length - 1)];
 			// int[] wallPattern = wallPatterns[0];
 
-			// float minDistance = totalEnergy / (regenerationSpeed / linearSpeed);
-			// maxDistance = minDistance + 5f;
+			float minDistance = 0.75f * (superSkillComponent.energy.getTotal() / (superSkillComponent.regenerationRate / physicsComponent.getBody().getLinearVelocity().len()));
+			float maxDistance = minDistance + 5f;
 
-			float x = distanceTrigger + distanceBetweenObstacles;
+			Gdx.app.log(GameInformation.applicationId, MessageFormat.format("minDistance = {0}, maxDistance = {1}", minDistance, maxDistance));
+
+			float x = distanceTrigger + maxDistance;
+			// float x = distanceTrigger + distanceBetweenObstacles;
 			float y = 1.1f;
 
 			float width = 0f;
@@ -97,11 +104,14 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 				int pattern = wallPattern[i];
 				String spriteId = wallSpriteIds[pattern];
 
+				boolean generateBounding = (i > 0 && i < wallPattern.length - 1);
+
 				Entity wallTile = entityFactory.instantiate(tileTemplate, parameters //
 						.put("spriteId", spriteId) //
 						.put("x", x) //
 						.put("y", y) //
 						.put("color", color) //
+						.put("generateBounding", generateBounding) //
 						);
 
 				SpatialComponent spatialComponent = Components.getSpatialComponent(wallTile);

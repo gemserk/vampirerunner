@@ -53,6 +53,7 @@ import com.gemserk.games.vampirerunner.scripts.PreviousTilesRemoverScript;
 import com.gemserk.games.vampirerunner.scripts.TerrainGeneratorScript;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 import com.gemserk.games.vampirerunner.scripts.render.LabelRenderScript;
+import com.gemserk.games.vampirerunner.systems.Box2dRenderSystem;
 import com.gemserk.games.vampirerunner.systems.RenderScriptSystem;
 import com.gemserk.games.vampirerunner.templates.CameraTemplate;
 import com.gemserk.games.vampirerunner.templates.CloudSpawnerTemplate;
@@ -141,7 +142,7 @@ public class NormalModeSceneTemplate {
 
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new RenderScriptSystem());
-		// worldWrapper.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
+		worldWrapper.addRenderSystem(new Box2dRenderSystem(worldCamera, physicsWorld));
 
 		worldWrapper.init();
 

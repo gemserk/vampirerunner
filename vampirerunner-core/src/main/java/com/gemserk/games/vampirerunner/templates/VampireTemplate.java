@@ -61,7 +61,7 @@ public class VampireTemplate extends EntityTemplateImpl {
 				.type(BodyType.DynamicBody) //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						// .boxShape(0.1f, 0.4f) //
-						.circleShape(0.1f) //
+						.circleShape(0.05f) //
 						.density(1f) //
 						.sensor() //
 						.categoryBits(Collisions.Vladimir) //

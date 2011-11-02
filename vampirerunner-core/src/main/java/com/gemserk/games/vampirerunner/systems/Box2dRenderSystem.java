@@ -4,6 +4,7 @@ import com.artemis.World;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.gemserk.commons.artemis.WorldSystemImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.games.vampirerunner.Game;
 
 public class Box2dRenderSystem extends WorldSystemImpl {
 
@@ -19,6 +20,10 @@ public class Box2dRenderSystem extends WorldSystemImpl {
 	@Override
 	public void process(World world) {
 		super.process(world);
+		
+		if (!Game.isShowBox2dDebug())
+			return;
+		
 		box2dDebugRenderer.render(physicsWorld, libgdx2dCamera.getCombinedMatrix());
 	}
 
