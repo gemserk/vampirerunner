@@ -8,6 +8,12 @@ import com.gemserk.resources.ResourceManager;
  * Declares all resources needed for the game.
  */
 public class GameResources extends LibgdxResourceBuilder {
+	
+	public static class Emitters {
+		
+		public static final String BatmanEmitter = "BatmanEmitter";
+		
+	}
 
 	public static void load(ResourceManager<String> resourceManager) {
 		new GameResources(resourceManager);
@@ -86,6 +92,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("WallTileBSprite", "WallTextureAtlas", "wall-tile-02");
 		spriteAtlas("WallTileCSprite", "WallTextureAtlas", "wall-tile-03");
 		spriteAtlas("WallTileDSprite", "WallTextureAtlas", "wall-tile-04");
+		
+		particleEffect("BatmanEffect", "data/particles/BatmanEffect", "data/particles");
+		particleEmitter(Emitters.BatmanEmitter, "BatmanEffect", "BatmanEmitter");
 
 	}
 }

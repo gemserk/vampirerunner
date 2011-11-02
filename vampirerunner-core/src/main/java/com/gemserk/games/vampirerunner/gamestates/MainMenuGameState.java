@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -24,6 +25,7 @@ import com.gemserk.datastore.profiles.Profile;
 import com.gemserk.datastore.profiles.Profiles;
 import com.gemserk.games.vampirerunner.Game;
 import com.gemserk.games.vampirerunner.preferences.GamePreferences;
+import com.gemserk.games.vampirerunner.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class MainMenuGameState extends GameStateImpl {
@@ -37,6 +39,7 @@ public class MainMenuGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private ParticleEmitter batmanEmitter1;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -170,6 +173,9 @@ public class MainMenuGameState extends GameStateImpl {
 				monitorKeys("play", Keys.ENTER, Keys.SPACE);
 			}
 		};
+		
+		batmanEmitter1 = resourceManager.getResourceValue(GameResources.Emitters.BatmanEmitter);
+		batmanEmitter1.setPosition(width * 0.5f, height * 0.95f);
 
 	}
 
@@ -259,6 +265,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
+		batmanEmitter1.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
@@ -268,6 +275,9 @@ public class MainMenuGameState extends GameStateImpl {
 		guiContainer.update();
 		game.getBackgroundGameScene().update(getDeltaInMs());
 		inputDevicesMonitor.update();
+		
+		batmanEmitter1.update(getDelta());
+		batmanEmitter1.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 
 		if (inputDevicesMonitor.getButton("play").isReleased())
 			startGame();

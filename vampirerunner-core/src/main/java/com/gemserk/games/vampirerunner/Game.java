@@ -223,43 +223,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		GameState mainMenuGameState = injector.getInstance(MainMenuGameState.class);
 		GameState aboutGameState = injector.getInstance(AboutGameState.class);
 
-		// PlayGameState playGameState = new PlayGameState(this);
-		// playGameState.setResourceManager(resourceManager);
-		// playGameState.setGamePreferences(gamePreferences);
-		// playGameState.setExecutorService(executorService);
-		// playGameState.setScores(scores);
-
-		// GameOverGameState gameOverGameState = new GameOverGameState(this);
-		// gameOverGameState.setResourceManager(resourceManager);
-		// gameOverGameState.setGamePreferences(gamePreferences);
-		// gameOverGameState.setExecutorService(executorService);
-		// gameOverGameState.setProfiles(profiles);
-		// gameOverGameState.setScores(scores);
-
-		// InstructionsGameState instructionsGameState = new InstructionsGameState(this);
-		// instructionsGameState.setResourceManager(resourceManager);
-		//
-		// HighscoresGameState highscoresGameState = new HighscoresGameState(this);
-		// highscoresGameState.setResourceManager(resourceManager);
-		// highscoresGameState.setExecutorService(executorService);
-		// highscoresGameState.setGamePreferences(gamePreferences);
-		// highscoresGameState.setScores(scores);
-
-		// SplashGameState splashGameState = new SplashGameState(this);
-		// splashGameState.setResourceManager(resourceManager);
-		//
-		// PauseGameState pauseGameState = new PauseGameState(this);
-		// pauseGameState.setResourceManager(resourceManager);
-		//
-		// MainMenuGameState mainMenuGameState = new MainMenuGameState(this);
-		// mainMenuGameState.setGamePreferences(gamePreferences);
-		// mainMenuGameState.setResourceManager(resourceManager);
-		// mainMenuGameState.setProfiles(profiles);
-		//
-		// AboutGameState aboutGameState = new AboutGameState(this);
-		// aboutGameState.setResourceManager(resourceManager);
-		// aboutGameState.setBrowserUtils(browserUtils);
-
 		splashScreen = new ScreenImpl(splashGameState);
 		playGameScreen = new ScreenImpl(playGameState);
 		gameOverScreen = new ScreenImpl(gameOverGameState);
@@ -307,7 +270,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		GlobalTime.setDelta(Gdx.graphics.getDeltaTime());
 
 		inputDevicesMonitor.update();
-
+		
 		super.render();
 
 		spriteBatch.begin();
