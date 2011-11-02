@@ -3,8 +3,6 @@ package com.gemserk.games.vampirerunner.components;
 import com.artemis.ComponentType;
 import com.artemis.ComponentTypeManager;
 import com.artemis.Entity;
-import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
-import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 
 public class GameComponents {
 	

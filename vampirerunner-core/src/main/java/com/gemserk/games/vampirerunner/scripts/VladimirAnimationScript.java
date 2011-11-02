@@ -11,8 +11,8 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Physics;
-import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.components.GameComponents;
+import com.gemserk.games.vampirerunner.components.SuperSkillComponent;
 
 public class VladimirAnimationScript extends ScriptJavaImpl {
 

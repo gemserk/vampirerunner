@@ -9,8 +9,8 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.box2d.Contacts;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.games.vampirerunner.Events;
-import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.components.GameComponents;
+import com.gemserk.games.vampirerunner.components.SuperSkillComponent;
 
 public class VladimirHealthScript extends ScriptJavaImpl {
 

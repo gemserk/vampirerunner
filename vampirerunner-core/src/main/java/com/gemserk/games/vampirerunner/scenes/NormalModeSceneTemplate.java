@@ -45,7 +45,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Events;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
-import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
+import com.gemserk.games.vampirerunner.components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.RenderScriptComponent;
 import com.gemserk.games.vampirerunner.render.Layers;
 import com.gemserk.games.vampirerunner.scripts.ObstacleGeneratorScript;

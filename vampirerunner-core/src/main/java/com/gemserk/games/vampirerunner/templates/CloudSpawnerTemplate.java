@@ -16,7 +16,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.Groups;
 import com.gemserk.games.vampirerunner.Tags;
-import com.gemserk.games.vampirerunner.components.Components.BoundsComponent;
+import com.gemserk.games.vampirerunner.components.BoundsComponent;
 
 public class CloudSpawnerTemplate extends EntityTemplateImpl {
 

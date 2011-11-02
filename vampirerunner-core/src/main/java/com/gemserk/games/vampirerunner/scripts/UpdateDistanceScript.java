@@ -6,7 +6,7 @@ import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.vampirerunner.components.Components.DistanceComponent;
+import com.gemserk.games.vampirerunner.components.DistanceComponent;
 import com.gemserk.games.vampirerunner.components.GameComponents;
 
 public class UpdateDistanceScript extends ScriptJavaImpl {

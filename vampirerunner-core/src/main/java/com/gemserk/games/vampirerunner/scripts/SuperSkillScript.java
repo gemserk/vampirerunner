@@ -4,8 +4,8 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
-import com.gemserk.games.vampirerunner.components.Components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.components.GameComponents;
+import com.gemserk.games.vampirerunner.components.SuperSkillComponent;
 import com.gemserk.games.vampirerunner.scripts.controllers.VampireController;
 
 public class SuperSkillScript extends ScriptJavaImpl {

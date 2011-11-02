@@ -15,7 +15,7 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.games.vampirerunner.Groups;
-import com.gemserk.games.vampirerunner.components.Components.BoundsComponent;
+import com.gemserk.games.vampirerunner.components.BoundsComponent;
 import com.gemserk.resources.ResourceManager;
 
 public class CloudTemplate extends EntityTemplateImpl {
