@@ -23,6 +23,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.vampirerunner.GameInformation;
 import com.gemserk.games.vampirerunner.Tags;
 import com.gemserk.games.vampirerunner.components.GameComponents;
+import com.gemserk.games.vampirerunner.components.RunningComponent;
 import com.gemserk.games.vampirerunner.components.SuperSkillComponent;
 
 public class ObstacleGeneratorScript extends ScriptJavaImpl {
@@ -30,12 +31,15 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 	private final String[] wallSpriteIds = { "WallTileASprite", "WallTileBSprite", "WallTileCSprite", "WallTileDSprite" };
 
 	private final int[][] wallPatterns = { //
-	{ 0, 1, 3 }, // 1.25m (approx)
-			{ 0, 1, 2, 1, 3 }, //
-			{ 0, 1, 2, 1, 2, 1, 3 }, //
-			{ 0, 1, 2, 1, 2, 1, 2, 1, 3 }, //
-			{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, //
+	// { 0, 1, 3 }, // 1.25m (approx)
+			{ 0, 1, 2, 1, 3 }, // 2
+			{ 0, 1, 2, 1, 2, 1, 3 }, // 3
+			{ 0, 1, 2, 1, 2, 1, 2, 1, 3 }, // 4
+			{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, // 5
 			{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, // 6.25m (approx)
+			{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, // 7.25m (approx)
+			{ 0, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 3 }, // 8.25m (approx)
+
 	};
 
 	private final EntityFactory entityFactory;
@@ -50,8 +54,6 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 	private float alpha;
 
 	private Interpolator<Color> interpolator;
-
-	private float distanceBetweenObstacles = 12f;
 
 	public ObstacleGeneratorScript(EntityFactory entityFactory, EntityTemplate tileTemplate, float distanceTrigger) {
 		this.entityFactory = entityFactory;
@@ -84,46 +86,79 @@ public class ObstacleGeneratorScript extends ScriptJavaImpl {
 			SuperSkillComponent superSkillComponent = GameComponents.getSuperSkillComponent(character);
 			PhysicsComponent physicsComponent = Components.getPhysicsComponent(character);
 
-			// generate a random pattern
-			int[] wallPattern = wallPatterns[MathUtils.random(0, wallPatterns.length - 1)];
-			// int[] wallPattern = wallPatterns[0];
+			float speed = physicsComponent.getBody().getLinearVelocity().len();
+			
+			RunningComponent runningComponent = GameComponents.getRunningComponent(character);
+			float maxSpeed = runningComponent.maxSpeed;
+			
+			float distanceMultiplier = maxSpeed / speed;
 
-			float minDistance = 0.75f * (superSkillComponent.energy.getTotal() / (superSkillComponent.regenerationRate / physicsComponent.getBody().getLinearVelocity().len()));
-			float maxDistance = minDistance + 5f;
+			float minDistance = 0.75f * (superSkillComponent.energy.getTotal() / (superSkillComponent.regenerationRate / speed));
+			float maxDistance = 1f * (superSkillComponent.energy.getTotal() / (superSkillComponent.regenerationRate / speed));
 
 			Gdx.app.log(GameInformation.applicationId, MessageFormat.format("minDistance = {0}, maxDistance = {1}", minDistance, maxDistance));
+			Gdx.app.log(GameInformation.applicationId, MessageFormat.format("distanceMultiplier = {0}", distanceMultiplier));
 
-			float x = distanceTrigger + maxDistance;
 			// float x = distanceTrigger + distanceBetweenObstacles;
 			float y = 1.1f;
 
-			float width = 0f;
+			int wallQuantity = 4;
 
-			for (int i = 0; i < wallPattern.length; i++) {
+			float offset = 15f;
 
-				int pattern = wallPattern[i];
-				String spriteId = wallSpriteIds[pattern];
+			float random = MathUtils.random();
 
-				boolean generateBounding = (i > 0 && i < wallPattern.length - 1);
+			float relaxChance = 0.3f;
 
-				Entity wallTile = entityFactory.instantiate(tileTemplate, parameters //
-						.put("spriteId", spriteId) //
-						.put("x", x) //
-						.put("y", y) //
-						.put("color", color) //
-						.put("generateBounding", generateBounding) //
-						);
+			if (random < relaxChance) {
 
-				SpatialComponent spatialComponent = Components.getSpatialComponent(wallTile);
-				x += spatialComponent.getSpatial().getWidth();
+				// 3 seconds of relax...
+				float relaxTime = 3f;
+				float relaxDistance = relaxTime * speed;
 
-				width += spatialComponent.getSpatial().getWidth();
+				Gdx.app.log(GameInformation.applicationId, "Relax time for " + relaxDistance + "m");
+
+				distanceTrigger += relaxDistance;
+
+			} else {
+
+				for (int j = 0; j < wallQuantity; j++) {
+
+					float width = 0f;
+					float x = distanceTrigger + MathUtils.random(minDistance, maxDistance) * distanceMultiplier;
+
+					// generate a random pattern
+					int[] wallPattern = wallPatterns[MathUtils.random(0, wallPatterns.length - 1)];
+					// int[] wallPattern = wallPatterns[0];
+
+					for (int i = 0; i < wallPattern.length; i++) {
+
+						int pattern = wallPattern[i];
+						String spriteId = wallSpriteIds[pattern];
+
+						boolean generateBounding = (i > 0 && i < wallPattern.length - 1);
+
+						Entity wallTile = entityFactory.instantiate(tileTemplate, parameters //
+								.put("spriteId", spriteId) //
+								.put("x", x + offset) //
+								.put("y", y) //
+								.put("color", color) //
+								.put("generateBounding", generateBounding) //
+								);
+
+						SpatialComponent spatialComponent = Components.getSpatialComponent(wallTile);
+						x += spatialComponent.getSpatial().getWidth();
+
+						width += spatialComponent.getSpatial().getWidth();
+
+					}
+
+					Gdx.app.log(GameInformation.applicationId, "New obstacle generated with width of " + width + "m");
+
+					distanceTrigger = x;
+				}
 
 			}
-
-			Gdx.app.log(GameInformation.applicationId, "New obstacle generated with width of " + width + "m");
-
-			distanceTrigger = x;
 		}
 
 	}
